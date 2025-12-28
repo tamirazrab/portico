@@ -1,4 +1,3 @@
-import { createTRPCRouter, protectedProcedure, premiumProcedure } from "../init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import createWorkflowController from "@/app/[lang]/dashboard/workflows/controller/create-workflow.controller";
@@ -9,6 +8,11 @@ import updateWorkflowNameController from "@/app/[lang]/dashboard/workflows/contr
 import deleteWorkflowController from "@/app/[lang]/dashboard/workflows/controller/delete-workflow.controller";
 import executeWorkflowController from "@/app/[lang]/dashboard/workflows/controller/execute-workflow.controller";
 import { isLeft } from "fp-ts/lib/Either";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  premiumProcedure,
+} from "../init";
 
 export const workflowsRouter = createTRPCRouter({
   execute: protectedProcedure
@@ -246,4 +250,3 @@ export const workflowsRouter = createTRPCRouter({
       };
     }),
 });
-

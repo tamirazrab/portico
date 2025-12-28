@@ -1,4 +1,3 @@
-import { createTRPCRouter, protectedProcedure, premiumProcedure } from "../init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
@@ -10,6 +9,11 @@ import getCredentialController from "@/app/[lang]/dashboard/credentials/controll
 import getCredentialsByTypeController from "@/app/[lang]/dashboard/credentials/controller/get-credentials-by-type.controller";
 import { isLeft } from "fp-ts/lib/Either";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  premiumProcedure,
+} from "../init";
 
 const CredentialTypeEnum = z.enum([
   CredentialType.GEMINI,
@@ -136,7 +140,8 @@ export const credentialsRouter = createTRPCRouter({
     .input(
       z.object({
         page: z.number().default(PAGINATION.DEFAULT_PAGE),
-        pageSize: z.number()
+        pageSize: z
+          .number()
           .min(PAGINATION.MIN_PAGE_SIZE)
           .max(PAGINATION.MAX_PAGE_SIZE)
           .default(PAGINATION.DEFAULT_PAGE_SIZE),
@@ -206,4 +211,3 @@ export const credentialsRouter = createTRPCRouter({
       return result.right;
     }),
 });
-

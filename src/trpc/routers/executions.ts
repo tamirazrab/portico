@@ -1,10 +1,10 @@
-import { createTRPCRouter, protectedProcedure } from "../init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
 import getExecutionsController from "@/app/[lang]/dashboard/executions/controller/get-executions.controller";
 import getExecutionController from "@/app/[lang]/dashboard/executions/controller/get-execution.controller";
 import { isLeft } from "fp-ts/lib/Either";
+import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const executionsRouter = createTRPCRouter({
   getOne: protectedProcedure
@@ -36,7 +36,8 @@ export const executionsRouter = createTRPCRouter({
     .input(
       z.object({
         page: z.number().default(PAGINATION.DEFAULT_PAGE),
-        pageSize: z.number()
+        pageSize: z
+          .number()
           .min(PAGINATION.MIN_PAGE_SIZE)
           .max(PAGINATION.MAX_PAGE_SIZE)
           .default(PAGINATION.DEFAULT_PAGE_SIZE),
@@ -79,4 +80,3 @@ export const executionsRouter = createTRPCRouter({
       };
     }),
 });
-

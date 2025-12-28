@@ -36,7 +36,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 // Base router and procedure helpers
 export const createTRPCRouter = t.router;
-export const createCallerFactory = t.createCallerFactory;
+export const { createCallerFactory } = t;
 export const baseProcedure = t.procedure;
 
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
@@ -55,30 +55,34 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
   });
 });
 
-export const premiumProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-  if (!ctx.auth?.user?.id) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "You must be logged in to access this resource",
+export const premiumProcedure = protectedProcedure.use(
+  async ({ ctx, next }) => {
+    if (!ctx.auth?.user?.id) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to access this resource",
+      });
+    }
+
+    const customer = await polarClient.customers.getStateExternal({
+      externalId: ctx.auth.user.id,
     });
-  }
 
-  const customer = await polarClient.customers.getStateExternal({
-    externalId: ctx.auth.user.id,
-  });
+    if (
+      !customer.activeSubscriptions ||
+      customer.activeSubscriptions.length === 0
+    ) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You must be a premium user to access this resource",
+      });
+    }
 
-  if (!customer.activeSubscriptions || customer.activeSubscriptions.length === 0) {
-    throw new TRPCError({
-      code: "FORBIDDEN",
-      message: "You must be a premium user to access this resource",
+    return next({
+      ctx: {
+        ...ctx,
+        customer,
+      },
     });
-  }
-
-  return next({
-    ctx: {
-      ...ctx,
-      customer,
-    },
-  });
-});
-
+  },
+);
