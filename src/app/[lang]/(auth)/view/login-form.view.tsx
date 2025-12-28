@@ -2,11 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import LoginFormIVM from "./login-form.i-vm";
+import { Input } from "@/app/components/ui/input";
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/app/components/ui/form";
 import LoginFormVM from "../vm/login-form.vm";
 
 export default function LoginFormView() {
@@ -21,6 +33,7 @@ export default function LoginFormView() {
           <CardDescription>Please login to continue</CardDescription>
         </CardHeader>
         <CardContent>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Form {...vmData.form}>
             <form onSubmit={vmData.form.handleSubmit(vmData.onSubmit)}>
               <div className="grid gap-6">
@@ -31,7 +44,12 @@ export default function LoginFormView() {
                     type="button"
                     disabled={vmData.isPending}
                   >
-                    <Image src="/github.svg" alt="Github" width={20} height={20} />
+                    <Image
+                      src="/github.svg"
+                      alt="Github"
+                      width={20}
+                      height={20}
+                    />
                     Continue with Github
                   </Button>
                   <Button
@@ -40,7 +58,12 @@ export default function LoginFormView() {
                     type="button"
                     disabled={vmData.isPending}
                   >
-                    <Image src="/google.svg" alt="Google" width={20} height={20} />
+                    <Image
+                      src="/google.svg"
+                      alt="Google"
+                      width={20}
+                      height={20}
+                    />
                     Continue with Google
                   </Button>
                 </div>
@@ -53,6 +76,7 @@ export default function LoginFormView() {
                         <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input
+                            // eslint-disable-next-line react/jsx-props-no-spreading
                             {...field}
                             type="email"
                             placeholder="email@example.com"
@@ -70,6 +94,7 @@ export default function LoginFormView() {
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                           <Input
+                            // eslint-disable-next-line react/jsx-props-no-spreading
                             {...field}
                             type="password"
                             placeholder="********"
@@ -79,7 +104,11 @@ export default function LoginFormView() {
                       </FormItem>
                     )}
                   />
-                  <Button className="w-full" type="submit" disabled={vmData.isPending}>
+                  <Button
+                    className="w-full"
+                    type="submit"
+                    disabled={vmData.isPending}
+                  >
                     Login
                   </Button>
                 </div>
@@ -97,4 +126,3 @@ export default function LoginFormView() {
     </div>
   );
 }
-

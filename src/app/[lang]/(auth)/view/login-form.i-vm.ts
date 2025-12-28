@@ -10,4 +10,3 @@ export default interface LoginFormIVM {
   isPending: boolean;
   onSubmit: (values: LoginFormValues) => Promise<void>;
 }
-

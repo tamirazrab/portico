@@ -25,7 +25,10 @@ export default class BetterAuthRepository implements AuthRepo {
         async () => {
           throw new Error("Code exchange not supported in Better Auth");
         },
-        () => new AuthTokenFailure({ reason: "Code exchange not supported in Better Auth" }),
+        () =>
+          new AuthTokenFailure({
+            reason: "Code exchange not supported in Better Auth",
+          }),
       ),
     );
   }
@@ -36,9 +39,14 @@ export default class BetterAuthRepository implements AuthRepo {
     return pipe(
       tryCatch(
         async () => {
-          throw new Error("Token-based profile fetch not supported in Better Auth");
+          throw new Error(
+            "Token-based profile fetch not supported in Better Auth",
+          );
         },
-        () => new AuthProfileFailure({ reason: "Token-based profile fetch not supported in Better Auth" }),
+        () =>
+          new AuthProfileFailure({
+            reason: "Token-based profile fetch not supported in Better Auth",
+          }),
       ),
     );
   }
@@ -55,7 +63,7 @@ export default class BetterAuthRepository implements AuthRepo {
             throw new Error("No session found");
           }
 
-          const user = session.user;
+          const { user } = session;
 
           // Map Better Auth user to AuthProfile
           return {
@@ -87,7 +95,10 @@ export default class BetterAuthRepository implements AuthRepo {
           return new AuthToken({
             accessToken: session.session.token || "",
             expiresIn: session.session.expiresAt
-              ? Math.floor((new Date(session.session.expiresAt).getTime() - Date.now()) / 1000)
+              ? Math.floor(
+                  (new Date(session.session.expiresAt).getTime() - Date.now()) /
+                    1000,
+                )
               : 3600,
             tokenType: "Bearer",
           });
@@ -111,4 +122,3 @@ export default class BetterAuthRepository implements AuthRepo {
     ) as ApiTask<true>;
   }
 }
-

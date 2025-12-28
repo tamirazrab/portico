@@ -7,12 +7,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { toast } from "sonner";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
-import RegisterFormIVM, { RegisterFormValues } from "../view/register-form.i-vm";
+import RegisterFormIVM, {
+  RegisterFormValues,
+} from "../view/register-form.i-vm";
 
 const registerSchema = z
   .object({
     email: z.email({ message: "Invalid email address" }),
-    password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -61,4 +65,3 @@ export default class RegisterFormVM extends BaseVM<RegisterFormIVM> {
     };
   }
 }
-

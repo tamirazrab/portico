@@ -1,12 +1,24 @@
 "use client";
 
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/app/components/ui/card";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/app/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import RegisterFormIVM from "./register-form.i-vm";
+import { Input } from "@/app/components/ui/input";
 import RegisterFormVM from "../vm/register-form.vm";
 
 export default function RegisterFormView() {
@@ -31,7 +43,12 @@ export default function RegisterFormView() {
                     type="button"
                     disabled={vmData.isPending}
                   >
-                    <Image src="/github.svg" alt="Github" width={20} height={20} />
+                    <Image
+                      src="/github.svg"
+                      alt="Github"
+                      width={20}
+                      height={20}
+                    />
                     Continue with Github
                   </Button>
                   <Button
@@ -40,7 +57,12 @@ export default function RegisterFormView() {
                     type="button"
                     disabled={vmData.isPending}
                   >
-                    <Image src="/google.svg" alt="Google" width={20} height={20} />
+                    <Image
+                      src="/google.svg"
+                      alt="Google"
+                      width={20}
+                      height={20}
+                    />
                     Continue with Google
                   </Button>
                 </div>
@@ -96,7 +118,11 @@ export default function RegisterFormView() {
                       </FormItem>
                     )}
                   />
-                  <Button className="w-full" type="submit" disabled={vmData.isPending}>
+                  <Button
+                    className="w-full"
+                    type="submit"
+                    disabled={vmData.isPending}
+                  >
                     Sign up
                   </Button>
                 </div>
@@ -114,4 +140,3 @@ export default function RegisterFormView() {
     </div>
   );
 }
-

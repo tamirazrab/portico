@@ -11,4 +11,3 @@ export default interface RegisterFormIVM {
   isPending: boolean;
   onSubmit: (values: RegisterFormValues) => Promise<void>;
 }
-
