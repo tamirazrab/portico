@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
 
-export const useSubscription = () => {
-  return useQuery({
+export const useSubscription = () =>
+  useQuery({
     queryKey: ["subscription"],
     queryFn: async () => {
       // Note: better-auth may have different API than NodeBase's authClient
@@ -17,7 +17,6 @@ export const useSubscription = () => {
       }
     },
   });
-};
 
 export const useHasActiveSubscription = () => {
   const { data: customerState, isLoading, ...rest } = useSubscription();
@@ -33,4 +32,3 @@ export const useHasActiveSubscription = () => {
     ...rest,
   };
 };
-

@@ -5,4 +5,3 @@ export const credentialLogos: Record<string, string> = {
   OPENAI: "/openai.svg",
   CRON: "/cron.svg",
 };
-

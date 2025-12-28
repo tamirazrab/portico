@@ -9,4 +9,3 @@ export const executionsParams = {
     .withDefault(PAGINATION.DEFAULT_PAGE_SIZE)
     .withOptions({ clearOnDefault: true }),
 };
-

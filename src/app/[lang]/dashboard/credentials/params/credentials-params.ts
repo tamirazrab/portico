@@ -10,4 +10,3 @@ export const credentialsParams = {
     .withOptions({ clearOnDefault: true }),
   search: parseAsString.withDefault("").withOptions({ clearOnDefault: true }),
 };
-
