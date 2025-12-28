@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { FlaskConicalIcon } from "lucide-react";
 import { toast } from "sonner";
 
-export const ExecuteWorkflowButton = ({ workflowId }: { workflowId: string }) => {
+export function ExecuteWorkflowButton({ workflowId }: { workflowId: string }) {
   const trpc = useTRPC();
   const executeWorkflow = useMutation(
     trpc.workflows.execute.mutationOptions({
@@ -34,5 +34,4 @@ export const ExecuteWorkflowButton = ({ workflowId }: { workflowId: string }) =>
       Execute Workflow
     </Button>
   );
-};
-
+}

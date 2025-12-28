@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import WorkflowsContainerView from "./view/workflows-container.view";
 import { LoadingView, ErrorView } from "@/components/entity-components";
+import WorkflowsContainerView from "./view/workflows-container.view";
 
 function WorkflowsError() {
   return <ErrorView message="Error loading workflows..." />;

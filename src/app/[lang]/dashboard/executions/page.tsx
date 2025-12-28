@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import ExecutionsContainerView from "./view/executions-container.view";
 import { LoadingView, ErrorView } from "@/components/entity-components";
+import ExecutionsContainerView from "./view/executions-container.view";
 
 function ExecutionsError() {
   return <ErrorView message="Error loading executions..." />;
@@ -20,4 +20,3 @@ export default async function ExecutionsPage() {
     </ErrorBoundary>
   );
 }
-

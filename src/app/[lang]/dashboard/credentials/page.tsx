@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import CredentialsContainerView from "./view/credentials-container.view";
 import { LoadingView, ErrorView } from "@/components/entity-components";
+import CredentialsContainerView from "./view/credentials-container.view";
 
 function CredentialsError() {
   return <ErrorView message="Error loading credentials..." />;
@@ -20,4 +20,3 @@ export default async function CredentialsPage() {
     </ErrorBoundary>
   );
 }
-
