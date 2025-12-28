@@ -10,8 +10,10 @@ import WorkflowRepository, {
 export default async function getWorkflowUseCase(
   params: GetWorkflowParams,
 ): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
 
   return repo.getOne(params)();
 }
-

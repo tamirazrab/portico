@@ -8,4 +8,3 @@ const createWorkflowParamsSchema = z.object({
 export type CreateWorkflowParams = z.infer<typeof createWorkflowParamsSchema>;
 
 export default createWorkflowParamsSchema;
-

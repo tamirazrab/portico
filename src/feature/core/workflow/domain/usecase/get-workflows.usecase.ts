@@ -11,8 +11,10 @@ import Workflow from "../entity/workflow.entity";
 export default async function getWorkflowsUseCase(
   params: GetWorkflowsParams,
 ): Promise<ApiEither<WithPagination<Workflow>>> {
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
 
   return repo.getMany(params)();
 }
-

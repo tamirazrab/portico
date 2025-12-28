@@ -32,4 +32,3 @@ const updateWorkflowParamsSchema = z.object({
 export type UpdateWorkflowParams = z.infer<typeof updateWorkflowParamsSchema>;
 
 export default updateWorkflowParamsSchema;
-

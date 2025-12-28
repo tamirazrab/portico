@@ -9,8 +9,10 @@ export default async function deleteWorkflowUseCase(params: {
   id: string;
   userId: string;
 }): Promise<ApiEither<true>> {
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
 
   return repo.delete(params)();
 }
-

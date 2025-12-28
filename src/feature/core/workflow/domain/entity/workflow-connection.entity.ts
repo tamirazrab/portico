@@ -1,13 +1,23 @@
-export type WorkflowConnectionParams = Omit<WorkflowConnection, "toPlainObject">;
+export type WorkflowConnectionParams = Omit<
+  WorkflowConnection,
+  "toPlainObject"
+>;
 
 export default class WorkflowConnection {
   readonly id: string;
+
   readonly workflowId: string;
+
   readonly fromNodeId: string;
+
   readonly toNodeId: string;
+
   readonly fromOutput: string;
+
   readonly toInput: string;
+
   readonly createdAt: Date;
+
   readonly updatedAt: Date;
 
   constructor(params: WorkflowConnectionParams) {
@@ -34,4 +44,3 @@ export default class WorkflowConnection {
     };
   }
 }
-

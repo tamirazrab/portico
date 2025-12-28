@@ -10,8 +10,10 @@ export default async function updateWorkflowNameUseCase(params: {
   userId: string;
   name: string;
 }): Promise<ApiEither<import("../entity/workflow.entity").default>> {
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
 
   return repo.updateName(params)();
 }
-

@@ -7,4 +7,3 @@ export default class CreateWorkflowFailure extends BaseFailure<
     super("create-workflow", "workflow", metadata);
   }
 }
-

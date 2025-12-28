@@ -48,11 +48,14 @@ export type WorkflowWithNodesAndConnections = {
 export default interface WorkflowRepository {
   create(params: CreateWorkflowParams): ApiTask<Workflow>;
   update(params: UpdateWorkflowParams): ApiTask<Workflow>;
-  updateName(params: { id: string; userId: string; name: string }): ApiTask<Workflow>;
+  updateName(params: {
+    id: string;
+    userId: string;
+    name: string;
+  }): ApiTask<Workflow>;
   delete(params: { id: string; userId: string }): ApiTask<true>;
   getOne(params: GetWorkflowParams): ApiTask<WorkflowWithNodesAndConnections>;
   getMany(params: GetWorkflowsParams): ApiTask<WithPagination<Workflow>>;
 }
 
 export const workflowRepoKey = "workflowRepoKey";
-

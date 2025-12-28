@@ -10,12 +10,17 @@ export default async function executeWorkflowUseCase(params: {
   userId: string;
 }): Promise<ApiEither<import("../entity/workflow.entity").default>> {
   // First verify the workflow exists and belongs to the user
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
-  
-  const workflowResult = await repo.getOne({ id: params.id, userId: params.userId })();
-  
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
+
+  const workflowResult = await repo.getOne({
+    id: params.id,
+    userId: params.userId,
+  })();
+
   // The actual execution is handled by Inngest, this usecase just validates
   // and triggers the execution. The Inngest integration will handle the rest.
   return workflowResult;
 }
-

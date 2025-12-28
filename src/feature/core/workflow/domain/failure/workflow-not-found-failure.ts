@@ -7,4 +7,3 @@ export default class WorkflowNotFoundFailure extends BaseFailure<
     super("workflow-not-found", "workflow", metadata);
   }
 }
-

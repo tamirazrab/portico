@@ -4,13 +4,21 @@ export type WorkflowNodeParams = Omit<WorkflowNode, "toPlainObject">;
 
 export default class WorkflowNode {
   readonly id: string;
+
   readonly workflowId: string;
+
   readonly name: string;
+
   readonly type: NodeType;
+
   readonly position: { x: number; y: number };
+
   readonly data: Record<string, unknown>;
+
   readonly credentialId?: string;
+
   readonly createdAt: Date;
+
   readonly updatedAt: Date;
 
   constructor(params: WorkflowNodeParams) {
@@ -39,4 +47,3 @@ export default class WorkflowNode {
     };
   }
 }
-

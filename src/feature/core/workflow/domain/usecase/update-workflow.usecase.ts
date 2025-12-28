@@ -9,8 +9,10 @@ import WorkflowRepository, {
 export default async function updateWorkflowUseCase(
   params: UpdateWorkflowParams,
 ): Promise<ApiEither<import("../entity/workflow.entity").default>> {
-  const repo = diResolve<WorkflowRepository>(workflowModuleKey, workflowRepoKey);
+  const repo = diResolve<WorkflowRepository>(
+    workflowModuleKey,
+    workflowRepoKey,
+  );
 
   return repo.update(params)();
 }
-
