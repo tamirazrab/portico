@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import di from "@/bootstrap/di/init-di";
 import * as serverDi from "@/feature/common/features.di";
 

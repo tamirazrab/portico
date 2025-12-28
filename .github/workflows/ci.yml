@@ -24,6 +24,25 @@ jobs:
           
       - name: linting
         run: yarn lint
-
+          
+      - name: run unit tests with coverage
+        run: yarn test:coverage
+          
+      - name: upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          
       - name: build
         run: yarn build
+          
+      - name: install playwright browsers
+        run: npx playwright install --with-deps chromium
+          
+      - name: run e2e tests
+        run: yarn test:e2e
+        env:
+          CI: true
