@@ -1,8 +1,8 @@
 // @ts-ignore - toposort doesn't have types
 import toposort from "toposort";
 import { NonRetriableError } from "inngest";
-import { inngest } from "./client";
 import { createId } from "@paralleldrive/cuid2";
+import { inngest } from "./client";
 
 // Type definitions for topological sort
 export type Node = {
@@ -71,10 +71,9 @@ export const topologicalsort = (
 export const sendWorkflowExecution = async (data: {
   workflowId: string;
   [key: string]: any;
-}) => {
-  return inngest.send({
+}) =>
+  inngest.send({
     name: "workflows/execute.workflow",
     data,
     id: createId(),
   });
-};

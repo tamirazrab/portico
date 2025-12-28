@@ -6,4 +6,3 @@ export const inngest = new Inngest({
   id: "nodebase",
   middleware: [realtimeMiddleware()],
 });
-

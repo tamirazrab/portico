@@ -26,7 +26,9 @@ export const auth = betterAuth({
         checkout({
           products: [
             {
-              productId: process.env.POLAR_PRODUCT_ID || "c67d6306-d99a-472a-b082-633f7a2ea4aa",
+              productId:
+                process.env.POLAR_PRODUCT_ID ||
+                "c67d6306-d99a-472a-b082-633f7a2ea4aa",
               slug: "Nodebase-PRO",
             },
           ],
@@ -38,4 +40,3 @@ export const auth = betterAuth({
     }),
   ],
 });
-

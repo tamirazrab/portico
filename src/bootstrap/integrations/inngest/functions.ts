@@ -1,9 +1,15 @@
 import { NonRetriableError } from "inngest";
-import { inngest } from "./client";
-import { topologicalsort } from "./util";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import { getExecutor } from "@/feature/core/execution/domain/executor/executor-registry";
+import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
+import createExecutionUseCase from "@/feature/core/execution/domain/usecase/create-execution.usecase";
+import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
+import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
+import { isLeft } from "fp-ts/lib/Either";
+import prisma from "@/bootstrap/boundaries/db/prisma";
+import { inngest } from "./client";
+import { topologicalsort } from "./util";
 import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerChannel } from "./channels/manual-trigger";
 import { googleFormTriggerChannel } from "./channels/google-form-trigger";
@@ -14,12 +20,6 @@ import { anthropicChannel } from "./channels/anthropic";
 import { cronTriggerChannel } from "./channels/cron";
 import { DiscordChannel } from "./channels/discord";
 import { SlackChannel } from "./channels/slack";
-import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
-import createExecutionUseCase from "@/feature/core/execution/domain/usecase/create-execution.usecase";
-import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
-import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
-import { isLeft } from "fp-ts/lib/Either";
-import prisma from "@/bootstrap/boundaries/db/prisma";
 import type { Node, Connection } from "./util";
 
 export const executeWorkflow = inngest.createFunction(
@@ -37,7 +37,10 @@ export const executeWorkflow = inngest.createFunction(
 
       // If update fails, we can't do much - this is a fallback
       if (isLeft(result)) {
-        console.error("Failed to update execution status on failure", result.left);
+        console.error(
+          "Failed to update execution status on failure",
+          result.left,
+        );
       }
     },
   },
@@ -58,7 +61,7 @@ export const executeWorkflow = inngest.createFunction(
   },
   async ({ event, step, publish }) => {
     const inngestEventId = event.id;
-    const workflowId = event.data.workflowId;
+    const { workflowId } = event.data;
 
     if (!workflowId || !inngestEventId) {
       throw new NonRetriableError("workflowId is required");
@@ -103,8 +106,8 @@ export const executeWorkflow = inngest.createFunction(
     });
 
     // Sort nodes topologically
-    const sortedNodes = await step.run("prepare-workflow", async () => {
-      return topologicalsort(
+    const sortedNodes = await step.run("prepare-workflow", async () =>
+      topologicalsort(
         workflowResult.nodes.map((n) => ({
           id: n.id,
           workflowId: n.workflowId,
@@ -126,8 +129,8 @@ export const executeWorkflow = inngest.createFunction(
           createdAt: c.createdAt,
           updatedAt: c.updatedAt,
         })) as Connection[],
-      );
-    });
+      ),
+    );
 
     // Use userId we already fetched
     const userId = workflowForUserId;
@@ -166,4 +169,3 @@ export const executeWorkflow = inngest.createFunction(
     };
   },
 );
-
