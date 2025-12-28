@@ -27,4 +27,3 @@ export const nodeComponents = {
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;
-
