@@ -13,4 +13,3 @@ export default async function getCredentialsController(
   await connection();
   return await getCredentialsUseCase(params);
 }
-

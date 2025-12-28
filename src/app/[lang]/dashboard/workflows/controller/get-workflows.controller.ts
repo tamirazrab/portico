@@ -13,4 +13,3 @@ export default async function getWorkflowsController(
   await connection();
   return await getWorkflowsUseCase(params);
 }
-

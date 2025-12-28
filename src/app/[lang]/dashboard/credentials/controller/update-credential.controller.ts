@@ -12,4 +12,3 @@ export default async function updateCredentialController(
   await connection();
   return await updateCredentialUseCase(params);
 }
-

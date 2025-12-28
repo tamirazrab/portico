@@ -12,4 +12,3 @@ export default async function createCredentialController(
   await connection();
   return await createCredentialUseCase(params);
 }
-

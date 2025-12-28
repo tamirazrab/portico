@@ -11,4 +11,3 @@ export default async function deleteWorkflowController(params: {
   await connection();
   return await deleteWorkflowUseCase(params);
 }
-

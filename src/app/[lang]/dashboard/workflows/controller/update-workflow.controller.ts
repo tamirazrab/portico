@@ -12,4 +12,3 @@ export default async function updateWorkflowController(
   await connection();
   return await updateWorkflowUseCase(params);
 }
-

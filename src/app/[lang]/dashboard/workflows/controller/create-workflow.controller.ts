@@ -18,4 +18,3 @@ export default async function createWorkflowController(
   await connection();
   return await createWorkflowUseCase(params);
 }
-

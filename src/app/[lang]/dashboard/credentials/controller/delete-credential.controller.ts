@@ -11,4 +11,3 @@ export default async function deleteCredentialController(params: {
   await connection();
   return await deleteCredentialUseCase(params);
 }
-
