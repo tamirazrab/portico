@@ -45,4 +45,3 @@ export default interface CredentialRepository {
 }
 
 export const credentialRepoKey = "credentialRepoKey";
-

@@ -9,7 +9,9 @@ import CredentialRepository, {
 export default async function updateCredentialUseCase(
   params: UpdateCredentialParams,
 ): Promise<ApiEither<import("../entity/credential.entity").default>> {
-  const repo = diResolve<CredentialRepository>(credentialModuleKey, credentialRepoKey);
+  const repo = diResolve<CredentialRepository>(
+    credentialModuleKey,
+    credentialRepoKey,
+  );
   return repo.update(params)();
 }
-

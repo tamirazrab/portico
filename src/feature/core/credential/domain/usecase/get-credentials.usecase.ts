@@ -11,7 +11,9 @@ import Credential from "../entity/credential.entity";
 export default async function getCredentialsUseCase(
   params: GetCredentialsParams,
 ): Promise<ApiEither<WithPagination<Credential>>> {
-  const repo = diResolve<CredentialRepository>(credentialModuleKey, credentialRepoKey);
+  const repo = diResolve<CredentialRepository>(
+    credentialModuleKey,
+    credentialRepoKey,
+  );
   return repo.getMany(params)();
 }
-

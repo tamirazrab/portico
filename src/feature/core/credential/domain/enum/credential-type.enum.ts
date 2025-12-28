@@ -6,4 +6,3 @@ enum CredentialType {
 }
 
 export default CredentialType;
-

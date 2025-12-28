@@ -4,11 +4,17 @@ export type CredentialParams = Omit<Credential, "toPlainObject">;
 
 export default class Credential {
   readonly id: string;
+
   readonly name: string;
+
   readonly value: string; // Encrypted value
+
   readonly type: CredentialType;
+
   readonly userId: string;
+
   readonly createdAt: Date;
+
   readonly updatedAt: Date;
 
   constructor(params: CredentialParams) {
@@ -33,4 +39,3 @@ export default class Credential {
     };
   }
 }
-

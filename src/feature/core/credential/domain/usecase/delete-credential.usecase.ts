@@ -9,7 +9,9 @@ export default async function deleteCredentialUseCase(params: {
   id: string;
   userId: string;
 }): Promise<ApiEither<true>> {
-  const repo = diResolve<CredentialRepository>(credentialModuleKey, credentialRepoKey);
+  const repo = diResolve<CredentialRepository>(
+    credentialModuleKey,
+    credentialRepoKey,
+  );
   return repo.delete(params)();
 }
-
