@@ -12,4 +12,3 @@ export default class ExecutionsHeaderVM extends BaseVM<ExecutionsHeaderIVM> {
     };
   }
 }
-

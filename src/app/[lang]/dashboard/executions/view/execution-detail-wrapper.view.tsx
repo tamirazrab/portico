@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import ExecutionDetailView from "./execution-detail.view";
 import { LoadingView, ErrorView } from "@/components/entity-components";
+import ExecutionDetailView from "./execution-detail.view";
 
 interface ExecutionDetailWrapperViewProps {
   executionId: string;
@@ -41,4 +41,3 @@ export default function ExecutionDetailWrapperView({
     </ErrorBoundary>
   );
 }
-

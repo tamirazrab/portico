@@ -39,10 +39,10 @@ export default class ExecutionDetailVM extends BaseVM<ExecutionDetailIVM> {
 
     const duration = this.execution.completedAt
       ? Math.round(
-        (this.execution.completedAt.getTime() -
-          this.execution.startedAt.getTime()) /
-        1000,
-      )
+          (this.execution.completedAt.getTime() -
+            this.execution.startedAt.getTime()) /
+            1000,
+        )
       : null;
 
     return {
@@ -55,4 +55,3 @@ export default class ExecutionDetailVM extends BaseVM<ExecutionDetailIVM> {
     };
   }
 }
-

@@ -2,13 +2,28 @@
 
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { CheckCircle2Icon, ClockIcon, Loader2Icon, XCircleIcon } from "lucide-react";
-import ExecutionDetailIVM from "./execution-detail.i-vm";
-import ExecutionDetailVM from "../vm/execution-detail.vm";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  CheckCircle2Icon,
+  ClockIcon,
+  Loader2Icon,
+  XCircleIcon,
+} from "lucide-react";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
+import ExecutionDetailVM from "../vm/execution-detail.vm";
+import ExecutionDetailIVM from "./execution-detail.i-vm";
 
 // Using Prisma types for UI layer
 type Execution = {
@@ -169,4 +184,3 @@ export default function ExecutionDetailView({
     </Card>
   );
 }
-

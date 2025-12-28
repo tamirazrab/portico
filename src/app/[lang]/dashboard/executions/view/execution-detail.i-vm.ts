@@ -21,4 +21,3 @@ export default interface ExecutionDetailIVM {
   showStackTrace: boolean;
   onToggleStackTrace: () => void;
 }
-

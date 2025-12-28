@@ -15,4 +15,3 @@ type Execution = {
 export default interface ExecutionItemIVM {
   execution: Execution;
 }
-

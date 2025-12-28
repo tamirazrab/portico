@@ -22,4 +22,3 @@ export default interface ExecutionsListIVM {
   totalPages: number;
   currentPage: number;
 }
-

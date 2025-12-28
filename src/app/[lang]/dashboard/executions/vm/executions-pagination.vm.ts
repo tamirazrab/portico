@@ -32,4 +32,3 @@ export default class ExecutionsPaginationVM extends BaseVM<ExecutionsPaginationI
     };
   }
 }
-

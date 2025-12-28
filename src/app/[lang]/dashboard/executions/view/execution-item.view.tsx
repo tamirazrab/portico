@@ -2,10 +2,15 @@
 
 import { EntityItem } from "@/components/entity-components";
 import { formatDistanceToNow } from "date-fns";
-import ExecutionItemIVM from "./execution-item.i-vm";
-import ExecutionItemVM from "../vm/execution-item.vm";
-import { CheckCircle2Icon, ClockIcon, Loader2Icon, XCircleIcon } from "lucide-react";
+import {
+  CheckCircle2Icon,
+  ClockIcon,
+  Loader2Icon,
+  XCircleIcon,
+} from "lucide-react";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
+import ExecutionItemVM from "../vm/execution-item.vm";
+import ExecutionItemIVM from "./execution-item.i-vm";
 
 // Using Prisma types for UI layer
 type Execution = {
@@ -77,4 +82,3 @@ export default function ExecutionItemView({
     />
   );
 }
-
