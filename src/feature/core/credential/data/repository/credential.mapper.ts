@@ -30,8 +30,9 @@ export default class CredentialMapper {
     dbCredentials: CredentialDbResponse[],
     total: number,
   ): WithPagination<Credential> {
-    const credentials = dbCredentials.map((cred) => CredentialMapper.toEntity(cred));
+    const credentials = dbCredentials.map((cred) =>
+      CredentialMapper.toEntity(cred),
+    );
     return new WithPagination(credentials, total);
   }
 }
-

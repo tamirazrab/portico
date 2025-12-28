@@ -5,8 +5,6 @@ import ApiTask from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import WorkflowMapper from "./workflow.mapper";
-import { workflowModuleKey } from "../workflow-module-key";
 import featuresDi from "@/feature/common/features.di";
 import WorkflowRepository, {
   CreateWorkflowParams,
@@ -22,6 +20,8 @@ import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import { pipe } from "fp-ts/lib/function";
 import { tryCatch, map, chain } from "fp-ts/lib/TaskEither";
 import { generateSlug } from "random-word-slugs";
+import { workflowModuleKey } from "../workflow-module-key";
+import WorkflowMapper from "./workflow.mapper";
 
 export default class WorkflowRepositoryImpl implements WorkflowRepository {
   private prisma: PrismaClient;
@@ -50,7 +50,8 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
           });
           return WorkflowMapper.toEntity(dbWorkflow);
         },
-        (error) => failureOr(error, new CreateWorkflowFailure({ reason: error })),
+        (error) =>
+          failureOr(error, new CreateWorkflowFailure({ reason: error })),
       ),
     );
   }
@@ -112,12 +113,17 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
 
           return WorkflowMapper.toEntity(result);
         },
-        (error) => failureOr(error, new CreateWorkflowFailure({ reason: error })),
+        (error) =>
+          failureOr(error, new CreateWorkflowFailure({ reason: error })),
       ),
     );
   }
 
-  updateName(params: { id: string; userId: string; name: string }): ApiTask<Workflow> {
+  updateName(params: {
+    id: string;
+    userId: string;
+    name: string;
+  }): ApiTask<Workflow> {
     return pipe(
       tryCatch(
         async () => {
@@ -132,7 +138,8 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
           });
           return WorkflowMapper.toEntity(dbWorkflow);
         },
-        (error) => failureOr(error, new CreateWorkflowFailure({ reason: error })),
+        (error) =>
+          failureOr(error, new CreateWorkflowFailure({ reason: error })),
       ),
     );
   }
@@ -175,7 +182,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
 
           return {
             workflow: WorkflowMapper.toEntity(dbWorkflow),
-            nodes: dbWorkflow.nodes.map((node) => WorkflowMapper.nodeToEntity(node)),
+            nodes: dbWorkflow.nodes.map((node) =>
+              WorkflowMapper.nodeToEntity(node),
+            ),
             connections: dbWorkflow.connections.map((conn) =>
               WorkflowMapper.connectionToEntity(conn),
             ),
@@ -226,4 +235,3 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
     );
   }
 }
-

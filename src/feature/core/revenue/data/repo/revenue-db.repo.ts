@@ -1,7 +1,7 @@
 import { sql } from "@/bootstrap/boundaries/db/db";
 import Revenue from "@/feature/core/revenue/domain/entity/revenue.entity";
-import RevenueRepo from "@/feature/core/revenue/domain/i-repo/revenue.i-repo";
-import postgres from "postgres";
+import type RevenueRepo from "@/feature/core/revenue/domain/i-repo/revenue.i-repo";
+import type postgres from "postgres";
 
 export type RevenueDbResponse = {
   month: string;

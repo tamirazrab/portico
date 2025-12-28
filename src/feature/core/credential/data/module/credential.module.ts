@@ -6,4 +6,3 @@ export default function credentialModule(di: DependencyContainer) {
   di.register(credentialRepoKey, CredentialRepositoryImpl);
   return di;
 }
-

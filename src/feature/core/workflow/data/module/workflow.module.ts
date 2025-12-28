@@ -6,4 +6,3 @@ export default function workflowModule(di: DependencyContainer) {
   di.register(workflowRepoKey, WorkflowRepositoryImpl);
   return di;
 }
-

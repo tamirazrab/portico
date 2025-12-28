@@ -35,11 +35,16 @@ export default class ExecutionMapper {
     });
   }
 
-  static toEntityWithWorkflow(dbExecution: ExecutionDbResponse): ExecutionWithWorkflow {
+  static toEntityWithWorkflow(
+    dbExecution: ExecutionDbResponse,
+  ): ExecutionWithWorkflow {
     const execution = ExecutionMapper.toEntity(dbExecution);
     return {
       ...execution,
-      workflow: dbExecution.workflow || { id: dbExecution.workflowId, name: "" },
+      workflow: dbExecution.workflow || {
+        id: dbExecution.workflowId,
+        name: "",
+      },
     };
   }
 
@@ -53,4 +58,3 @@ export default class ExecutionMapper {
     return new WithPagination(executions, total);
   }
 }
-

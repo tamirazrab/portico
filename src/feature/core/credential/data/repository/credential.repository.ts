@@ -5,8 +5,6 @@ import ApiTask from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import CredentialMapper from "./credential.mapper";
-import { credentialModuleKey } from "../credential-module-key";
 import featuresDi from "@/feature/common/features.di";
 import CredentialRepository, {
   CreateCredentialParams,
@@ -20,6 +18,8 @@ import CredentialType from "@/feature/core/credential/domain/enum/credential-typ
 import { encrypt } from "@/bootstrap/helpers/encryption/encryption";
 import { pipe } from "fp-ts/lib/function";
 import { tryCatch } from "fp-ts/lib/TaskEither";
+import { credentialModuleKey } from "../credential-module-key";
+import CredentialMapper from "./credential.mapper";
 
 export default class CredentialRepositoryImpl implements CredentialRepository {
   private prisma: PrismaClient;
@@ -161,4 +161,3 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
     );
   }
 }
-

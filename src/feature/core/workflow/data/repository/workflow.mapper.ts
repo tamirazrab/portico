@@ -84,4 +84,3 @@ export default class WorkflowMapper {
     return new WithPagination(workflows, total);
   }
 }
-

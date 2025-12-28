@@ -5,8 +5,6 @@ import ApiTask from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import ExecutionMapper from "./execution.mapper";
-import { executionModuleKey } from "../execution-module-key";
 import featuresDi from "@/feature/common/features.di";
 import ExecutionRepository, {
   CreateExecutionParams,
@@ -19,6 +17,8 @@ import ExecutionRepository, {
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
 import { pipe } from "fp-ts/lib/function";
 import { tryCatch } from "fp-ts/lib/TaskEither";
+import { executionModuleKey } from "../execution-module-key";
+import ExecutionMapper from "./execution.mapper";
 
 export default class ExecutionRepositoryImpl implements ExecutionRepository {
   private prisma: PrismaClient;
@@ -28,7 +28,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     this.prisma = di.resolve<PrismaClient>(PRISMA_CLIENT_KEY);
   }
 
-  create(params: CreateExecutionParams): ApiTask<import("../domain/entity/execution.entity").default> {
+  create(
+    params: CreateExecutionParams,
+  ): ApiTask<import("../domain/entity/execution.entity").default> {
     return pipe(
       tryCatch(
         async () => {
@@ -45,7 +47,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     );
   }
 
-  updateStatus(params: UpdateExecutionStatusParams): ApiTask<import("../domain/entity/execution.entity").default> {
+  updateStatus(
+    params: UpdateExecutionStatusParams,
+  ): ApiTask<import("../domain/entity/execution.entity").default> {
     return pipe(
       tryCatch(
         async () => {
@@ -95,9 +99,11 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     );
   }
 
-  updateStatusByInngestEventId(params: {
-    inngestEventId: string;
-  } & Omit<UpdateExecutionStatusParams, "id">): ApiTask<import("../domain/entity/execution.entity").default> {
+  updateStatusByInngestEventId(
+    params: {
+      inngestEventId: string;
+    } & Omit<UpdateExecutionStatusParams, "id">,
+  ): ApiTask<import("../domain/entity/execution.entity").default> {
     return pipe(
       tryCatch(
         async () => {
@@ -120,7 +126,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     );
   }
 
-  getOneByInngestEventId(params: GetExecutionByInngestEventIdParams): ApiTask<import("../domain/entity/execution.entity").default> {
+  getOneByInngestEventId(
+    params: GetExecutionByInngestEventIdParams,
+  ): ApiTask<import("../domain/entity/execution.entity").default> {
     return pipe(
       tryCatch(
         async () => {
@@ -134,7 +142,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     );
   }
 
-  getMany(params: GetExecutionsParams): ApiTask<WithPagination<ExecutionWithWorkflow>> {
+  getMany(
+    params: GetExecutionsParams,
+  ): ApiTask<WithPagination<ExecutionWithWorkflow>> {
     return pipe(
       tryCatch(
         async () => {
@@ -179,4 +189,3 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     );
   }
 }
-
