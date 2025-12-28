@@ -4,7 +4,10 @@ import { getSubscriptionToken, type Realtime } from "@inngest/realtime";
 import { inngest } from "@/bootstrap/integrations/inngest/client";
 import { googleFormTriggerChannel } from "@/bootstrap/integrations/inngest/channels/google-form-trigger";
 
-export type GoogleFormTriggerStatus = Realtime.Token<typeof googleFormTriggerChannel, ["status"]>;
+export type GoogleFormTriggerStatus = Realtime.Token<
+  typeof googleFormTriggerChannel,
+  ["status"]
+>;
 
 export async function fetchGoogleFormTriggerRealtimeToken(): Promise<GoogleFormTriggerStatus> {
   const token = await getSubscriptionToken(inngest, {

@@ -4,13 +4,21 @@ export type ExecutionParams = Omit<Execution, "toPlainObject">;
 
 export default class Execution {
   readonly id: string;
+
   readonly workflowId: string;
+
   readonly status: ExecutionStatus;
+
   readonly error?: string;
+
   readonly errorStack?: string;
+
   readonly startedAt: Date;
+
   readonly completedAt?: Date;
+
   readonly inngestEventId: string;
+
   readonly output?: Record<string, unknown>;
 
   constructor(params: ExecutionParams) {
@@ -39,4 +47,3 @@ export default class Execution {
     };
   }
 }
-

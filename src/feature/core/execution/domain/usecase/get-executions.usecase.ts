@@ -11,7 +11,9 @@ import ExecutionRepository, {
 export default async function getExecutionsUseCase(
   params: GetExecutionsParams,
 ): Promise<ApiEither<WithPagination<ExecutionWithWorkflow>>> {
-  const repo = diResolve<ExecutionRepository>(executionModuleKey, executionRepoKey);
+  const repo = diResolve<ExecutionRepository>(
+    executionModuleKey,
+    executionRepoKey,
+  );
   return repo.getMany(params)();
 }
-

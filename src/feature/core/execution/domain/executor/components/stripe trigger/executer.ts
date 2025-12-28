@@ -4,29 +4,26 @@ import { stripeTriggerChannel } from "@/bootstrap/integrations/inngest/channels/
 type StripeTriggerData = Record<string, unknown>;
 
 export const stripeTriggerExecuter: NodeExecuter<StripeTriggerData> = async ({
-    nodeId,
-    context,
-    step,
-    publish,
+  nodeId,
+  context,
+  step,
+  publish,
 }) => {
+  await publish(
+    stripeTriggerChannel().status({
+      nodeId,
+      status: "loading",
+    }),
+  );
 
-    await publish(
-        stripeTriggerChannel().status({
-            nodeId,
-            status: "loading",
-        })
-    );
+  const result = await step.run("stripe-trigger", async () => context);
 
+  await publish(
+    stripeTriggerChannel().status({
+      nodeId,
+      status: "success",
+    }),
+  );
 
-
-    const result = await step.run("stripe-trigger", async () => context);
-
-    await publish(
-        stripeTriggerChannel().status({
-            nodeId,
-            status: "success",
-        })
-    );
-
-    return result;
-}
+  return result;
+};

@@ -32,4 +32,3 @@ export const getExecutor = (type: NodeType): NodeExecuter => {
 
   return executer;
 };
-

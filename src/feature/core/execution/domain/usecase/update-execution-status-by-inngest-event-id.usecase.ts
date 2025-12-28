@@ -13,7 +13,9 @@ export default async function updateExecutionStatusByInngestEventIdUseCase(param
   errorStack?: string;
   output?: Record<string, unknown>;
 }): Promise<ApiEither<import("../entity/execution.entity").default>> {
-  const repo = diResolve<ExecutionRepository>(executionModuleKey, executionRepoKey);
+  const repo = diResolve<ExecutionRepository>(
+    executionModuleKey,
+    executionRepoKey,
+  );
   return repo.updateStatusByInngestEventId(params)();
 }
-

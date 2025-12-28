@@ -7,7 +7,7 @@ import { inngest } from "@/inngest/client";
 export type GeminiToken = Realtime.Token<typeof geminiChannel, ["status"]>;
 
 export async function fetchGeminiRealtimeToken(): Promise<GeminiToken> {
- const token = await getSubscriptionToken(inngest ,{
+  const token = await getSubscriptionToken(inngest, {
     channel: geminiChannel(),
     topics: ["status"],
   });

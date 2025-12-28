@@ -41,13 +41,18 @@ export type ExecutionWithWorkflow = Execution & {
 export default interface ExecutionRepository {
   create(params: CreateExecutionParams): ApiTask<Execution>;
   updateStatus(params: UpdateExecutionStatusParams): ApiTask<Execution>;
-  updateStatusByInngestEventId(params: {
-    inngestEventId: string;
-  } & Omit<UpdateExecutionStatusParams, "id">): ApiTask<Execution>;
+  updateStatusByInngestEventId(
+    params: {
+      inngestEventId: string;
+    } & Omit<UpdateExecutionStatusParams, "id">,
+  ): ApiTask<Execution>;
   getOne(params: GetExecutionParams): ApiTask<ExecutionWithWorkflow>;
-  getOneByInngestEventId(params: GetExecutionByInngestEventIdParams): ApiTask<Execution>;
-  getMany(params: GetExecutionsParams): ApiTask<WithPagination<ExecutionWithWorkflow>>;
+  getOneByInngestEventId(
+    params: GetExecutionByInngestEventIdParams,
+  ): ApiTask<Execution>;
+  getMany(
+    params: GetExecutionsParams,
+  ): ApiTask<WithPagination<ExecutionWithWorkflow>>;
 }
 
 export const executionRepoKey = "executionRepoKey";
-

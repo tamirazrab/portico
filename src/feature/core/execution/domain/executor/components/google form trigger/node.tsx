@@ -1,40 +1,36 @@
 import { NodeProps } from "@xyflow/react";
 import { memo, useState } from "react";
 import { BaseTriggerNode } from "@/components/nodes/base-trigger-node";
-import { GoogleFormTriggerDialog } from "./dialog";
-import { fetchGoogleFormTriggerRealtimeToken } from "./actions";
 import { useNodeStatus } from "@/hooks/use-node-status";
 import { GOOGLE_FORM_TRIGGER_CHANNEL_NAME } from "@/bootstrap/integrations/inngest/channels/google-form-trigger";
+import { GoogleFormTriggerDialog } from "./dialog";
+import { fetchGoogleFormTriggerRealtimeToken } from "./actions";
 
+export const GoogleFormTrigger = memo((props: NodeProps) => {
+  const [DialogOpen, setDialogOpen] = useState(false);
 
-export const GoogleFormTrigger = memo((props:NodeProps)=>{
+  const nodeStatus = useNodeStatus({
+    nodeId: props.id,
+    channel: GOOGLE_FORM_TRIGGER_CHANNEL_NAME,
+    topic: "status",
+    refreshToken: fetchGoogleFormTriggerRealtimeToken,
+  });
 
-    const [DialogOpen,setDialogOpen] = useState(false);
+  const handleOpenSettings = () => {
+    setDialogOpen(true);
+  };
 
-    const nodeStatus = useNodeStatus({
-        nodeId: props.id,
-        channel: GOOGLE_FORM_TRIGGER_CHANNEL_NAME,
-        topic: "status",
-        refreshToken: fetchGoogleFormTriggerRealtimeToken,
-    });
-
-    
-    const handleOpenSettings = () =>{
-        setDialogOpen(true);
-    }
-
-    return (
-        <>
-        <GoogleFormTriggerDialog Open={DialogOpen} onOpenChange={setDialogOpen} />
-        <BaseTriggerNode 
+  return (
+    <>
+      <GoogleFormTriggerDialog Open={DialogOpen} onOpenChange={setDialogOpen} />
+      <BaseTriggerNode
         {...props}
         icon="/googleform.svg"
         name="Google Form"
         status={nodeStatus}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}
-        />
-        </>
-    )
+      />
+    </>
+  );
 });
-

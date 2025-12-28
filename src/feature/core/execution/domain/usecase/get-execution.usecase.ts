@@ -10,7 +10,9 @@ import ExecutionRepository, {
 export default async function getExecutionUseCase(
   params: GetExecutionParams,
 ): Promise<ApiEither<ExecutionWithWorkflow>> {
-  const repo = diResolve<ExecutionRepository>(executionModuleKey, executionRepoKey);
+  const repo = diResolve<ExecutionRepository>(
+    executionModuleKey,
+    executionRepoKey,
+  );
   return repo.getOne(params)();
 }
-

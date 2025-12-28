@@ -9,7 +9,9 @@ import ExecutionRepository, {
 export default async function updateExecutionStatusUseCase(
   params: UpdateExecutionStatusParams,
 ): Promise<ApiEither<import("../entity/execution.entity").default>> {
-  const repo = diResolve<ExecutionRepository>(executionModuleKey, executionRepoKey);
+  const repo = diResolve<ExecutionRepository>(
+    executionModuleKey,
+    executionRepoKey,
+  );
   return repo.updateStatus(params)();
 }
-
