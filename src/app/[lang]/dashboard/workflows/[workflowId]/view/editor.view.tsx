@@ -5,8 +5,8 @@ import "@xyflow/react/dist/style.css";
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "../components/add-node-button";
 import { ExecuteWorkflowButton } from "../components/execute-workflow-button";
-import EditorIVM from "./editor.i-vm";
 import EditorVM from "../vm/editor.vm";
+import EditorIVM from "./editor.i-vm";
 
 interface EditorViewProps {
   workflowId: string;
@@ -55,4 +55,3 @@ export default function EditorView({
     </div>
   );
 }
-

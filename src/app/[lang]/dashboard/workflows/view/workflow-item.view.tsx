@@ -1,11 +1,11 @@
 "use client";
 
 import { BaseView } from "reactvvm";
-import WorkflowItemIVM from "./workflow-item.i-vm";
-import WorkflowItemVM from "../vm/workflow-item.vm";
 import { EntityItem } from "@/components/entity-components";
 import { WorkflowIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import WorkflowItemVM from "../vm/workflow-item.vm";
+import WorkflowItemIVM from "./workflow-item.i-vm";
 
 // Using Prisma types for UI layer
 type Workflow = {
@@ -30,7 +30,8 @@ export default function WorkflowItemView({ workflow }: WorkflowItemViewProps) {
       title={vmData.workflow.name}
       subtitle={
         <>
-          Updated {formatDistanceToNow(vmData.workflow.updatedAt, { addSuffix: true })}{" "}
+          Updated{" "}
+          {formatDistanceToNow(vmData.workflow.updatedAt, { addSuffix: true })}{" "}
           &bull; Created{" "}
           {formatDistanceToNow(vmData.workflow.createdAt, { addSuffix: true })}
         </>
@@ -45,4 +46,3 @@ export default function WorkflowItemView({ workflow }: WorkflowItemViewProps) {
     />
   );
 }
-

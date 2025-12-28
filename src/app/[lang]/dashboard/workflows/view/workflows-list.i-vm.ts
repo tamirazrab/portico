@@ -14,4 +14,3 @@ export default interface WorkflowsListIVM {
   totalPages: number;
   currentPage: number;
 }
-

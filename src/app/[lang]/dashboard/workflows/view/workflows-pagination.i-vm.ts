@@ -4,4 +4,3 @@ export default interface WorkflowsPaginationIVM {
   isDisabled: boolean;
   onPageChange: (page: number) => void;
 }
-

@@ -43,4 +43,3 @@ export default class WorkflowsSearchVM extends BaseVM<WorkflowsSearchIVM> {
     };
   }
 }
-

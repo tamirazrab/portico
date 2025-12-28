@@ -15,6 +15,7 @@ interface EditorHeaderVMProps {
 
 export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
   private workflowId: string;
+
   private initialName: string;
 
   constructor({ workflowId, initialName }: EditorHeaderVMProps) {
@@ -122,4 +123,3 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
     };
   }
 }
-

@@ -12,4 +12,3 @@ export default interface WorkflowItemIVM {
   onRemove: () => void;
   isRemoving: boolean;
 }
-

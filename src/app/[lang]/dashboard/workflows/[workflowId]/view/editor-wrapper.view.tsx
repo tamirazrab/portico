@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { LoadingView, ErrorView } from "@/components/entity-components";
 import EditorView from "./editor.view";
 import EditorHeaderView from "./editor-header.view";
-import { LoadingView, ErrorView } from "@/components/entity-components";
 
 interface EditorWrapperViewProps {
   workflowId: string;
@@ -40,7 +40,9 @@ function EditorContent({ workflowId }: EditorWrapperViewProps) {
   );
 }
 
-export default function EditorWrapperView({ workflowId }: EditorWrapperViewProps) {
+export default function EditorWrapperView({
+  workflowId,
+}: EditorWrapperViewProps) {
   return (
     <ErrorBoundary fallback={<EditorError />}>
       <Suspense fallback={<EditorLoading />}>
@@ -49,4 +51,3 @@ export default function EditorWrapperView({ workflowId }: EditorWrapperViewProps
     </ErrorBoundary>
   );
 }
-

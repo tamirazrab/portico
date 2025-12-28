@@ -3,4 +3,3 @@ export default interface WorkflowsSearchIVM {
   onSearchChange: (value: string) => void;
   placeholder: string;
 }
-

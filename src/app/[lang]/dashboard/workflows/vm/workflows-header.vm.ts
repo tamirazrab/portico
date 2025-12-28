@@ -1,8 +1,8 @@
 "use client";
 
 import { BaseVM } from "reactvvm";
-import CreateWorkflowButtonVM from "./create-workflow-button.vm";
 import WorkflowsHeaderIVM from "../view/workflows-header.i-vm";
+import CreateWorkflowButtonVM from "./create-workflow-button.vm";
 
 export default class WorkflowsHeaderVM extends BaseVM<WorkflowsHeaderIVM> {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- useVM is a hook method
@@ -20,4 +20,3 @@ export default class WorkflowsHeaderVM extends BaseVM<WorkflowsHeaderIVM> {
     };
   }
 }
-

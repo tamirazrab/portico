@@ -13,7 +13,9 @@ export default class WorkflowsListVM extends BaseVM<WorkflowsListIVM> {
     const trpc = useTRPC();
     const [params] = useQueryStates(workflowsParams);
 
-    const workflows = useSuspenseQuery(trpc.workflows.getMany.queryOptions(params));
+    const workflows = useSuspenseQuery(
+      trpc.workflows.getMany.queryOptions(params),
+    );
 
     return {
       workflows: workflows.data.items,
@@ -24,4 +26,3 @@ export default class WorkflowsListVM extends BaseVM<WorkflowsListIVM> {
     };
   }
 }
-

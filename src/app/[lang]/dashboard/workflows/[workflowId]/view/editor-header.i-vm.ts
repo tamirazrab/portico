@@ -10,4 +10,3 @@ export default interface EditorHeaderIVM {
   isSavingName: boolean;
   isSavingWorkflow: boolean;
 }
-

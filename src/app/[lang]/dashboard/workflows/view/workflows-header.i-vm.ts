@@ -6,4 +6,3 @@ export default interface WorkflowsHeaderIVM {
   onCreate: () => void;
   disabled: boolean;
 }
-

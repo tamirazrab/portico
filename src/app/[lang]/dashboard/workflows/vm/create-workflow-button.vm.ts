@@ -20,7 +20,9 @@ export default class CreateWorkflowButtonVM extends BaseVM<ButtonVm> {
       trpc.workflows.create.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Workflow ${data.name} created successfully`);
-          queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+          queryClient.invalidateQueries(
+            trpc.workflows.getMany.queryOptions({}),
+          );
           router.push(`/workflows/${data.id}`);
         },
         onError: (error) => {
@@ -43,4 +45,3 @@ export default class CreateWorkflowButtonVM extends BaseVM<ButtonVm> {
     };
   }
 }
-

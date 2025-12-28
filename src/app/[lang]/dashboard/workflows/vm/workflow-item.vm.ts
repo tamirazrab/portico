@@ -32,7 +32,9 @@ export default class WorkflowItemVM extends BaseVM<WorkflowItemIVM> {
       trpc.workflows.remove.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Workflow "${data.name}" removed successfully`);
-          queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+          queryClient.invalidateQueries(
+            trpc.workflows.getMany.queryOptions({}),
+          );
           queryClient.invalidateQueries(
             trpc.workflows.getOne.queryFilter({ id: data.id }),
           );
@@ -52,4 +54,3 @@ export default class WorkflowItemVM extends BaseVM<WorkflowItemIVM> {
     };
   }
 }
-

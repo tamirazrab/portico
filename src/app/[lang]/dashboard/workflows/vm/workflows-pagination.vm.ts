@@ -33,4 +33,3 @@ export default class WorkflowsPaginationVM extends BaseVM<WorkflowsPaginationIVM
     };
   }
 }
-

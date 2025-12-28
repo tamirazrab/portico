@@ -1,8 +1,8 @@
 "use client";
 
-import WorkflowsSearchIVM from "./workflows-search.i-vm";
-import WorkflowsSearchVM from "../vm/workflows-search.vm";
 import { EntitySearch } from "@/components/entity-components";
+import WorkflowsSearchVM from "../vm/workflows-search.vm";
+import WorkflowsSearchIVM from "./workflows-search.i-vm";
 
 export default function WorkflowsSearchView() {
   const vm = new WorkflowsSearchVM();
@@ -16,4 +16,3 @@ export default function WorkflowsSearchView() {
     />
   );
 }
-

@@ -1,8 +1,8 @@
 "use client";
 
-import WorkflowsListIVM from "./workflows-list.i-vm";
-import WorkflowsListVM from "../vm/workflows-list.vm";
 import { EntityList, EmptyView } from "@/components/entity-components";
+import WorkflowsListVM from "../vm/workflows-list.vm";
+import WorkflowsListIVM from "./workflows-list.i-vm";
 import WorkflowItemView from "./workflow-item.view";
 
 export default function WorkflowsListView() {
@@ -10,7 +10,9 @@ export default function WorkflowsListView() {
   const vmData = vm.useVM();
 
   if (vmData.isEmpty) {
-    return <EmptyView message="No workflows found. Get started by creating one." />;
+    return (
+      <EmptyView message="No workflows found. Get started by creating one." />
+    );
   }
 
   return (

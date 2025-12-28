@@ -1,4 +1,10 @@
-import type { Node, Edge, NodeChange, EdgeChange, Connection } from "@xyflow/react";
+import type {
+  Node,
+  Edge,
+  NodeChange,
+  EdgeChange,
+  Connection,
+} from "@xyflow/react";
 
 export default interface EditorIVM {
   nodes: Node[];
@@ -11,4 +17,3 @@ export default interface EditorIVM {
   hasManualTrigger: boolean;
   workflowId: string;
 }
-
