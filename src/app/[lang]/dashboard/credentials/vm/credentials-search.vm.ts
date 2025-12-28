@@ -43,4 +43,3 @@ export default class CredentialsSearchVM extends BaseVM<CredentialsSearchIVM> {
     };
   }
 }
-

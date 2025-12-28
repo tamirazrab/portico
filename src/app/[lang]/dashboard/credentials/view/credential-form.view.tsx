@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import CredentialFormIVM from "./credential-form.i-vm";
+
+import { Button } from "@/app/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/app/components/ui/card";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/app/components/ui/form";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/app/components/ui/select";
+import { Input } from "postcss";
 import CredentialFormVM from "../vm/credential-form.vm";
 
 interface CredentialFormViewProps {
@@ -100,11 +100,7 @@ export default function CredentialFormView({
                   <FormItem>
                     <FormLabel>API Key</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        placeholder="****..."
-                      />
+                      <Input {...field} type="password" placeholder="****..." />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,10 +108,7 @@ export default function CredentialFormView({
               />
 
               <div className="flex gap-4">
-                <Button
-                  type="submit"
-                  disabled={vmData.isSubmitting}
-                >
+                <Button type="submit" disabled={vmData.isSubmitting}>
                   {vmData.isEdit ? "Update" : "Create"}
                 </Button>
                 <Button type="button" variant="outline" asChild>
@@ -131,4 +124,3 @@ export default function CredentialFormView({
     </>
   );
 }
-

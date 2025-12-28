@@ -13,4 +13,3 @@ export default interface CredentialItemIVM {
   onRemove: () => void;
   isRemoving: boolean;
 }
-

@@ -32,4 +32,3 @@ export default class CredentialsPaginationVM extends BaseVM<CredentialsPaginatio
     };
   }
 }
-

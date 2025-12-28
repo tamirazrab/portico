@@ -2,10 +2,10 @@
 
 import { EntityItem } from "@/components/entity-components";
 import { formatDistanceToNow } from "date-fns";
-import CredentialItemIVM from "./credential-item.i-vm";
-import CredentialItemVM from "../vm/credential-item.vm";
 import Image from "next/image";
+import CredentialItemVM from "../vm/credential-item.vm";
 import { credentialLogos } from "../utils/credential-logos";
+import CredentialItemIVM from "./credential-item.i-vm";
 
 // Using Prisma types for UI layer
 type Credential = {
@@ -26,7 +26,8 @@ export default function CredentialItemView({
 }: CredentialItemViewProps) {
   const vm = new CredentialItemVM(credential);
   const vmData = vm.useVM();
-  const Logo = credentialLogos[credential.type as keyof typeof credentialLogos] || "🔑";
+  const Logo =
+    credentialLogos[credential.type as keyof typeof credentialLogos] || "🔑";
 
   return (
     <EntityItem
@@ -35,14 +36,23 @@ export default function CredentialItemView({
       subtitle={
         <>
           Updated{" "}
-          {formatDistanceToNow(vmData.credential.updatedAt, { addSuffix: true })}{" "}
+          {formatDistanceToNow(vmData.credential.updatedAt, {
+            addSuffix: true,
+          })}{" "}
           &bull; Created{" "}
-          {formatDistanceToNow(vmData.credential.createdAt, { addSuffix: true })}
+          {formatDistanceToNow(vmData.credential.createdAt, {
+            addSuffix: true,
+          })}
         </>
       }
       image={
         <div className="size-8 flex items-center justify-center">
-          <Image src={Logo} alt={vmData.credential.type} width={20} height={20} />
+          <Image
+            src={Logo}
+            alt={vmData.credential.type}
+            width={20}
+            height={20}
+          />
         </div>
       }
       onRemove={vmData.onRemove}
@@ -50,4 +60,3 @@ export default function CredentialItemView({
     />
   );
 }
-

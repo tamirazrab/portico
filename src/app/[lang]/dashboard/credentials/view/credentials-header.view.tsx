@@ -1,8 +1,8 @@
 "use client";
 
 import { EntityHeader } from "@/components/entity-components";
-import CredentialsHeaderIVM from "./credentials-header.i-vm";
 import CredentialsHeaderVM from "../vm/credentials-header.vm";
+import CredentialsHeaderIVM from "./credentials-header.i-vm";
 
 export default function CredentialsHeaderView() {
   const vm = new CredentialsHeaderVM();
@@ -18,4 +18,3 @@ export default function CredentialsHeaderView() {
     />
   );
 }
-

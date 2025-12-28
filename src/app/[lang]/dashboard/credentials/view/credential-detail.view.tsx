@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import CredentialFormView from "./credential-form.view";
 import { LoadingView, ErrorView } from "@/components/entity-components";
+import CredentialFormView from "./credential-form.view";
 
 interface CredentialDetailViewProps {
   credentialId: string;
@@ -39,4 +39,3 @@ export default function CredentialDetailView({
     </ErrorBoundary>
   );
 }
-

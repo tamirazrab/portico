@@ -33,7 +33,9 @@ export default class CredentialItemVM extends BaseVM<CredentialItemIVM> {
       trpc.credentials.remove.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Credential "${data.name}" removed successfully`);
-          queryClient.invalidateQueries(trpc.credentials.getMany.queryOptions({}));
+          queryClient.invalidateQueries(
+            trpc.credentials.getMany.queryOptions({}),
+          );
           queryClient.invalidateQueries(
             trpc.credentials.getOne.queryFilter({ id: data.id }),
           );
@@ -53,4 +55,3 @@ export default class CredentialItemVM extends BaseVM<CredentialItemIVM> {
     };
   }
 }
-

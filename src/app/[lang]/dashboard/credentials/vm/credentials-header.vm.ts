@@ -15,4 +15,3 @@ export default class CredentialsHeaderVM extends BaseVM<CredentialsHeaderIVM> {
     };
   }
 }
-

@@ -3,4 +3,3 @@ export default interface CredentialsSearchIVM {
   onSearchChange: (value: string) => void;
   placeholder: string;
 }
-

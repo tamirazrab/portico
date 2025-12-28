@@ -5,4 +5,3 @@ export default interface CredentialsHeaderIVM {
   createButtonHref: string;
   disabled: boolean;
 }
-

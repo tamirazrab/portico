@@ -32,4 +32,3 @@ export default class CredentialsListVM extends BaseVM<CredentialsListIVM> {
     };
   }
 }
-

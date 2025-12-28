@@ -9,8 +9,10 @@ import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
-import CredentialFormIVM, { CredentialFormValues } from "../view/credential-form.i-vm";
 import { CredentialType } from "@/generated/prisma/enums";
+import CredentialFormIVM, {
+  CredentialFormValues,
+} from "../view/credential-form.i-vm";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -80,7 +82,9 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
       trpc.credentials.create.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Credential ${data.name} created successfully`);
-          queryClient.invalidateQueries(trpc.credentials.getMany.queryOptions({}));
+          queryClient.invalidateQueries(
+            trpc.credentials.getMany.queryOptions({}),
+          );
           router.push(`/credentials/${data.id}`);
         },
         onError: (error) => {
@@ -93,7 +97,9 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
       trpc.credentials.update.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Credential ${data.name} saved successfully`);
-          queryClient.invalidateQueries(trpc.credentials.getMany.queryOptions({}));
+          queryClient.invalidateQueries(
+            trpc.credentials.getMany.queryOptions({}),
+          );
           queryClient.invalidateQueries(
             trpc.credentials.getOne.queryFilter({ id: data.id }),
           );
@@ -125,4 +131,3 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
     };
   }
 }
-

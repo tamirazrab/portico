@@ -4,4 +4,3 @@ export default interface CredentialsPaginationIVM {
   isDisabled: boolean;
   onPageChange: (page: number) => void;
 }
-

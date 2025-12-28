@@ -15,4 +15,3 @@ export default interface CredentialsListIVM {
   totalPages: number;
   currentPage: number;
 }
-
