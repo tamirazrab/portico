@@ -9,12 +9,14 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/app/components/ui/select";
 import { Input } from "postcss";
 import CredentialFormVM from "../vm/credential-form.vm";
+import { useParams } from "next/navigation";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 
 interface CredentialFormViewProps {
   initialData?: {
     id?: string;
     name: string;
-    type: string;
+    type: CredentialType;
     value: string;
   };
 }
