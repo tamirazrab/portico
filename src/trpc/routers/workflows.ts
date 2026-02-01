@@ -1,12 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import createWorkflowController from "@/app/[lang]/dashboard/workflows/controller/create-workflow.controller";
-import getWorkflowsController from "@/app/[lang]/dashboard/workflows/controller/get-workflows.controller";
-import getWorkflowController from "@/app/[lang]/dashboard/workflows/controller/get-workflow.controller";
-import updateWorkflowController from "@/app/[lang]/dashboard/workflows/controller/update-workflow.controller";
-import updateWorkflowNameController from "@/app/[lang]/dashboard/workflows/controller/update-workflow-name.controller";
-import deleteWorkflowController from "@/app/[lang]/dashboard/workflows/controller/delete-workflow.controller";
-import executeWorkflowController from "@/app/[lang]/dashboard/workflows/controller/execute-workflow.controller";
+import createWorkflowController from "@/server/controllers/workflows/create-workflow.controller";
+import getWorkflowsController from "@/server/controllers/workflows/get-workflows.controller";
+import getWorkflowController from "@/server/controllers/workflows/get-workflow.controller";
+import updateWorkflowController from "@/server/controllers/workflows/update-workflow.controller";
+import updateWorkflowNameController from "@/server/controllers/workflows/update-workflow-name.controller";
+import deleteWorkflowController from "@/server/controllers/workflows/delete-workflow.controller";
+import executeWorkflowController from "@/server/controllers/workflows/execute-workflow.controller";
 import { isLeft } from "fp-ts/lib/Either";
 import {
   createTRPCRouter,

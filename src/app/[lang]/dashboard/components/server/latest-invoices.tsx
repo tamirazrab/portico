@@ -1,4 +1,4 @@
-import latestInvoicesController from "@/app/[lang]/dashboard/controller/latest-invoices.controller";
+import latestInvoicesController from "@/server/controllers/dashboard/latest-invoices.controller";
 import CreateRandomInvoiceButtonVM from "@/app/[lang]/dashboard/vm/create-random-invoice-button-vm";
 import Button from "@/app/components/button/button";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";

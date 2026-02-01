@@ -14,5 +14,5 @@ export default async function getExecutionUseCase(
     executionModuleKey,
     executionRepoKey,
   );
-  return repo.getOne(params)();
+  return repo.getOne(params);
 }

@@ -1,12 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
-import createCredentialController from "@/app/[lang]/dashboard/credentials/controller/create-credential.controller";
-import getCredentialsController from "@/app/[lang]/dashboard/credentials/controller/get-credentials.controller";
-import updateCredentialController from "@/app/[lang]/dashboard/credentials/controller/update-credential.controller";
-import deleteCredentialController from "@/app/[lang]/dashboard/credentials/controller/delete-credential.controller";
-import getCredentialController from "@/app/[lang]/dashboard/credentials/controller/get-credential.controller";
-import getCredentialsByTypeController from "@/app/[lang]/dashboard/credentials/controller/get-credentials-by-type.controller";
+import createCredentialController from "@/server/controllers/credentials/create-credential.controller";
+import getCredentialsController from "@/server/controllers/credentials/get-credentials.controller";
+import updateCredentialController from "@/server/controllers/credentials/update-credential.controller";
+import deleteCredentialController from "@/server/controllers/credentials/delete-credential.controller";
+import getCredentialController from "@/server/controllers/credentials/get-credential.controller";
+import getCredentialsByTypeController from "@/server/controllers/credentials/get-credentials-by-type.controller";
 import { isLeft } from "fp-ts/lib/Either";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 import {

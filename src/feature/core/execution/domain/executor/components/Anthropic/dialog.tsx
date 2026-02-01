@@ -34,7 +34,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { CredentialType } from "@/generated/prisma/enums";
-import { useCredentislByType } from "@/features/credentals/hooks/use-credentials";
+import { useCredentialsByType } from "@/hooks/use-credentials";
 
 // export const AVAILABLE_MODELS = [
 //     "gemini-2.5-flash",
@@ -74,7 +74,7 @@ export function AnthropicDialog({
   defaultValues = {},
 }: Props) {
   const { data: credentials, isLoading: isLoadingCredentials } =
-    useCredentislByType(CredentialType.ANTHROPIC);
+    useCredentialsByType(CredentialType.ANTHROPIC);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

@@ -70,7 +70,8 @@ export const topologicalsort = (
 
 export const sendWorkflowExecution = async (data: {
   workflowId: string;
-  [key: string]: any;
+  initialData?: Record<string, unknown>;
+  [key: string]: unknown;
 }) =>
   inngest.send({
     name: "workflows/execute.workflow",

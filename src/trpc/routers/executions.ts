@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
-import getExecutionsController from "@/app/[lang]/dashboard/executions/controller/get-executions.controller";
-import getExecutionController from "@/app/[lang]/dashboard/executions/controller/get-execution.controller";
+import getExecutionsController from "@/server/controllers/executions/get-executions.controller";
+import getExecutionController from "@/server/controllers/executions/get-execution.controller";
 import { isLeft } from "fp-ts/lib/Either";
 import { createTRPCRouter, protectedProcedure } from "../init";
 

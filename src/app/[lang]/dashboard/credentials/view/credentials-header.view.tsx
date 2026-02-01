@@ -1,20 +1,18 @@
 "use client";
 
 import { EntityHeader } from "@/components/entity-components";
-import CredentialsHeaderVM from "../vm/credentials-header.vm";
-import CredentialsHeaderIVM from "./credentials-header.i-vm";
+import { useParams } from "next/navigation";
 
 export default function CredentialsHeaderView() {
-  const vm = new CredentialsHeaderVM();
-  const vmData = vm.useVM();
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
 
   return (
     <EntityHeader
-      title={vmData.title}
-      description={vmData.description}
-      newButtonHref={vmData.createButtonHref}
-      newButtonLabel={vmData.createButtonLabel}
-      disabled={vmData.disabled}
+      title="Credentials"
+      description="Create and Manage your Credentials"
+      newButtonHref={`/${lang}/dashboard/credentials/new`}
+      newButtonLabel="Create Credential"
     />
   );
 }

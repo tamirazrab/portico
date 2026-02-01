@@ -13,5 +13,5 @@ export default async function deleteCredentialUseCase(params: {
     credentialModuleKey,
     credentialRepoKey,
   );
-  return repo.delete(params)();
+  return repo.delete(params);
 }

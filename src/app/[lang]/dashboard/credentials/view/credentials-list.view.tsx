@@ -1,15 +1,13 @@
 "use client";
 
 import { EntityList, EmptyView } from "@/components/entity-components";
-import CredentialsListVM from "../vm/credentials-list.vm";
-import CredentialsListIVM from "./credentials-list.i-vm";
+import { useCredentials } from "../hooks/use-credentials-list";
 import CredentialItemView from "./credential-item.view";
 
 export default function CredentialsListView() {
-  const vm = new CredentialsListVM();
-  const vmData = vm.useVM();
+  const { credentials, isEmpty } = useCredentials();
 
-  if (vmData.isEmpty) {
+  if (isEmpty) {
     return (
       <EmptyView message="No Credentials found. Get started by creating one." />
     );
@@ -17,7 +15,7 @@ export default function CredentialsListView() {
 
   return (
     <EntityList
-      items={vmData.credentials}
+      items={credentials}
       getKey={(credential) => credential.id}
       renderItem={(credential) => (
         <CredentialItemView credential={credential} />

@@ -6,8 +6,7 @@ import { useState, useEffect, useTransition, useRef } from "react";
  * @param onFinished Callback to run after action
  * @returns transitioned action to run and is pending variable
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const useServerAction = <P extends any[], R>(
+export const useServerAction = <P extends unknown[], R>(
   action: (...args: P) => Promise<R>,
   onFinished?: (_: R | undefined) => void,
 ): [(...args: P) => Promise<R | undefined>, boolean, R | undefined] => {

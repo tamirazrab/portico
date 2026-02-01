@@ -60,7 +60,7 @@ export const geminiExecuter: NodeExecuter<GeminiData> = async ({
     const result = await getCredentialUseCase({
       id: data.credentialId!,
       userId,
-    })();
+    });
 
     if (isLeft(result)) {
       await publish(

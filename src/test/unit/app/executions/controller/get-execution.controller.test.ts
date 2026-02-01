@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import getExecutionController from "@/app/[lang]/dashboard/executions/controller/get-execution.controller";
+import getExecutionController from "@/server/controllers/executions/get-execution.controller";
 import getExecutionUseCase from "@/feature/core/execution/domain/usecase/get-execution.usecase";
 import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
 import { right, left } from "fp-ts/lib/Either";

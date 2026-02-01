@@ -2,6 +2,7 @@ export default interface EditorHeaderIVM {
   workflowName: string;
   isEditingName: boolean;
   editedName: string;
+  inputRef: React.RefObject<HTMLInputElement>;
   onNameChange: (name: string) => void;
   onStartEditing: () => void;
   onSaveName: () => Promise<void>;

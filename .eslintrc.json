@@ -15,6 +15,40 @@
       "rules": {
         "react/jsx-props-no-spreading": "off"
       }      
+    },
+    {
+      "files": ["src/feature/**/*"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@/app/**"],
+                "message": "Feature layer cannot import from app layer. Use @/components, @/lib, or @/server instead.",
+                "allowTypeImports": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/components/**/*"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@/feature/**", "@/app/**"],
+                "message": "Components should be pure UI. Do not import from feature or app layers.",
+                "allowTypeImports": true
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
     "settings": {
@@ -58,6 +92,24 @@
     "no-promise-executor-return": "off",
     "@typescript-eslint/no-shadow": "off",
     "react/require-default-props": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@/app/components/ui",
+            "message": "Use @/components/ui instead. UI components should be in components directory."
+          }
+        ],
+        "patterns": [
+          {
+            "group": ["@/app/**"],
+            "message": "Feature layer cannot import from app layer. Use @/components, @/lib, or @/server instead.",
+            "allowTypeImports": true
+          }
+        ]
+      }
+    ],
     "import/order": [
       "error",
       {

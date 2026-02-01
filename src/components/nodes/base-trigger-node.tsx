@@ -4,6 +4,7 @@ import { type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { memo, type ReactNode, useCallback } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
 import { BaseHandle } from "@/components/react-flow/base-handle";
 import { WorkflowNode } from "@/components/workflow-node";
@@ -59,14 +60,34 @@ export const BaseTriggerNode = memo(
         try {
           if (onBeforeDelete) await onBeforeDelete();
         } catch (err) {
-          // Don't prevent deletion if the pre-delete hook fails
-          // eslint-disable-next-line no-console
-          console.error("onBeforeDelete failed:", err);
+          // Don't prevent deletion if the pre-delete hook fails, but log the error
+          // for monitoring and debugging purposes
+          try {
+            Sentry.captureException(err, {
+              tags: {
+                component: "BaseTriggerNode",
+                action: "onBeforeDelete",
+              },
+              extra: {
+                nodeId: id,
+                nodeName: name,
+              },
+            });
+          } catch (sentryError) {
+            // Fallback: log to console if Sentry fails
+            // eslint-disable-next-line no-console
+            console.error("Failed to report error to Sentry:", sentryError);
+          }
+          // Log to console in development
+          if (process.env.NODE_ENV === "development") {
+            // eslint-disable-next-line no-console
+            console.error("onBeforeDelete failed:", err);
+          }
         } finally {
           handleDelete();
         }
       })();
-    }, [handleDelete, onBeforeDelete]);
+    }, [handleDelete, onBeforeDelete, id, name]);
 
     return (
       <WorkflowNode

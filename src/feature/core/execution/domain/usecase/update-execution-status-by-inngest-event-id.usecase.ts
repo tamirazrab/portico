@@ -17,5 +17,5 @@ export default async function updateExecutionStatusByInngestEventIdUseCase(param
     executionModuleKey,
     executionRepoKey,
   );
-  return repo.updateStatusByInngestEventId(params)();
+  return repo.updateStatusByInngestEventId(params);
 }

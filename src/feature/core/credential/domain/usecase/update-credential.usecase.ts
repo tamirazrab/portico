@@ -13,5 +13,5 @@ export default async function updateCredentialUseCase(
     credentialModuleKey,
     credentialRepoKey,
   );
-  return repo.update(params)();
+  return repo.update(params);
 }

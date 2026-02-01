@@ -4,6 +4,7 @@ import type {
   NodeChange,
   EdgeChange,
   Connection,
+  ReactFlowInstance,
 } from "@xyflow/react";
 
 export default interface EditorIVM {
@@ -12,7 +13,7 @@ export default interface EditorIVM {
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (params: Connection) => void;
-  onInit: (instance: any) => void;
+  onInit: (instance: ReactFlowInstance) => void;
   colorMode: "dark" | "light";
   hasManualTrigger: boolean;
   workflowId: string;

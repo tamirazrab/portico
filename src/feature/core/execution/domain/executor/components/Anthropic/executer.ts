@@ -1,11 +1,12 @@
-import type { NodeExecuter } from "@/features/executions/types";
+import type { NodeExecuter } from "@/feature/core/execution/domain/types/executor-types";
 import { NonRetriableError } from "inngest";
 import { generateText } from "ai";
 import handlebars from "handlebars";
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { anthropicChannel } from "@/inngest/channels/anthropic";
-import prisma from "@/lib/db";
-import { decrypt } from "@/lib/encryption";
+import { anthropicChannel } from "@/bootstrap/integrations/inngest/channels/anthropic";
+import getCredentialUseCase from "@/feature/core/credential/domain/usecase/get-credential.usecase";
+import { decrypt } from "@/bootstrap/helpers/encryption/encryption";
+import { isLeft } from "fp-ts/lib/Either";
 
 handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -59,7 +60,7 @@ export const anthropicExecuter: NodeExecuter<AnthropicData> = async ({
     const result = await getCredentialUseCase({
       id: data.credentialId!,
       userId,
-    })();
+    });
 
     if (isLeft(result)) {
       await publish(

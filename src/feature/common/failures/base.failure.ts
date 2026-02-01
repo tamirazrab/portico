@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import { isServer } from "@/bootstrap/helpers/global-helpers";
+import { logger } from "@/bootstrap/helpers/logging/logger";
 
 /**
  * This class can be used as a base class for creating custom failure classes.
@@ -42,11 +41,11 @@ export default abstract class BaseFailure<META_DATA> {
 
   /* -------------------------------------------------------------------------- */
   private logHandler() {
-    if (isServer) {
-      console.log(
-        `Error happened in ${this.namespace} namespace, langKey is: ${this.message}, metadata: ${JSON.stringify(this.metadata)}`,
-      );
-    }
+    logger.failure(
+      this.message,
+      this.namespace,
+      this.metadata as Record<string, unknown> | undefined,
+    );
   }
   /* -------------------------------------------------------------------------- */
 }

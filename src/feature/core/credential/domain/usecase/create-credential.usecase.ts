@@ -13,5 +13,5 @@ export default async function createCredentialUseCase(
     credentialModuleKey,
     credentialRepoKey,
   );
-  return repo.create(params)();
+  return repo.create(params);
 }

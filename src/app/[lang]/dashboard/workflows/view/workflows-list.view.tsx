@@ -1,15 +1,13 @@
 "use client";
 
 import { EntityList, EmptyView } from "@/components/entity-components";
-import WorkflowsListVM from "../vm/workflows-list.vm";
-import WorkflowsListIVM from "./workflows-list.i-vm";
+import { useWorkflows } from "../hooks/use-workflows";
 import WorkflowItemView from "./workflow-item.view";
 
 export default function WorkflowsListView() {
-  const vm = new WorkflowsListVM();
-  const vmData = vm.useVM();
+  const { workflows, isEmpty } = useWorkflows();
 
-  if (vmData.isEmpty) {
+  if (isEmpty) {
     return (
       <EmptyView message="No workflows found. Get started by creating one." />
     );
@@ -17,7 +15,7 @@ export default function WorkflowsListView() {
 
   return (
     <EntityList
-      items={vmData.workflows}
+      items={workflows}
       getKey={(workflow) => workflow.id}
       renderItem={(workflow) => <WorkflowItemView workflow={workflow} />}
       emptyView={<EmptyView message="No workflows found." />}

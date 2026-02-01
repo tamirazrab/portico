@@ -1,25 +1,19 @@
 import "server-only";
-import { PrismaClient } from "@/generated/prisma/client";
+import type { PrismaClient } from "@/generated/prisma/client";
 import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
-import ApiTask from "@/feature/common/data/api-task";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import featuresDi from "@/feature/common/features.di";
-import CredentialRepository, {
-  CreateCredentialParams,
-  UpdateCredentialParams,
-  GetCredentialsParams,
-  GetCredentialParams,
-  GetCredentialsByTypeParams,
-} from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
-import Credential from "@/feature/core/credential/domain/entity/credential.entity";
-import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import type Credential from "@/feature/core/credential/domain/entity/credential.entity";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 import { encrypt } from "@/bootstrap/helpers/encryption/encryption";
-import { pipe } from "fp-ts/lib/function";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
 import { credentialModuleKey } from "../credential-module-key";
 import CredentialMapper from "./credential.mapper";
+import type { CreateCredentialParams, UpdateCredentialParams, GetCredentialParams, GetCredentialsParams, GetCredentialsByTypeParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
 
 export default class CredentialRepositoryImpl implements CredentialRepository {
   private prisma: PrismaClient;
@@ -29,135 +23,117 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
     this.prisma = di.resolve<PrismaClient>(PRISMA_CLIENT_KEY);
   }
 
-  create(params: CreateCredentialParams): ApiTask<Credential> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbCredential = await this.prisma.credentials.create({
-            data: {
-              name: params.name,
-              value: encrypt(params.value), // Encrypt before storing
-              type: params.type as CredentialType,
-              userId: params.userId,
-            },
-          });
-          return CredentialMapper.toEntity(dbCredential);
+  async create(params: CreateCredentialParams): Promise<ApiEither<Credential>> {
+    try {
+      const dbCredential = await this.prisma.credentials.create({
+        data: {
+          name: params.name,
+          value: encrypt(params.value),
+          type: params.type as CredentialType,
+          userId: params.userId,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+      });
+      return right(CredentialMapper.toEntity(dbCredential));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  update(params: UpdateCredentialParams): ApiTask<Credential> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbCredential = await this.prisma.credentials.update({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-            data: {
-              name: params.name,
-              value: encrypt(params.value), // Encrypt before storing
-              type: params.type as CredentialType,
-            },
-          });
-          return CredentialMapper.toEntity(dbCredential);
+  async update(params: UpdateCredentialParams): Promise<ApiEither<Credential>> {
+    try {
+      const dbCredential = await this.prisma.credentials.update({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+        data: {
+          name: params.name,
+          value: encrypt(params.value),
+          type: params.type as CredentialType,
+        },
+      });
+      return right(CredentialMapper.toEntity(dbCredential));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  delete(params: { id: string; userId: string }): ApiTask<true> {
-    return pipe(
-      tryCatch(
-        async () => {
-          await this.prisma.credentials.delete({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-          });
-          return true;
+  async delete(params: { id: string; userId: string }): Promise<ApiEither<true>> {
+    try {
+      await this.prisma.credentials.delete({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+      });
+      return right(true);
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  getOne(params: GetCredentialParams): ApiTask<Credential> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbCredential = await this.prisma.credentials.findUniqueOrThrow({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-          });
-          return CredentialMapper.toEntity(dbCredential);
+  async getOne(params: GetCredentialParams): Promise<ApiEither<Credential>> {
+    try {
+      const dbCredential = await this.prisma.credentials.findUniqueOrThrow({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+      });
+      return right(CredentialMapper.toEntity(dbCredential));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  getMany(params: GetCredentialsParams): ApiTask<WithPagination<Credential>> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const page = params.page || 1;
-          const pageSize = params.pageSize || 10;
-          const skip = (page - 1) * pageSize;
+  async getMany(params: GetCredentialsParams): Promise<ApiEither<WithPagination<Credential>>> {
+    try {
+      const page = params.page || 1;
+      const pageSize = params.pageSize || 10;
+      const skip = (page - 1) * pageSize;
 
-          const where = {
-            userId: params.userId,
-            ...(params.search && {
-              name: {
-                contains: params.search,
-                mode: "insensitive" as const,
-              },
-            }),
-          };
+      const where = {
+        userId: params.userId,
+        ...(params.search && {
+          name: {
+            contains: params.search,
+            mode: "insensitive" as const,
+          },
+        }),
+      };
 
-          const [dbCredentials, total] = await Promise.all([
-            this.prisma.credentials.findMany({
-              where,
-              skip,
-              take: pageSize,
-              orderBy: {
-                createdAt: "desc",
-              },
-            }),
-            this.prisma.credentials.count({ where }),
-          ]);
+      const [dbCredentials, total] = await Promise.all([
+        this.prisma.credentials.findMany({
+          where,
+          skip,
+          take: pageSize,
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        this.prisma.credentials.count({ where }),
+      ]);
 
-          return CredentialMapper.toPaginatedEntity(dbCredentials, total);
-        },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+      return right(CredentialMapper.toPaginatedEntity(dbCredentials, total));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  getByType(params: GetCredentialsByTypeParams): ApiTask<Credential[]> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbCredentials = await this.prisma.credentials.findMany({
-            where: {
-              userId: params.userId,
-              type: params.type as CredentialType,
-            },
-            orderBy: {
-              updatedAt: "desc",
-            },
-          });
-          return dbCredentials.map((cred) => CredentialMapper.toEntity(cred));
+  async getByType(params: GetCredentialsByTypeParams): Promise<ApiEither<Credential[]>> {
+    try {
+      const dbCredentials = await this.prisma.credentials.findMany({
+        where: {
+          userId: params.userId,
+          type: params.type as CredentialType,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+        orderBy: {
+          updatedAt: "desc",
+        },
+      });
+      return right(dbCredentials.map((cred) => CredentialMapper.toEntity(cred)));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 }

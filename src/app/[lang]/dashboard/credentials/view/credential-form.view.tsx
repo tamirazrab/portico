@@ -9,12 +9,14 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/app/components/ui/select";
 import { Input } from "postcss";
 import CredentialFormVM from "../vm/credential-form.vm";
+import { useParams } from "next/navigation";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 
 interface CredentialFormViewProps {
   initialData?: {
     id?: string;
     name: string;
-    type: string;
+    type: CredentialType;
     value: string;
   };
 }
@@ -24,6 +26,8 @@ export default function CredentialFormView({
 }: CredentialFormViewProps) {
   const vm = new CredentialFormVM(initialData);
   const vmData = vm.useVM();
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
 
   return (
     <>
@@ -112,7 +116,7 @@ export default function CredentialFormView({
                   {vmData.isEdit ? "Update" : "Create"}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                  <Link href="/credentials" prefetch>
+                  <Link href={`/${lang}/dashboard/credentials`} prefetch>
                     Cancel
                   </Link>
                 </Button>

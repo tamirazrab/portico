@@ -1,21 +1,19 @@
 "use client";
 
 import { EntityHeader } from "@/components/entity-components";
-import WorkflowsHeaderVM from "../vm/workflows-header.vm";
-import WorkflowsHeaderIVM from "./workflows-header.i-vm";
+import CreateWorkflowButtonVM from "../vm/create-workflow-button.vm";
 
 export default function WorkflowsHeaderView() {
-  const vm = new WorkflowsHeaderVM();
-  const vmData = vm.useVM();
+  const createButtonVM = new CreateWorkflowButtonVM();
+  const createButtonData = createButtonVM.useVM();
 
   return (
     <EntityHeader
-      title={vmData.title}
-      description={vmData.description}
-      onNew={vmData.onCreate}
-      newButtonLabel={vmData.createButtonLabel}
-      disabled={vmData.disabled}
-      isCreating={vmData.isCreating}
+      title="Workflows"
+      description="Create and Manage your Workflows"
+      onNew={createButtonData.onClick}
+      newButtonLabel={createButtonData.props.title}
+      isCreating={createButtonData.props.isDisable}
     />
   );
 }

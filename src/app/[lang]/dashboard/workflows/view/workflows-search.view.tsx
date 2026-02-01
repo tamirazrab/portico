@@ -1,18 +1,19 @@
 "use client";
 
 import { EntitySearch } from "@/components/entity-components";
-import WorkflowsSearchVM from "../vm/workflows-search.vm";
-import WorkflowsSearchIVM from "./workflows-search.i-vm";
+import { useQueryStates } from "nuqs";
+import { workflowsParams } from "../params/workflows-params";
+import { useSearchDebounce } from "../../hooks/use-search-debounce";
 
 export default function WorkflowsSearchView() {
-  const vm = new WorkflowsSearchVM();
-  const vmData = vm.useVM();
+  const [params, setParams] = useQueryStates(workflowsParams);
+  const { searchValue, onSearchChange } = useSearchDebounce(params, setParams);
 
   return (
     <EntitySearch
-      value={vmData.searchValue}
-      onChange={vmData.onSearchChange}
-      placeholder={vmData.placeholder}
+      value={searchValue}
+      onChange={onSearchChange}
+      placeholder="Search Workflows"
     />
   );
 }

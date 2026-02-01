@@ -15,5 +15,5 @@ export default async function getWorkflowUseCase(
     workflowRepoKey,
   );
 
-  return repo.getOne(params)();
+  return repo.getOne(params);
 }

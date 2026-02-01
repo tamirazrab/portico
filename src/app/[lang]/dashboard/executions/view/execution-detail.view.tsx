@@ -1,83 +1,54 @@
 "use client";
 
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/app/components/ui/card";
+import { Button } from "@/app/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/app/components/ui/collapsible";
 import {
-  CheckCircle2Icon,
-  ClockIcon,
-  Loader2Icon,
-  XCircleIcon,
-} from "lucide-react";
-import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
-import ExecutionDetailVM from "../vm/execution-detail.vm";
-import ExecutionDetailIVM from "./execution-detail.i-vm";
-
-// Using Prisma types for UI layer
-type Execution = {
-  id: string;
-  workflowId: string;
-  status: string;
-  error: string | null;
-  errorStack: string | null;
-  startedAt: Date;
-  completedAt: Date | null;
-  inngestEventId: string;
-  output: unknown;
-  workflow: {
-    id: string;
-    name: string;
-  };
-};
+  formatStatus,
+  getStatusIcon,
+  calculateDuration,
+} from "@/lib/execution-utils";
+import type { Execution } from "../types";
 
 interface ExecutionDetailViewProps {
   execution: Execution;
 }
 
-function getStatusIcon(status: string) {
-  switch (status) {
-    case ExecutionStatus.SUCCESS:
-      return <CheckCircle2Icon className="size-5 text-green-600" />;
-    case ExecutionStatus.FAILED:
-      return <XCircleIcon className="size-5 text-red-600" />;
-    case ExecutionStatus.RUNNING:
-      return <Loader2Icon className="size-5 text-blue-600 animate-spin" />;
-    default:
-      return <ClockIcon className="size-5 text-muted-foreground" />;
-  }
-}
-
-function formatStatus(status: string) {
-  return status.charAt(0) + status.slice(1).toLowerCase();
-}
-
 export default function ExecutionDetailView({
   execution,
 }: ExecutionDetailViewProps) {
-  const vm = new ExecutionDetailVM(execution);
-  const vmData = vm.useVM();
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
+  const [showStackTrace, setShowStackTrace] = useState(false);
+
+  const duration = calculateDuration(
+    execution.startedAt,
+    execution.completedAt,
+  );
 
   return (
     <Card className="shadow-none">
       <CardHeader>
         <div className="flex items-center gap-3">
-          {getStatusIcon(vmData.execution.status)}
+          {getStatusIcon(execution.status)}
           <div>
-            <CardTitle>{formatStatus(vmData.execution.status)}</CardTitle>
+            <CardTitle>{formatStatus(execution.status)}</CardTitle>
             <CardDescription>
-              Execution for {vmData.execution.workflow.name}
+              Execution for {execution.workflow.name}
             </CardDescription>
           </div>
         </div>
@@ -91,42 +62,42 @@ export default function ExecutionDetailView({
             <Link
               prefetch
               className="text-sm hover:underline text-primary"
-              href={`/workflows/${vmData.execution.workflowId}`}
+              href={`/${lang}/dashboard/workflows/${execution.workflowId}`}
             >
-              {vmData.execution.workflow.name}
+              {execution.workflow.name}
             </Link>
           </div>
 
           <div>
             <p className="text-sm font-medium text-muted-foreground">Status</p>
-            <p className="text-sm">{formatStatus(vmData.execution.status)}</p>
+            <p className="text-sm">{formatStatus(execution.status)}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Started</p>
             <p className="text-sm">
-              {formatDistanceToNow(vmData.execution.startedAt, {
+              {formatDistanceToNow(execution.startedAt, {
                 addSuffix: true,
               })}
             </p>
           </div>
-          {vmData.execution.completedAt ? (
+          {execution.completedAt ? (
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 Completed
               </p>
               <p className="text-sm">
-                {formatDistanceToNow(vmData.execution.completedAt, {
+                {formatDistanceToNow(execution.completedAt, {
                   addSuffix: true,
                 })}
               </p>
             </div>
           ) : null}
-          {vmData.duration !== null ? (
+          {duration !== null ? (
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 Duration
               </p>
-              <p className="text-sm">{vmData.duration} seconds</p>
+              <p className="text-sm">{duration} seconds</p>
             </div>
           ) : null}
 
@@ -134,24 +105,24 @@ export default function ExecutionDetailView({
             <p className="text-sm font-medium text-muted-foreground">
               Inngest Event ID
             </p>
-            <p className="text-sm">{vmData.execution.inngestEventId}</p>
+            <p className="text-sm">{execution.inngestEventId}</p>
           </div>
         </div>
-        {vmData.execution.error && (
+        {execution.error && (
           <div className="mt-6 p-4 bg-red-50 rounded-md space-y-3">
             <div>
               <p className="text-sm font-medium text-red-900 mb-2">
                 Error Message
               </p>
               <p className="text-sm text-red-800 font-mono">
-                {vmData.execution.error}
+                {execution.error}
               </p>
             </div>
 
-            {vmData.execution.errorStack && (
+            {execution.errorStack && (
               <Collapsible
-                open={vmData.showStackTrace}
-                onOpenChange={vmData.onToggleStackTrace}
+                open={showStackTrace}
+                onOpenChange={setShowStackTrace}
               >
                 <CollapsibleTrigger asChild>
                   <Button
@@ -159,12 +130,12 @@ export default function ExecutionDetailView({
                     size="sm"
                     className="text-red-900 hover:bg-red-100"
                   >
-                    {vmData.showStackTrace ? "Hide" : "Show"} Stack Trace
+                    {showStackTrace ? "Hide" : "Show"} Stack Trace
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <pre className="text-xs text-red-800 p-2 mt-2 rounded bg-red-100 overflow-auto">
-                    {vmData.execution.errorStack}
+                    {execution.errorStack}
                   </pre>
                 </CollapsibleContent>
               </Collapsible>
@@ -172,11 +143,13 @@ export default function ExecutionDetailView({
           </div>
         )}
 
-        {vmData.execution.output && (
+        {execution.output !== null && (
           <div className="mt-6 p-4 bg-muted rounded-md">
             <p className="text-sm font-medium mb-2">Output</p>
             <pre className="text-xs font-mono overflow-auto">
-              {JSON.stringify(vmData.execution.output, null, 2)}
+              {typeof execution.output === "string"
+                ? execution.output
+                : JSON.stringify(execution.output, null, 2)}
             </pre>
           </div>
         )}

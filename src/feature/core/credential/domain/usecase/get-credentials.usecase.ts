@@ -15,5 +15,5 @@ export default async function getCredentialsUseCase(
     credentialModuleKey,
     credentialRepoKey,
   );
-  return repo.getMany(params)();
+  return repo.getMany(params);
 }

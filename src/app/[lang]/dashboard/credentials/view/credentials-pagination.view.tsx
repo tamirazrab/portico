@@ -1,18 +1,19 @@
 "use client";
 
 import { EntityPagination } from "@/components/entity-components";
-import CredentialsPaginationVM from "../vm/credentials-pagination.vm";
+import { useCredentials } from "../hooks/use-credentials-list";
+import { usePagination } from "../../hooks/use-pagination";
 
 export default function CredentialsPaginationView() {
-  const vm = new CredentialsPaginationVM();
-  const vmData = vm.useVM();
+  const { page, totalPages, isLoading, params, setParams } = useCredentials();
+  const handlePageChange = usePagination(params, setParams);
 
   return (
     <EntityPagination
-      page={vmData.page}
-      totalPages={vmData.totalPages}
-      onPageChange={vmData.onPageChange}
-      disabled={vmData.isDisabled}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
+      disabled={isLoading}
     />
   );
 }

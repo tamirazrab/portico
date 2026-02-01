@@ -7,7 +7,7 @@ export default class Credential {
 
   readonly name: string;
 
-  readonly value: string; // Encrypted value
+  readonly value: string; 
 
   readonly type: CredentialType;
 

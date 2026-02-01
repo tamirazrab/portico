@@ -1,18 +1,19 @@
 "use client";
 
 import { EntityPagination } from "@/components/entity-components";
-import WorkflowsPaginationVM from "../vm/workflows-pagination.vm";
+import { useWorkflows } from "../hooks/use-workflows";
+import { usePagination } from "../../hooks/use-pagination";
 
 export default function WorkflowsPaginationView() {
-  const vm = new WorkflowsPaginationVM();
-  const vmData = vm.useVM();
+  const { page, totalPages, isLoading, params, setParams } = useWorkflows();
+  const handlePageChange = usePagination(params, setParams);
 
   return (
     <EntityPagination
-      page={vmData.page}
-      totalPages={vmData.totalPages}
-      onPageChange={vmData.onPageChange}
-      disabled={vmData.isDisabled}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
+      disabled={isLoading}
     />
   );
 }
