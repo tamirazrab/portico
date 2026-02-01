@@ -2,12 +2,11 @@ import { NonRetriableError } from "inngest";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import { getExecutor } from "@/feature/core/execution/domain/executor/executor-registry";
-import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
+import getWorkflowByIdForExecutionUseCase from "@/feature/core/workflow/domain/usecase/get-workflow-by-id-for-execution.usecase";
 import createExecutionUseCase from "@/feature/core/execution/domain/usecase/create-execution.usecase";
 import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
 import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
 import { isLeft } from "fp-ts/lib/Either";
-import prisma from "@/bootstrap/boundaries/db/prisma";
 import { inngest } from "./client";
 import { topologicalsort } from "./util";
 import { httpRequestChannel } from "./channels/http-request";
@@ -27,13 +26,17 @@ export const executeWorkflow = inngest.createFunction(
     id: "execute-workflow",
     retries: 1,
     onFailure: async ({ event, step }) => {
-      const inngestEventId = event.data.event.id;
+      const inngestEventId = event.data.event?.id;
+      if (!inngestEventId) {
+        console.error("Cannot update execution status: missing inngestEventId");
+        return;
+      }
       const result = await updateExecutionStatusByInngestEventIdUseCase({
         inngestEventId,
         status: ExecutionStatus.FAILED,
         error: event.data.error.message || "Unknown error",
         errorStack: event.data.error.stack || "",
-      })();
+      });
 
       // If update fails, we can't do much - this is a fallback
       if (isLeft(result)) {
@@ -68,20 +71,10 @@ export const executeWorkflow = inngest.createFunction(
     }
 
     // Get workflow with nodes and connections
-    // First get workflow to find userId, then get full workflow
-    const workflowForUserId = await step.run("find-user-id", async () => {
-      const wf = await prisma.workflow.findUniqueOrThrow({
-        where: { id: workflowId },
-        select: { userId: true },
-      });
-      return wf.userId;
-    });
-
+    // Use execution-specific usecase that doesn't require userId check
+    // (workflow was already validated when created/executed by user)
     const workflowResult = await step.run("get-workflow", async () => {
-      const result = await getWorkflowUseCase({
-        id: workflowId,
-        userId: workflowForUserId,
-      })();
+      const result = await getWorkflowByIdForExecutionUseCase(workflowId);
 
       if (isLeft(result)) {
         throw new NonRetriableError("Workflow not found");
@@ -96,7 +89,7 @@ export const executeWorkflow = inngest.createFunction(
       const result = await createExecutionUseCase({
         workflowId,
         inngestEventId,
-      })();
+      });
 
       if (isLeft(result)) {
         throw new NonRetriableError("Failed to create execution");
@@ -132,8 +125,8 @@ export const executeWorkflow = inngest.createFunction(
       ),
     );
 
-    // Use userId we already fetched
-    const userId = workflowForUserId;
+    // Get userId from workflow entity
+    const userId = workflowResult.workflow.userId;
 
     let context = event.data.initialData || {};
 
@@ -156,7 +149,7 @@ export const executeWorkflow = inngest.createFunction(
         inngestEventId,
         status: ExecutionStatus.SUCCESS,
         output: context,
-      })();
+      });
 
       if (isLeft(result)) {
         throw new Error("Failed to finalize execution");

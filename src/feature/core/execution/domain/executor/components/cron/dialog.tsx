@@ -31,7 +31,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useCredentislByType } from "@/features/credentals/hooks/use-credentials";
+import { useCredentialsByType } from "@/hooks/use-credentials";
 import { CredentialType } from "@/generated/prisma/enums";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -71,7 +71,7 @@ export function CronTriggerDialog({
   defaultValues = {},
 }: Props) {
   const { data: credentials, isLoading: isLoadingCredentials } =
-    useCredentislByType(CredentialType.CRON);
+    useCredentialsByType(CredentialType.CRON);
 
   const params = useParams();
   const workflowId = params.workflowId as string;
@@ -109,7 +109,7 @@ export function CronTriggerDialog({
     }
   }, [Open, defaultValues, form, workflowId]);
 
-  const watchVariableName = form.watch("cronExpression") || "myAPI";
+  const _watchVariableName = form.watch("cronExpression") || "myAPI";
   // const valid = validateCronExpression(watchVariableName);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {

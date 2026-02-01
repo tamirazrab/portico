@@ -1,6 +1,6 @@
 "use client";
 
-import createInvoiceController from "@/app/[lang]/dashboard/controller/create-invoice.controller";
+import createInvoiceController from "@/server/controllers/dashboard/create-invoice.controller";
 import ButtonVm from "@/app/components/button/button.i-vm";
 import { useServerAction } from "@/bootstrap/helpers/hooks/use-server-action";
 import useThrottle from "@/bootstrap/helpers/hooks/use-throttle";

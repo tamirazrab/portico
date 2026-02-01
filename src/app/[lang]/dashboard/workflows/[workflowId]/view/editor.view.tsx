@@ -1,17 +1,17 @@
 "use client";
 
 import { ReactFlow, Background, Controls, MiniMap, Panel } from "@xyflow/react";
+import type { Node, Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "../components/add-node-button";
 import { ExecuteWorkflowButton } from "../components/execute-workflow-button";
 import EditorVM from "../vm/editor.vm";
-import EditorIVM from "./editor.i-vm";
 
 interface EditorViewProps {
   workflowId: string;
-  initialNodes: any[];
-  initialEdges: any[];
+  initialNodes: Node[];
+  initialEdges: Edge[];
 }
 
 export default function EditorView({

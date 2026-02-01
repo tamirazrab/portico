@@ -12,8 +12,8 @@ export async function createorupdatecron(
     userId: string;
     timezone?: string;
   },
-  id?: string,
-) {
+  _id?: string,
+): Promise<void> {
   const credentialResult = await getCredentialUseCase({
     id: data.credentialId,
     userId: data.userId,
@@ -49,10 +49,20 @@ export async function createorupdatecron(
   // Validate shape and look for a cron entry whose `name` exactly matches workflowId
   const entries = Array.isArray(jsonData?.data) ? jsonData.data : [];
 
+  interface CronEntry {
+    id?: string;
+    name?: string;
+  }
+
   const matching =
-    entries.find((item: any) => {
-      const name = item?.name;
-      return typeof name === "string" && name === data.workflowId;
+    entries.find((item: unknown): item is CronEntry => {
+      return (
+        typeof item === "object" &&
+        item !== null &&
+        "name" in item &&
+        typeof (item as CronEntry).name === "string" &&
+        (item as CronEntry).name === data.workflowId
+      );
     }) || null;
 
   if (matching) {
@@ -83,7 +93,7 @@ export async function removeCron(data: {
   credentialId: string;
   workflowId: string;
   userId: string;
-}) {
+}): Promise<void> {
   try {
     const credentialResult = await getCredentialUseCase({
       id: data.credentialId,
@@ -97,9 +107,8 @@ export async function removeCron(data: {
 
     const credentialValue = credentialResult.right;
 
-    const url = `https://app.fastcron.com/api/v1/cron_list?token=${
-      credentialValue.value
-    }`;
+    const url = `https://app.fastcron.com/api/v1/cron_list?token=${credentialValue.value
+      }`;
     const dataReturned = await fetch(url);
 
     if (!dataReturned.ok) {
@@ -114,10 +123,20 @@ export async function removeCron(data: {
     const jsonData = await dataReturned.json();
     const entries = Array.isArray(jsonData?.data) ? jsonData.data : [];
 
+    interface CronEntry {
+      id?: string;
+      name?: string;
+    }
+
     const matching =
-      entries.find((item: any) => {
-        const name = item?.name;
-        return typeof name === "string" && name === data.workflowId;
+      entries.find((item: unknown): item is CronEntry => {
+        return (
+          typeof item === "object" &&
+          item !== null &&
+          "name" in item &&
+          typeof (item as CronEntry).name === "string" &&
+          (item as CronEntry).name === data.workflowId
+        );
       }) || null;
 
     if (!matching) {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import createCredentialController from "@/app/[lang]/dashboard/credentials/controller/create-credential.controller";
+import createCredentialController from "@/server/controllers/credentials/create-credential.controller";
 import createCredentialUseCase from "@/feature/core/credential/domain/usecase/create-credential.usecase";
 import CredentialFakeFactory from "@/test/common/fake-factory/credential/credential.fake-factory";
 import { right, left } from "fp-ts/lib/Either";

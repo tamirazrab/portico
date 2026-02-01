@@ -1,24 +1,24 @@
 import "server-only";
-import { PrismaClient } from "@/generated/prisma/client";
+import type { PrismaClient } from "@/generated/prisma/client";
 import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
-import ApiTask from "@/feature/common/data/api-task";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import featuresDi from "@/feature/common/features.di";
-import WorkflowRepository, {
+import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import type {
   CreateWorkflowParams,
   UpdateWorkflowParams,
   GetWorkflowsParams,
   GetWorkflowParams,
   WorkflowWithNodesAndConnections,
-} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+} from type "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
 import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
 import CreateWorkflowFailure from "@/feature/core/workflow/domain/failure/create-workflow-failure";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
-import { pipe } from "fp-ts/lib/function";
-import { tryCatch, map, chain } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
 import { generateSlug } from "random-word-slugs";
 import { workflowModuleKey } from "../workflow-module-key";
 import WorkflowMapper from "./workflow.mapper";
@@ -31,207 +31,226 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
     this.prisma = di.resolve<PrismaClient>(PRISMA_CLIENT_KEY);
   }
 
-  create(params: CreateWorkflowParams): ApiTask<Workflow> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbWorkflow = await this.prisma.workflow.create({
-            data: {
-              name: params.name || generateSlug(3),
-              userId: params.userId,
-              nodes: {
-                create: {
-                  name: NodeType.INITIAL,
-                  type: NodeType.INITIAL,
-                  position: { x: 0, y: 0 },
-                },
-              },
+  async create(params: CreateWorkflowParams): Promise<ApiEither<Workflow>> {
+    try {
+      const dbWorkflow = await this.prisma.workflow.create({
+        data: {
+          name: params.name || generateSlug(3),
+          userId: params.userId,
+          nodes: {
+            create: {
+              name: NodeType.INITIAL,
+              type: NodeType.INITIAL,
+              position: { x: 0, y: 0 },
             },
-          });
-          return WorkflowMapper.toEntity(dbWorkflow);
+          },
         },
-        (error) =>
-          failureOr(error, new CreateWorkflowFailure({ reason: error })),
-      ),
-    );
+      });
+      return right(WorkflowMapper.toEntity(dbWorkflow));
+    } catch (error) {
+      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+    }
   }
 
-  update(params: UpdateWorkflowParams): ApiTask<Workflow> {
-    return pipe(
-      tryCatch(
-        async () => {
-          // Verify workflow exists and belongs to user
-          await this.prisma.workflow.findUniqueOrThrow({
-            where: { id: params.id, userId: params.userId },
+  async update(params: UpdateWorkflowParams): Promise<ApiEither<Workflow>> {
+    try {
+      // Verify workflow exists and belongs to user
+      await this.prisma.workflow.findUniqueOrThrow({
+        where: { id: params.id, userId: params.userId },
+      });
+
+      // Update in transaction
+      const result = await this.prisma.$transaction(async (tx) => {
+        // Delete existing nodes and connections
+        await tx.node.deleteMany({
+          where: { workflowId: params.id },
+        });
+
+        // Create new nodes if provided
+        if (params.nodes) {
+          await tx.node.createMany({
+            data: params.nodes.map((node) => ({
+              id: node.id,
+              workflowId: params.id,
+              name: node.type || "unknown",
+              type: (node.type as NodeType) || NodeType.INITIAL,
+              position: node.position,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data: (node.data || {}) as any,
+            })),
           });
+        }
 
-          // Update in transaction
-          const result = await this.prisma.$transaction(async (tx) => {
-            // Delete existing nodes and connections
-            await tx.node.deleteMany({
-              where: { workflowId: params.id },
-            });
-
-            // Create new nodes if provided
-            if (params.nodes) {
-              await tx.node.createMany({
-                data: params.nodes.map((node) => ({
-                  id: node.id,
-                  workflowId: params.id,
-                  name: node.type || "unknown",
-                  type: (node.type as NodeType) || NodeType.INITIAL,
-                  position: node.position,
-                  data: node.data || {},
-                })),
-              });
-            }
-
-            // Create new connections if provided
-            if (params.edges) {
-              await tx.connection.createMany({
-                data: params.edges.map((edge) => ({
-                  workflowId: params.id,
-                  fromNodeId: edge.source,
-                  toNodeId: edge.target,
-                  fromOutput: edge.sourceHandle || "main",
-                  toInput: edge.targetHandle || "main",
-                })),
-              });
-            }
-
-            // Update workflow
-            const updatedWorkflow = await tx.workflow.update({
-              where: { id: params.id },
-              data: {
-                ...(params.name && { name: params.name }),
-                updatedAt: new Date(),
-              },
-            });
-
-            return updatedWorkflow;
+        // Create new connections if provided
+        if (params.edges) {
+          await tx.connection.createMany({
+            data: params.edges.map((edge) => ({
+              workflowId: params.id,
+              fromNodeId: edge.source,
+              toNodeId: edge.target,
+              fromOutput: edge.sourceHandle || "main",
+              toInput: edge.targetHandle || "main",
+            })),
           });
+        }
 
-          return WorkflowMapper.toEntity(result);
-        },
-        (error) =>
-          failureOr(error, new CreateWorkflowFailure({ reason: error })),
-      ),
-    );
+        // Update workflow
+        const updatedWorkflow = await tx.workflow.update({
+          where: { id: params.id },
+          data: {
+            ...(params.name && { name: params.name }),
+            updatedAt: new Date(),
+          },
+        });
+
+        return updatedWorkflow;
+      });
+
+      return right(WorkflowMapper.toEntity(result));
+    } catch (error) {
+      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+    }
   }
 
-  updateName(params: {
+  async updateName(params: {
     id: string;
     userId: string;
     name: string;
-  }): ApiTask<Workflow> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbWorkflow = await this.prisma.workflow.update({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-            data: {
-              name: params.name,
-            },
-          });
-          return WorkflowMapper.toEntity(dbWorkflow);
+  }): Promise<ApiEither<Workflow>> {
+    try {
+      const dbWorkflow = await this.prisma.workflow.update({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) =>
-          failureOr(error, new CreateWorkflowFailure({ reason: error })),
-      ),
-    );
+        data: {
+          name: params.name,
+        },
+      });
+      return right(WorkflowMapper.toEntity(dbWorkflow));
+    } catch (error) {
+      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+    }
   }
 
-  delete(params: { id: string; userId: string }): ApiTask<true> {
-    return pipe(
-      tryCatch(
-        async () => {
-          await this.prisma.workflow.delete({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-          });
-          return true;
+  async delete(params: { id: string; userId: string }): Promise<ApiEither<true>> {
+    try {
+      await this.prisma.workflow.delete({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+      });
+      return right(true);
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
   }
 
-  getOne(params: GetWorkflowParams): ApiTask<WorkflowWithNodesAndConnections> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const dbWorkflow = await this.prisma.workflow.findUnique({
-            where: {
-              id: params.id,
-              userId: params.userId,
-            },
-            include: {
-              nodes: true,
-              connections: true,
-            },
-          });
-
-          if (!dbWorkflow) {
-            throw new WorkflowNotFoundFailure({ workflowId: params.id });
-          }
-
-          return {
-            workflow: WorkflowMapper.toEntity(dbWorkflow),
-            nodes: dbWorkflow.nodes.map((node) =>
-              WorkflowMapper.nodeToEntity(node),
-            ),
-            connections: dbWorkflow.connections.map((conn) =>
-              WorkflowMapper.connectionToEntity(conn),
-            ),
-          };
+  async getOne(params: GetWorkflowParams): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
+    try {
+      const dbWorkflow = await this.prisma.workflow.findUnique({
+        where: {
+          id: params.id,
+          userId: params.userId,
         },
-        (error) =>
-          error instanceof WorkflowNotFoundFailure
-            ? error
-            : failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+        include: {
+          nodes: true,
+          connections: true,
+        },
+      });
+
+      if (!dbWorkflow) {
+        return left(new WorkflowNotFoundFailure({ workflowId: params.id }));
+      }
+
+      return right({
+        workflow: WorkflowMapper.toEntity(dbWorkflow),
+        nodes: dbWorkflow.nodes.map((node) =>
+          WorkflowMapper.nodeToEntity(node),
+        ),
+        connections: dbWorkflow.connections.map((conn) =>
+          WorkflowMapper.connectionToEntity(conn),
+        ),
+      });
+    } catch (error) {
+      return left(
+        error instanceof WorkflowNotFoundFailure
+          ? error
+          : failureOr(error, new NetworkFailure(error as Error)),
+      );
+    }
   }
 
-  getMany(params: GetWorkflowsParams): ApiTask<WithPagination<Workflow>> {
-    return pipe(
-      tryCatch(
-        async () => {
-          const page = params.page || 1;
-          const pageSize = params.pageSize || 10;
-          const skip = (page - 1) * pageSize;
+  async getMany(params: GetWorkflowsParams): Promise<ApiEither<WithPagination<Workflow>>> {
+    try {
+      const page = params.page || 1;
+      const pageSize = params.pageSize || 10;
+      const skip = (page - 1) * pageSize;
 
-          const where = {
-            userId: params.userId,
-            ...(params.search && {
-              name: {
-                contains: params.search,
-                mode: "insensitive" as const,
-              },
-            }),
-          };
+      const where = {
+        userId: params.userId,
+        ...(params.search && {
+          name: {
+            contains: params.search,
+            mode: "insensitive" as const,
+          },
+        }),
+      };
 
-          const [dbWorkflows, total] = await Promise.all([
-            this.prisma.workflow.findMany({
-              where,
-              skip,
-              take: pageSize,
-              orderBy: {
-                createdAt: "desc",
-              },
-            }),
-            this.prisma.workflow.count({ where }),
-          ]);
+      const [dbWorkflows, total] = await Promise.all([
+        this.prisma.workflow.findMany({
+          where,
+          skip,
+          take: pageSize,
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        this.prisma.workflow.count({ where }),
+      ]);
 
-          return WorkflowMapper.toPaginatedEntity(dbWorkflows, total);
+      return right(WorkflowMapper.toPaginatedEntity(dbWorkflows, total));
+    } catch (error) {
+      return left(failureOr(error, new NetworkFailure(error as Error)));
+    }
+  }
+
+  /**
+   * Get workflow by ID only (for internal execution use in infrastructure layer).
+   * This bypasses userId check and should only be used in trusted infrastructure contexts.
+   */
+  async getByIdForExecution(id: string): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
+    try {
+      const dbWorkflow = await this.prisma.workflow.findUnique({
+        where: {
+          id,
         },
-        (error) => failureOr(error, new NetworkFailure(error as Error)),
-      ),
-    );
+        include: {
+          nodes: true,
+          connections: true,
+        },
+      });
+
+      if (!dbWorkflow) {
+        return left(new WorkflowNotFoundFailure({ workflowId: id }));
+      }
+
+      return right({
+        workflow: WorkflowMapper.toEntity(dbWorkflow),
+        nodes: dbWorkflow.nodes.map((node) =>
+          WorkflowMapper.nodeToEntity(node),
+        ),
+        connections: dbWorkflow.connections.map((conn) =>
+          WorkflowMapper.connectionToEntity(conn),
+        ),
+      });
+    } catch (error) {
+      return left(
+        error instanceof WorkflowNotFoundFailure
+          ? error
+          : failureOr(error, new NetworkFailure(error as Error)),
+      );
+    }
   }
 }

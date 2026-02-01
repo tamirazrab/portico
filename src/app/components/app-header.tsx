@@ -1,4 +1,4 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/app/components/ui/sidebar";
 
 export function AppHeader() {
   return (

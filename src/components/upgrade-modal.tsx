@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/app/components/ui/alert-dialog";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
 
 interface upgradeModalProps {

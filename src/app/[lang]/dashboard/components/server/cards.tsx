@@ -1,5 +1,5 @@
 import { Card } from "@/app/[lang]/dashboard/components/server/card";
-import fetchSummaryInfoController from "@/app/[lang]/dashboard/controller/fetch-summary-info.controller";
+import fetchSummaryInfoController from "@/server/controllers/dashboard/fetch-summary-info.controller";
 
 export default async function CardWrapper() {
   const { customersNumber, invoicesNumber, invoicesSummary } =

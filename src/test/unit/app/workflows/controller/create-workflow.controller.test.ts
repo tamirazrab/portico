@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import createWorkflowController from "@/app/[lang]/dashboard/workflows/controller/create-workflow.controller";
+import createWorkflowController from "@/server/controllers/workflows/create-workflow.controller";
 import createWorkflowUseCase from "@/feature/core/workflow/domain/usecase/create-workflow.usecase";
 import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
 import { right, left } from "fp-ts/lib/Either";

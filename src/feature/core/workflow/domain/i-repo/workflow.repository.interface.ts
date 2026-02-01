@@ -1,4 +1,4 @@
-import ApiTask from "@/feature/common/data/api-task";
+import { ApiEither } from "@/feature/common/data/api-task";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Workflow from "../entity/workflow.entity";
 import WorkflowNode from "../entity/workflow-node.entity";
@@ -46,16 +46,21 @@ export type WorkflowWithNodesAndConnections = {
 };
 
 export default interface WorkflowRepository {
-  create(params: CreateWorkflowParams): ApiTask<Workflow>;
-  update(params: UpdateWorkflowParams): ApiTask<Workflow>;
+  create(params: CreateWorkflowParams): Promise<ApiEither<Workflow>>;
+  update(params: UpdateWorkflowParams): Promise<ApiEither<Workflow>>;
   updateName(params: {
     id: string;
     userId: string;
     name: string;
-  }): ApiTask<Workflow>;
-  delete(params: { id: string; userId: string }): ApiTask<true>;
-  getOne(params: GetWorkflowParams): ApiTask<WorkflowWithNodesAndConnections>;
-  getMany(params: GetWorkflowsParams): ApiTask<WithPagination<Workflow>>;
+  }): Promise<ApiEither<Workflow>>;
+  delete(params: { id: string; userId: string }): Promise<ApiEither<true>>;
+  getOne(params: GetWorkflowParams): Promise<ApiEither<WorkflowWithNodesAndConnections>>;
+  getMany(params: GetWorkflowsParams): Promise<ApiEither<WithPagination<Workflow>>>;
+  /**
+   * Get workflow by ID only (for internal execution use in infrastructure layer).
+   * This bypasses userId check and should only be used in trusted infrastructure contexts.
+   */
+  getByIdForExecution(id: string): Promise<ApiEither<WorkflowWithNodesAndConnections>>;
 }
 
 export const workflowRepoKey = "workflowRepoKey";

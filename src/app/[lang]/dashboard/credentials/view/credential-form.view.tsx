@@ -24,6 +24,8 @@ export default function CredentialFormView({
 }: CredentialFormViewProps) {
   const vm = new CredentialFormVM(initialData);
   const vmData = vm.useVM();
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
 
   return (
     <>
@@ -112,7 +114,7 @@ export default function CredentialFormView({
                   {vmData.isEdit ? "Update" : "Create"}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                  <Link href="/credentials" prefetch>
+                  <Link href={`/${lang}/dashboard/credentials`} prefetch>
                     Cancel
                   </Link>
                 </Button>

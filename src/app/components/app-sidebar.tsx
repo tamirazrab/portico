@@ -24,7 +24,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/app/components/ui/sidebar";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
 import { useHasActiveSubscription } from "@/hooks/use-subscription";
 import { ChangeColor, ModeToggle } from "./theme-toggle";

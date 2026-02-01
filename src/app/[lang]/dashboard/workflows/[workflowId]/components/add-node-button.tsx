@@ -2,7 +2,7 @@
 
 import { PlusIcon } from "lucide-react";
 import { memo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import { NodeSelector } from "@/components/node-selector";
 
 export const AddNodeButton = memo(() => {

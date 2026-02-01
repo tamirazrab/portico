@@ -1,4 +1,4 @@
-import ApiTask from "@/feature/common/data/api-task";
+import { ApiEither } from "@/feature/common/data/api-task";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Execution from "../entity/execution.entity";
 import ExecutionStatus from "../enum/execution-status.enum";
@@ -39,20 +39,20 @@ export type ExecutionWithWorkflow = Execution & {
 };
 
 export default interface ExecutionRepository {
-  create(params: CreateExecutionParams): ApiTask<Execution>;
-  updateStatus(params: UpdateExecutionStatusParams): ApiTask<Execution>;
+  create(params: CreateExecutionParams): Promise<ApiEither<Execution>>;
+  updateStatus(params: UpdateExecutionStatusParams): Promise<ApiEither<Execution>>;
   updateStatusByInngestEventId(
     params: {
       inngestEventId: string;
     } & Omit<UpdateExecutionStatusParams, "id">,
-  ): ApiTask<Execution>;
-  getOne(params: GetExecutionParams): ApiTask<ExecutionWithWorkflow>;
+  ): Promise<ApiEither<Execution>>;
+  getOne(params: GetExecutionParams): Promise<ApiEither<ExecutionWithWorkflow>>;
   getOneByInngestEventId(
     params: GetExecutionByInngestEventIdParams,
-  ): ApiTask<Execution>;
+  ): Promise<ApiEither<Execution>>;
   getMany(
     params: GetExecutionsParams,
-  ): ApiTask<WithPagination<ExecutionWithWorkflow>>;
+  ): Promise<ApiEither<WithPagination<ExecutionWithWorkflow>>>;
 }
 
 export const executionRepoKey = "executionRepoKey";

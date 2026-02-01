@@ -30,13 +30,25 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@/server/*": [
+        "./src/server/*"
+      ],
+      "@/features/*": [
+        "./src/feature/*"
+      ],
+      "@/components/*": [
+        "./src/components/*"
+      ],
+      "@/lib/*": [
+        "./src/lib/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/types/**/*.ts",
     "src/bootstrap/boundaries/db/seed.js",
     "src/bootstrap/boundaries/db/placeholder-data.js",
@@ -44,6 +56,13 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "NodeBase",
+    "playwright.config.ts",
+    "vitest.config.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ]
 }

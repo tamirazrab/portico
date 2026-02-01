@@ -32,7 +32,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useCredentislByType } from "@/features/credentals/hooks/use-credentials";
+import { useCredentialsByType } from "@/hooks/use-credentials";
 import { CredentialType } from "@/generated/prisma/enums";
 import Image from "next/image";
 
@@ -74,7 +74,7 @@ export function GeminiDialog({
   defaultValues = {},
 }: Props) {
   const { data: credentials, isLoading: isLoadingCredentials } =
-    useCredentislByType(CredentialType.GEMINI);
+    useCredentialsByType(CredentialType.GEMINI);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

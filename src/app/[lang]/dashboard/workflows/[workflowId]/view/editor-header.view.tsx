@@ -1,7 +1,7 @@
 "use client";
 
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/app/components/ui/sidebar";
+import { Button } from "@/app/components/ui/button";
 import { SaveIcon } from "lucide-react";
 import {
   Breadcrumb,
@@ -9,12 +9,11 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Input } from "@/components/ui/input";
+} from "@/app/components/ui/breadcrumb";
+import { Input } from "@/app/components/ui/input";
 import Link from "next/link";
-import { useRef, useEffect } from "react";
+import { useParams } from "next/navigation";
 import EditorHeaderVM from "../vm/editor-header.vm";
-import EditorHeaderIVM from "./editor-header.i-vm";
 
 interface EditorHeaderViewProps {
   workflowId: string;
@@ -27,14 +26,8 @@ export default function EditorHeaderView({
 }: EditorHeaderViewProps) {
   const vm = new EditorHeaderVM({ workflowId, initialName: workflowName });
   const vmData = vm.useVM();
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (vmData.isEditingName && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [vmData.isEditingName]);
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -52,7 +45,7 @@ export default function EditorHeaderView({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/workflows" prefetch>
+                <Link href={`/${lang}/dashboard/workflows`} prefetch>
                   workflows
                 </Link>
               </BreadcrumbLink>
@@ -62,7 +55,7 @@ export default function EditorHeaderView({
               <BreadcrumbItem>
                 <Input
                   disabled={vmData.isSavingName}
-                  ref={inputRef}
+                  ref={vmData.inputRef}
                   value={vmData.editedName}
                   onChange={(e) => vmData.onNameChange(e.target.value)}
                   onBlur={vmData.onSaveName}

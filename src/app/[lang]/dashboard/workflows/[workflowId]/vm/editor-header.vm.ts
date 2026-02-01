@@ -5,8 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
+import { invalidateWorkflow } from "@/trpc/helpers/query-invalidation";
 import { editorAtom } from "../store/atoms";
-import EditorHeaderIVM from "../view/editor-header.i-vm";
+import type EditorHeaderIVM from "../view/editor-header.i-vm";
 
 interface EditorHeaderVMProps {
   workflowId: string;
@@ -36,7 +37,8 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
 
     useEffect(() => {
       setEditedName(this.initialName);
-    }, [this.initialName]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
       if (isEditingName && inputRef.current) {
@@ -48,9 +50,7 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
     const updateWorkflowName = useMutation(
       trpc.workflows.updateName.mutationOptions({
         onSuccess: () => {
-          queryClient.invalidateQueries(
-            trpc.workflows.getOne.queryFilter({ id: this.workflowId }),
-          );
+          invalidateWorkflow(queryClient, this.workflowId);
         },
       }),
     );
@@ -58,9 +58,7 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
     const updateWorkflow = useMutation(
       trpc.workflows.update.mutationOptions({
         onSuccess: () => {
-          queryClient.invalidateQueries(
-            trpc.workflows.getOne.queryFilter({ id: this.workflowId }),
-          );
+          invalidateWorkflow(queryClient, this.workflowId);
         },
       }),
     );
@@ -75,8 +73,11 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
           id: this.workflowId,
           name: editedName,
         });
-      } catch {
+      } catch (error) {
+        // Reset to original name on error
         setEditedName(this.initialName);
+        // Error is already handled by mutation's onError handler
+        console.error("Failed to update workflow name:", error);
       } finally {
         setIsEditingName(false);
       }
@@ -97,19 +98,11 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
       });
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        handleSaveName();
-      } else if (e.key === "Escape") {
-        setEditedName(this.initialName);
-        setIsEditingName(false);
-      }
-    };
-
     return {
       workflowName: this.initialName,
       isEditingName,
       editedName,
+      inputRef,
       onNameChange: setEditedName,
       onStartEditing: () => setIsEditingName(true),
       onSaveName: handleSaveName,

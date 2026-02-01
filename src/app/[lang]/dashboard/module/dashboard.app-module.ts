@@ -1,4 +1,4 @@
-import createInvoiceController from "@/app/[lang]/dashboard/controller/create-invoice.controller";
+import createInvoiceController from "@/server/controllers/dashboard/create-invoice.controller";
 import CreateRandomInvoiceButtonVM from "@/app/[lang]/dashboard/vm/create-random-invoice-button-vm";
 import di from "@/bootstrap/di/init-di";
 

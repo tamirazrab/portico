@@ -13,5 +13,5 @@ export default async function createExecutionUseCase(
     executionModuleKey,
     executionRepoKey,
   );
-  return repo.create(params)();
+  return repo.create(params);
 }

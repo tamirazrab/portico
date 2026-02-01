@@ -1,12 +1,14 @@
 import HomeIcon from "@/app/components/icons/home";
 import { FolderOpenIcon, KeyIcon, HistoryIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { usePathname, useParams } from "next/navigation";
+import { useMemo } from "react";
+import type React from "react";
+import type { LucideIcon } from "lucide-react";
 
 type LinkItem = {
   name: string;
   href: string;
-  icon: (props: { className?: string }) => JSX.Element;
+  icon: LucideIcon | ((props: { className?: string }) => React.ReactElement);
 };
 
 /**
@@ -18,16 +20,36 @@ type LinkItem = {
  */
 export default function useNavLinkPersonalVM() {
   const pathname = usePathname();
+  const params = useParams();
+  const lang = (params?.lang as string) || "en";
+
   // Map of links to display in the side navigation.
-  // Depending on the size of the application, this would be stored in a database.
-  const links = useRef<LinkItem[]>([
-    { name: "Home", href: "/dashboard", icon: HomeIcon },
-    { name: "Workflows", href: "/dashboard/workflows", icon: FolderOpenIcon },
-    { name: "Credentials", href: "/dashboard/credentials", icon: KeyIcon },
-    { name: "Executions", href: "/dashboard/executions", icon: HistoryIcon },
-  ]).current;
+  // Links are language-aware and include the language prefix.
+  const links = useMemo<LinkItem[]>(
+    () => [
+      { name: "Home", href: `/${lang}/dashboard`, icon: HomeIcon },
+      {
+        name: "Workflows",
+        href: `/${lang}/dashboard/workflows`,
+        icon: FolderOpenIcon,
+      },
+      {
+        name: "Credentials",
+        href: `/${lang}/dashboard/credentials`,
+        icon: KeyIcon,
+      },
+      {
+        name: "Executions",
+        href: `/${lang}/dashboard/executions`,
+        icon: HistoryIcon,
+      },
+    ],
+    [lang],
+  );
+
   return {
     links,
-    isLinkActive: (link: LinkItem) => pathname.includes(link.href),
+    isLinkActive: (link: LinkItem) =>
+      pathname === link.href || pathname.startsWith(`${link.href}/`),
   };
 }

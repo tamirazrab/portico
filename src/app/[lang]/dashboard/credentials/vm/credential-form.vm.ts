@@ -1,7 +1,7 @@
 "use client";
 
 import { BaseVM } from "reactvvm";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -10,7 +10,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { CredentialType } from "@/generated/prisma/enums";
-import CredentialFormIVM, {
+import { invalidateCredentials, invalidateCredential } from "@/trpc/helpers/query-invalidation";
+import type CredentialFormIVM from "../view/credential-form.i-vm";
+import type {
   CredentialFormValues,
 } from "../view/credential-form.i-vm";
 
@@ -63,11 +65,13 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- useVM is a hook method
   useVM(): CredentialFormIVM {
     const router = useRouter();
+    const params = useParams();
+    const lang = (params?.lang as string) || "en";
     const trpc = useTRPC();
     const queryClient = useQueryClient();
     const { handleError, modal } = useUpgradeModal();
 
-    const isEdit = !!this.initialData?.id;
+    const isEdit = Boolean(this.initialData?.id);
 
     const form = useForm<CredentialFormValues>({
       resolver: zodResolver(formSchema),
@@ -82,10 +86,8 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
       trpc.credentials.create.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Credential ${data.name} created successfully`);
-          queryClient.invalidateQueries(
-            trpc.credentials.getMany.queryOptions({}),
-          );
-          router.push(`/credentials/${data.id}`);
+          invalidateCredentials(queryClient);
+          router.push(`/${lang}/dashboard/credentials/${data.id}`);
         },
         onError: (error) => {
           handleError(error);
@@ -97,12 +99,8 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
       trpc.credentials.update.mutationOptions({
         onSuccess: (data) => {
           toast.success(`Credential ${data.name} saved successfully`);
-          queryClient.invalidateQueries(
-            trpc.credentials.getMany.queryOptions({}),
-          );
-          queryClient.invalidateQueries(
-            trpc.credentials.getOne.queryFilter({ id: data.id }),
-          );
+          invalidateCredentials(queryClient);
+          invalidateCredential(queryClient, data.id);
         },
         onError: (error) => {
           handleError(error);

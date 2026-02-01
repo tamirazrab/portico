@@ -14,5 +14,5 @@ export default async function deleteWorkflowUseCase(params: {
     workflowRepoKey,
   );
 
-  return repo.delete(params)();
+  return repo.delete(params);
 }

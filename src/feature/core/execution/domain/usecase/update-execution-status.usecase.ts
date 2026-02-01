@@ -13,5 +13,5 @@ export default async function updateExecutionStatusUseCase(
     executionModuleKey,
     executionRepoKey,
   );
-  return repo.updateStatus(params)();
+  return repo.updateStatus(params);
 }

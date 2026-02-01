@@ -3,7 +3,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { useReactFlow } from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
-import React, { useCallback } from "react";
+import type React from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 import { NodeType } from "@/generated/prisma/enums";
 import {
@@ -13,8 +14,8 @@ import {
   SheetTitle,
   SheetDescription,
   SheetTrigger,
-} from "./ui/sheet";
-import { Separator } from "./ui/separator";
+} from "@/app/components/ui/sheet";
+import { Separator } from "@/app/components/ui/separator";
 
 export type NodeTypeOption = {
   type: NodeType;

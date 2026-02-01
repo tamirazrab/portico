@@ -1,18 +1,19 @@
 "use client";
 
 import { EntityPagination } from "@/components/entity-components";
-import ExecutionsPaginationVM from "../vm/executions-pagination.vm";
+import { useExecutions } from "../hooks/use-executions-list";
+import { usePagination } from "../../hooks/use-pagination";
 
 export default function ExecutionsPaginationView() {
-  const vm = new ExecutionsPaginationVM();
-  const vmData = vm.useVM();
+  const { page, totalPages, isLoading, params, setParams } = useExecutions();
+  const handlePageChange = usePagination(params, setParams);
 
   return (
     <EntityPagination
-      page={vmData.page}
-      totalPages={vmData.totalPages}
-      onPageChange={vmData.onPageChange}
-      disabled={vmData.isDisabled}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
+      disabled={isLoading}
     />
   );
 }

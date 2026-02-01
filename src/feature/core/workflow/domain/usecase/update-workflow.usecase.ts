@@ -14,5 +14,5 @@ export default async function updateWorkflowUseCase(
     workflowRepoKey,
   );
 
-  return repo.update(params)();
+  return repo.update(params);
 }

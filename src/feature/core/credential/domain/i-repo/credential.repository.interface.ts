@@ -1,11 +1,11 @@
-import ApiTask from "@/feature/common/data/api-task";
+import { ApiEither } from "@/feature/common/data/api-task";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Credential from "../entity/credential.entity";
 import CredentialType from "../enum/credential-type.enum";
 
 export type CreateCredentialParams = {
   name: string;
-  value: string; // Plain text, will be encrypted in repository
+  value: string; 
   type: CredentialType;
   userId: string;
 };
@@ -14,7 +14,7 @@ export type UpdateCredentialParams = {
   id: string;
   userId: string;
   name: string;
-  value: string; // Plain text, will be encrypted in repository
+  value: string; 
   type: CredentialType;
 };
 
@@ -36,12 +36,12 @@ export type GetCredentialsByTypeParams = {
 };
 
 export default interface CredentialRepository {
-  create(params: CreateCredentialParams): ApiTask<Credential>;
-  update(params: UpdateCredentialParams): ApiTask<Credential>;
-  delete(params: { id: string; userId: string }): ApiTask<true>;
-  getOne(params: GetCredentialParams): ApiTask<Credential>;
-  getMany(params: GetCredentialsParams): ApiTask<WithPagination<Credential>>;
-  getByType(params: GetCredentialsByTypeParams): ApiTask<Credential[]>;
+  create(params: CreateCredentialParams): Promise<ApiEither<Credential>>;
+  update(params: UpdateCredentialParams): Promise<ApiEither<Credential>>;
+  delete(params: { id: string; userId: string }): Promise<ApiEither<true>>;
+  getOne(params: GetCredentialParams): Promise<ApiEither<Credential>>;
+  getMany(params: GetCredentialsParams): Promise<ApiEither<WithPagination<Credential>>>;
+  getByType(params: GetCredentialsByTypeParams): Promise<ApiEither<Credential[]>>;
 }
 
 export const credentialRepoKey = "credentialRepoKey";

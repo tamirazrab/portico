@@ -1,7 +1,7 @@
-import { PrismaClient } from "@/generated/prisma/client";
+
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Credential from "@/feature/core/credential/domain/entity/credential.entity";
-import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 
 type CredentialDbResponse = {
   id: string;
@@ -18,7 +18,7 @@ export default class CredentialMapper {
     return new Credential({
       id: dbCredential.id,
       name: dbCredential.name,
-      value: dbCredential.value, // Keep encrypted
+      value: dbCredential.value,
       type: dbCredential.type as CredentialType,
       userId: dbCredential.userId,
       createdAt: dbCredential.createdAt,
