@@ -11,7 +11,7 @@ export const useSubscription = () =>
       try {
         const response = await authClient.customer.state();
         return response.data;
-      } catch (error) {
+      } catch {
         // If customer.state() doesn't exist, return empty state
         return { activeSubscriptions: [] };
       }

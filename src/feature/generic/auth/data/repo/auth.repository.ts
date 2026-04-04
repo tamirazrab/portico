@@ -1,23 +1,23 @@
-import serverConfigs from "@/bootstrap/configs/server-configs";
-import ApiTask from "@/feature/common/data/api-task";
-import { failureOr } from "@/feature/common/failures/failure-helpers";
-import AuthProfile, {
-  AuthProfileParams,
-} from "@/feature/generic/auth/domain/entity/auth-profile.enity";
-import AuthToken from "@/feature/generic/auth/domain/entity/auth-token.entity";
-import AuthTokenFailure from "@/feature/generic/auth/domain/failure/auth-token-failure";
-import AuthProfileFailure from "@/feature/generic/auth/domain/failure/auth-profile-failure";
-import AuthRepo from "@/feature/generic/auth/domain/i-repo/auth.repository";
 import { pipe } from "fp-ts/lib/function";
 import { chain, map, mapLeft, tryCatch } from "fp-ts/lib/TaskEither";
 import { cookies } from "next/headers";
-import AuthCachedTokenFailure from "@/feature/generic/auth/domain/failure/auth-cached-token-failure";
-import AuthCachedProfileFailure from "@/feature/generic/auth/domain/failure/auth-cached-profile-failure";
-import { ApiRole } from "@/feature/core/user/data/repository/user.repository";
-import UserMapper from "@/feature/core/user/data/repository/user.mapper";
-import { authModuleKey } from "@/feature/generic/auth/auth-module-key";
+import serverConfigs from "@/bootstrap/configs/server-configs";
 import IdpEndpoint from "@/bootstrap/endpoint/endpoints/idp-endpoints";
+import type ApiTask from "@/feature/common/data/api-task";
+import { failureOr } from "@/feature/common/failures/failure-helpers";
 import { diResolve } from "@/feature/common/features.di";
+import UserMapper from "@/feature/core/user/data/repository/user.mapper";
+import { ApiRole } from "@/feature/core/user/data/repository/user.repository";
+import { authModuleKey } from "@/feature/generic/auth/auth-module-key";
+import AuthProfile, {
+  type AuthProfileParams,
+} from "@/feature/generic/auth/domain/entity/auth-profile.enity";
+import AuthToken from "@/feature/generic/auth/domain/entity/auth-token.entity";
+import AuthCachedProfileFailure from "@/feature/generic/auth/domain/failure/auth-cached-profile-failure";
+import AuthCachedTokenFailure from "@/feature/generic/auth/domain/failure/auth-cached-token-failure";
+import AuthProfileFailure from "@/feature/generic/auth/domain/failure/auth-profile-failure";
+import AuthTokenFailure from "@/feature/generic/auth/domain/failure/auth-token-failure";
+import type AuthRepo from "@/feature/generic/auth/domain/i-repo/auth.repository";
 
 type IdpTokenResponse = {
   access_token: string;

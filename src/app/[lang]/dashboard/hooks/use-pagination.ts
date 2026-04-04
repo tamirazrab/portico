@@ -12,4 +12,3 @@ export function usePagination<T extends { page: number }>(
     setParams({ ...params, page: newPage });
   };
 }
-

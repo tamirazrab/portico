@@ -1,5 +1,5 @@
-import Customer from "@/feature/core/customer/domain/entity/customer";
 import { faker } from "@faker-js/faker";
+import Customer from "@/feature/core/customer/domain/entity/customer";
 
 export default class CustomerFakeFactory {
   static getFakeCustomer(): Customer {

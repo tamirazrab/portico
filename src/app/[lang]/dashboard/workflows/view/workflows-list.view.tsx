@@ -1,6 +1,6 @@
 "use client";
 
-import { EntityList, EmptyView } from "@/components/entity-components";
+import { EmptyView, EntityList } from "@/components/entity-components";
 import { useWorkflows } from "../hooks/use-workflows";
 import WorkflowItemView from "./workflow-item.view";
 

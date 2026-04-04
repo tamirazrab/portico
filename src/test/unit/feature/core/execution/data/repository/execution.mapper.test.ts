@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { faker } from "@faker-js/faker";
+import { describe, expect, it } from "vite-plus/test";
+import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import ExecutionMapper from "@/feature/core/execution/data/repository/execution.mapper";
 import Execution from "@/feature/core/execution/domain/entity/execution.entity";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
 
 describe("ExecutionMapper", () => {
   describe("toEntity", () => {

@@ -1,4 +1,4 @@
-import { chromium, FullConfig } from "@playwright/test";
+import { chromium, type FullConfig } from "@playwright/test";
 import { resetTestDatabase, seedTestDatabase } from "./database";
 
 /**
@@ -10,19 +10,19 @@ import { resetTestDatabase, seedTestDatabase } from "./database";
  */
 async function globalSetup(config: FullConfig) {
   console.log("Setting up E2E test environment...");
-  
+
   // Reset test database to ensure clean state
   await resetTestDatabase();
   console.log("Test database reset complete");
-  
+
   // Seed test database with required data
   await seedTestDatabase();
   console.log("Test database seeded");
-  
+
   // Verify test database connection
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  
+
   try {
     await page.goto(config.projects[0].use.baseURL || "http://localhost:3000");
     console.log("Test server is accessible");
@@ -32,9 +32,8 @@ async function globalSetup(config: FullConfig) {
   } finally {
     await browser.close();
   }
-  
+
   console.log("E2E test environment setup complete");
 }
 
 export default globalSetup;
-

@@ -1,18 +1,19 @@
 import { TRPCError } from "@trpc/server";
+import { isLeft } from "fp-ts/lib/Either";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
+import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 import createCredentialController from "@/server/controllers/credentials/create-credential.controller";
-import getCredentialsController from "@/server/controllers/credentials/get-credentials.controller";
-import updateCredentialController from "@/server/controllers/credentials/update-credential.controller";
 import deleteCredentialController from "@/server/controllers/credentials/delete-credential.controller";
 import getCredentialController from "@/server/controllers/credentials/get-credential.controller";
+import getCredentialsController from "@/server/controllers/credentials/get-credentials.controller";
 import getCredentialsByTypeController from "@/server/controllers/credentials/get-credentials-by-type.controller";
-import { isLeft } from "fp-ts/lib/Either";
-import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import updateCredentialController from "@/server/controllers/credentials/update-credential.controller";
+import { mapFailureToTRPCError } from "../failure-to-trpc-error";
 import {
   createTRPCRouter,
-  protectedProcedure,
   premiumProcedure,
+  protectedProcedure,
 } from "../init";
 
 const CredentialTypeEnum = z.enum([
@@ -45,10 +46,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create credential",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -70,10 +68,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to delete credential",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return { success: true };
@@ -102,10 +97,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to update credential",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -127,10 +119,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Credential not found",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -164,10 +153,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch credentials",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       const { items, total } = result.right;
@@ -202,10 +188,7 @@ export const credentialsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch credentials",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;

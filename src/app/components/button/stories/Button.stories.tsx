@@ -1,7 +1,7 @@
-import Button from "@/app/components/button/button";
-import Story from "@/bootstrap/helpers/view/storybook-base-template-type";
-import getArgVM from "@/bootstrap/helpers/view/storybook-with-arg-vm";
 import type { Meta } from "@storybook/react";
+import Button from "@/app/components/button/button";
+import type Story from "@/bootstrap/helpers/view/storybook-base-template-type";
+import getArgVM from "@/bootstrap/helpers/view/storybook-with-arg-vm";
 
 const meta: Meta = {
   title: "general/Button",

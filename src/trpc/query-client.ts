@@ -24,7 +24,11 @@ export function makeQueryClient() {
           // tRPC errors have data.httpStatus or code property
           if (error && typeof error === "object") {
             // Check for tRPC error structure
-            if ("data" in error && error.data && typeof error.data === "object") {
+            if (
+              "data" in error &&
+              error.data &&
+              typeof error.data === "object"
+            ) {
               const { httpStatus } = error.data as { httpStatus?: number };
               if (httpStatus && httpStatus >= 400 && httpStatus < 500) {
                 return false;
@@ -33,7 +37,12 @@ export function makeQueryClient() {
             // Check for error code (e.g., BAD_REQUEST, UNAUTHORIZED)
             if ("code" in error) {
               const code = error.code as string;
-              if (code === "BAD_REQUEST" || code === "UNAUTHORIZED" || code === "FORBIDDEN" || code === "NOT_FOUND") {
+              if (
+                code === "BAD_REQUEST" ||
+                code === "UNAUTHORIZED" ||
+                code === "FORBIDDEN" ||
+                code === "NOT_FOUND"
+              ) {
                 return false;
               }
             }

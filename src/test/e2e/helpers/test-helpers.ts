@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 /**
  * Test helpers for E2E tests.
@@ -77,7 +77,9 @@ export async function expectToast(
   message: string | RegExp,
 ): Promise<void> {
   const toast = page.locator('[role="status"], [data-sonner-toast]');
-  await expect(toast.filter({ hasText: message })).toBeVisible({ timeout: 5000 });
+  await expect(toast.filter({ hasText: message })).toBeVisible({
+    timeout: 5000,
+  });
 }
 
 /**
@@ -87,7 +89,8 @@ export async function expectError(
   page: Page,
   message: string | RegExp,
 ): Promise<void> {
-  const errorElement = page.locator('text=/error|Error|failed|Failed/i').filter({ hasText: message });
+  const errorElement = page
+    .locator("text=/error|Error|failed|Failed/i")
+    .filter({ hasText: message });
   await expect(errorElement.first()).toBeVisible({ timeout: 5000 });
 }
-

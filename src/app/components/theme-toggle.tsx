@@ -1,18 +1,18 @@
 "use client";
 
-import * as React from "react";
+import { Moon, PaletteIcon, Sun } from "lucide-react"; // Assuming you use lucide-react for icons
 import { useTheme } from "next-themes";
-import { LampDeskIcon, Moon, PaletteIcon, Sun } from "lucide-react"; // Assuming you use lucide-react for icons
-import { SidebarMenuButton } from "./ui/sidebar";
+import * as React from "react";
 import { Button } from "./ui/button";
 import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "./ui/dialog";
+import { SidebarMenuButton } from "./ui/sidebar";
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();

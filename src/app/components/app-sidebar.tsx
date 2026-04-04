@@ -5,15 +5,12 @@ import {
   FolderOpenIcon,
   HistoryIcon,
   KeyIcon,
-  LampDesk,
   LogOutIcon,
-  Moon,
   StarIcon,
-  Sun,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -27,42 +24,47 @@ import {
 } from "@/app/components/ui/sidebar";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
 import { useHasActiveSubscription } from "@/hooks/use-subscription";
-import { ChangeColor, ModeToggle } from "./theme-toggle";
-
-const menuItems = [
-  {
-    title: "Main",
-    items: [
-      {
-        title: "workflows",
-        icon: FolderOpenIcon,
-        href: "/workflows",
-      },
-      {
-        title: "credentials",
-        icon: KeyIcon,
-        href: "/credentials",
-      },
-      {
-        title: "Executions",
-        icon: HistoryIcon,
-        href: "/executions",
-      },
-    ],
-  },
-];
+import { defaultLocale, isAppLocale, routes } from "@/lib/routes";
+import { ModeToggle } from "./theme-toggle";
 
 export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams();
+  const raw = params?.lang as string | undefined;
+  const lang = raw && isAppLocale(raw) ? raw : defaultLocale();
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
+
+  const home = routes.home(lang);
+  const menuItems = [
+    {
+      title: "Main",
+      items: [
+        {
+          title: "workflows",
+          icon: FolderOpenIcon,
+          href: routes.workflows(lang),
+        },
+        {
+          title: "credentials",
+          icon: KeyIcon,
+          href: routes.credentials(lang),
+        },
+        {
+          title: "Executions",
+          icon: HistoryIcon,
+          href: routes.executions(lang),
+        },
+      ],
+    },
+  ];
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenuItem>
           <SidebarMenuButton asChild className="gap-x-4 h-10 px-4">
-            <Link href="/workflows" prefetch>
+            <Link href={home} prefetch>
               <Image src="/logo.svg" alt="Nodebase" width={30} height={30} />
               <span className="font-semibold">Nodebase</span>
             </Link>
@@ -79,8 +81,8 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       tooltip={item.title}
                       isActive={
-                        item.href === "/"
-                          ? pathname === "/"
+                        item.href === home
+                          ? pathname === home
                           : pathname.startsWith(item.href)
                       }
                       asChild
@@ -115,9 +117,6 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <ModeToggle />
           </SidebarMenuItem>
-          {/* <SidebarMenuItem>
-                        <ChangeColor />
-                    </SidebarMenuItem> */}
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Billing Portal"
@@ -136,7 +135,7 @@ export function AppSidebar() {
               className="gap-x-4 h-10 px-4"
               onClick={() => {
                 authClient.signOut();
-                router.push("/login");
+                router.push(routes.login(lang));
               }}
             >
               <LogOutIcon className="size-4" />

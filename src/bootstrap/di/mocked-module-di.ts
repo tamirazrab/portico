@@ -1,6 +1,6 @@
-import { container, DependencyContainer } from "tsyringe";
-import { InjectionToken } from "tsyringe/dist/typings/providers";
-import constructor from "tsyringe/dist/typings/types/constructor";
+import { container, type DependencyContainer } from "tsyringe";
+import type { InjectionToken } from "tsyringe/dist/typings/providers";
+import type constructor from "tsyringe/dist/typings/types/constructor";
 import { isClass } from "../helpers/global-helpers";
 
 /**

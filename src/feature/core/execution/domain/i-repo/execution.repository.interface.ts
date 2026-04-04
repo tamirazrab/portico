@@ -1,7 +1,7 @@
-import { ApiEither } from "@/feature/common/data/api-task";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import Execution from "../entity/execution.entity";
-import ExecutionStatus from "../enum/execution-status.enum";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type { ApiEither } from "@/feature/common/data/api-task";
+import type Execution from "../entity/execution.entity";
+import type ExecutionStatus from "../enum/execution-status.enum";
 
 export type CreateExecutionParams = {
   workflowId: string;
@@ -40,7 +40,9 @@ export type ExecutionWithWorkflow = Execution & {
 
 export default interface ExecutionRepository {
   create(params: CreateExecutionParams): Promise<ApiEither<Execution>>;
-  updateStatus(params: UpdateExecutionStatusParams): Promise<ApiEither<Execution>>;
+  updateStatus(
+    params: UpdateExecutionStatusParams,
+  ): Promise<ApiEither<Execution>>;
   updateStatusByInngestEventId(
     params: {
       inngestEventId: string;

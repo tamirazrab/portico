@@ -1,16 +1,20 @@
 "use client";
 
-import { EntityItem } from "@/components/entity-components";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
-import { useTRPC } from "@/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { EntityItem } from "@/components/entity-components";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
-import { invalidateCredentials, invalidateCredential } from "@/trpc/helpers/query-invalidation";
-import { credentialLogos } from "../utils/credential-logos";
+import { routes } from "@/lib/routes";
+import { useTRPC } from "@/trpc/client";
+import {
+  invalidateCredential,
+  invalidateCredentials,
+} from "@/trpc/helpers/query-invalidation";
 import type { Credential } from "../types";
+import { credentialLogos } from "../utils/credential-logos";
 
 interface CredentialItemViewProps {
   credential: Credential;
@@ -27,10 +31,10 @@ export default function CredentialItemView({
 
   const removeCredential = useMutation(
     trpc.credentials.remove.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(`Credential "${data.name}" removed successfully`);
+      onSuccess: (_data) => {
+        toast.success(`Credential "${credential.name}" removed successfully`);
         invalidateCredentials(queryClient);
-        invalidateCredential(queryClient, data.id);
+        invalidateCredential(queryClient, credential.id);
       },
       onError: (error) => {
         const handled = handleError(error);
@@ -46,7 +50,7 @@ export default function CredentialItemView({
 
   return (
     <EntityItem
-      href={`/${lang}/dashboard/credentials/${credential.id}`}
+      href={routes.credential(lang, credential.id)}
       title={credential.name}
       subtitle={
         <>
@@ -62,12 +66,7 @@ export default function CredentialItemView({
       }
       image={
         <div className="size-8 flex items-center justify-center">
-          <Image
-            src={Logo}
-            alt={credential.type}
-            width={20}
-            height={20}
-          />
+          <Image src={Logo} alt={credential.type} width={20} height={20} />
         </div>
       }
       onRemove={() => removeCredential.mutate({ id: credential.id })}

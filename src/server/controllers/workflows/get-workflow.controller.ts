@@ -1,12 +1,12 @@
 "use server";
 
-import { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
-import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
-import {
+import type { ApiEither } from "@/feature/common/data/api-task";
+import type {
   GetWorkflowParams,
   WorkflowWithNodesAndConnections,
 } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
 
 export default async function getWorkflowController(
   params: GetWorkflowParams,
@@ -14,4 +14,3 @@ export default async function getWorkflowController(
   await connection();
   return await getWorkflowUseCase(params);
 }
-

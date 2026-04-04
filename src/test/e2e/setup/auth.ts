@@ -1,6 +1,6 @@
-import { Page } from "@playwright/test";
-import { getTestDatabase } from "./database";
+import type { Page } from "@playwright/test";
 import * as bcrypt from "bcrypt";
+import { getTestDatabase } from "./database";
 
 /**
  * Authentication helpers for E2E tests.
@@ -20,7 +20,7 @@ export interface TestUser {
 export async function createTestUser(user: TestUser): Promise<void> {
   const db = getTestDatabase();
   const hashedPassword = await bcrypt.hash(user.password, 10);
-  
+
   // Create user in database
   // Note: This assumes Better Auth uses a user table
   // Adjust based on actual Better Auth schema
@@ -38,19 +38,16 @@ export async function createTestUser(user: TestUser): Promise<void> {
  * Login as a test user using real Better Auth flow.
  * This performs actual authentication, not mocking.
  */
-export async function loginAsUser(
-  page: Page,
-  user: TestUser,
-): Promise<void> {
+export async function loginAsUser(page: Page, user: TestUser): Promise<void> {
   await page.goto("/en/login");
-  
+
   // Fill login form
   await page.fill('input[type="email"]', user.email);
   await page.fill('input[type="password"]', user.password);
-  
+
   // Submit form
   await page.click('button[type="submit"]');
-  
+
   // Wait for navigation to dashboard
   await page.waitForURL(/\/dashboard/, { timeout: 10000 });
 }
@@ -87,4 +84,3 @@ export async function cleanupTestUser(email: string): Promise<void> {
     where: { email },
   });
 }
-

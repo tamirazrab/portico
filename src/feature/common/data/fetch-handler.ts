@@ -1,20 +1,16 @@
-import ApiTask from "@/feature/common/data/api-task";
+import { pipe } from "fp-ts/lib/function";
+import { chain, mapLeft, tryCatch } from "fp-ts/lib/TaskEither";
+import type ApiTask from "@/feature/common/data/api-task";
 import { failureOrCurry } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
 import { diResolve } from "@/feature/common/features.di";
 import { authModuleKey } from "@/feature/generic/auth/auth-module-key";
-import AuthRepo, {
-  authRepoKey,
-} from "@/feature/generic/auth/domain/i-repo/auth.repository";
-import { pipe } from "fp-ts/lib/function";
-import { chain, mapLeft, tryCatch } from "fp-ts/lib/TaskEither";
+import type AuthRepo from "@/feature/generic/auth/domain/i-repo/auth.repository";
+import { authRepoKey } from "@/feature/generic/auth/domain/i-repo/auth.repository";
 
 export type FetchOptions<
-  BODY extends
-    | Record<string, unknown>
-    | string
-    | string[]
-    | undefined = undefined,
+  BODY extends Record<string, unknown> | string | string[] | undefined =
+    undefined,
 > = {
   endpoint: string;
   method: "POST" | "GET" | "PUT" | "DELETE";
@@ -31,11 +27,8 @@ export default class FetchHandler {
 
   fetchWithAuth<
     RESPONSE,
-    BODY extends
-      | Record<string, unknown>
-      | string
-      | string[]
-      | undefined = undefined,
+    BODY extends Record<string, unknown> | string | string[] | undefined =
+      undefined,
   >(options: FetchOptions<BODY>): ApiTask<RESPONSE> {
     return pipe(
       this.authRepo.getCachedToken(),

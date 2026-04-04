@@ -1,26 +1,16 @@
-import getCustomerInvoiceDi from "@/feature/core/customer-invoice/data/module/customer-invoice.di";
-import { customerInvoiceModuleKey } from "@/feature/core/customer-invoice/invoice.module-key";
-import { customerKey } from "@/feature/core/customer/customer-key";
-import getCustomerDi from "@/feature/core/customer/data/module/customer-di";
-import globalModule from "@/feature/common/data/global.module";
-import getInvoiceDi from "@/feature/core/invoice/data/module/invoice.di";
-import { invoiceModuleKey } from "@/feature/core/invoice/invoice.module-key";
-import { DependencyContainer, InjectionToken } from "tsyringe";
-import { summaryInfoModuleKey } from "@/feature/core/summary-info/domain/summary-info.module-key";
-import getSummaryInfoDi from "@/feature/core/summary-info/data/module/summary-info.di";
-import { revenueModuleKey } from "@/feature/core/revenue/domain/revenue.module-key";
-import getRevenueDi from "@/feature/core/revenue/data/module/revenue.di";
-import authModule from "@/feature/generic/auth/data/module/auth.module";
-import { authModuleKey } from "@/feature/generic/auth/auth-module-key";
+import type { DependencyContainer, InjectionToken } from "tsyringe";
 import di from "@/bootstrap/di/init-di";
-import { userModuleKey } from "@/feature/core/user/data/user-module-key";
-import userModule from "@/feature/core/user/data/module/user-module";
-import { workflowModuleKey } from "@/feature/core/workflow/data/workflow-module-key";
-import workflowModule from "@/feature/core/workflow/data/module/workflow.module";
 import { credentialModuleKey } from "@/feature/core/credential/data/credential-module-key";
 import credentialModule from "@/feature/core/credential/data/module/credential.module";
 import { executionModuleKey } from "@/feature/core/execution/data/execution-module-key";
 import executionModule from "@/feature/core/execution/data/module/execution.module";
+import userModule from "@/feature/core/user/data/module/user-module";
+import { userModuleKey } from "@/feature/core/user/data/user-module-key";
+import workflowModule from "@/feature/core/workflow/data/module/workflow.module";
+import { workflowModuleKey } from "@/feature/core/workflow/data/workflow-module-key";
+import { authModuleKey } from "@/feature/generic/auth/auth-module-key";
+import authModule from "@/feature/generic/auth/data/module/auth.module";
+import globalModule from "./data/global.module";
 
 /**
  * On adding new domain module, just add it to this list
@@ -30,11 +20,6 @@ const moduleKeyToDi: Record<
   (di: DependencyContainer) => DependencyContainer
 > = {
   [authModuleKey]: authModule,
-  [customerKey]: getCustomerDi,
-  [customerInvoiceModuleKey]: getCustomerInvoiceDi,
-  [invoiceModuleKey]: getInvoiceDi,
-  [summaryInfoModuleKey]: getSummaryInfoDi,
-  [revenueModuleKey]: getRevenueDi,
   [userModuleKey]: userModule,
   [workflowModuleKey]: workflowModule,
   [credentialModuleKey]: credentialModule,

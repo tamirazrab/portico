@@ -1,8 +1,7 @@
-import type { ComponentProps, HTMLAttributes } from "react";
-
-import { cn } from "@/lib/utils";
 import { CheckCircle2Icon, Loader2Icon, XCircleIcon } from "lucide-react";
-import { NodeStatus } from "./node-status-indicator";
+import type { ComponentProps, HTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
+import type { NodeStatus } from "./node-status-indicator";
 
 interface BaseNodeProps extends HTMLAttributes<HTMLDivElement> {
   status?: NodeStatus;
@@ -15,7 +14,6 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
         "bg-card text-card-foreground relative rounded-sm border border-muted-foreground hover:bg-accent",
         className,
       )}
-      tabIndex={0}
       {...props}
     >
       {props.children}

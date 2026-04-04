@@ -1,12 +1,13 @@
 "use server";
 
-import type { ApiEither } from "@/feature/common/data/api-task";
+import { isLeft, left, right } from "fp-ts/lib/Either";
 import { connection } from "next/server";
-import executeWorkflowUseCase from "@/feature/core/workflow/domain/usecase/execute-workflow.usecase";
 import { sendWorkflowExecution } from "@/bootstrap/integrations/inngest/util";
+import type { ApiEither } from "@/feature/common/data/api-task";
+import { failureOr } from "@/feature/common/failures/failure-helpers";
+import NetworkFailure from "@/feature/common/failures/network.failure";
 import type Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
-import { pipe } from "fp-ts/lib/function";
-import { tryCatch } from "fp-ts/lib/TaskEither";
+import executeWorkflowUseCase from "@/feature/core/workflow/domain/usecase/execute-workflow.usecase";
 
 export default async function executeWorkflowController(params: {
   id: string;
@@ -14,24 +15,18 @@ export default async function executeWorkflowController(params: {
 }): Promise<ApiEither<Workflow>> {
   await connection();
 
-  // First verify workflow exists
   const workflowResult = await executeWorkflowUseCase(params);
-
-  if (pipe(workflowResult, (r) => r._tag === "Left")) {
+  if (isLeft(workflowResult)) {
     return workflowResult;
   }
 
-  // Then trigger Inngest execution
-  return pipe(
-    tryCatch(
-      async () => {
-        await sendWorkflowExecution({
-          workflowId: params.id,
-        });
-        return workflowResult.right;
-      },
-      (_error) => workflowResult.left,
-    ),
-  )();
-}
+  try {
+    await sendWorkflowExecution({
+      workflowId: params.id,
+    });
+  } catch (error) {
+    return left(failureOr(error, new NetworkFailure(error as Error)));
+  }
 
+  return right(workflowResult.right);
+}

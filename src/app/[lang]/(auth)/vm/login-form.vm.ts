@@ -1,13 +1,15 @@
 "use client";
 
-import { BaseVM } from "reactvvm";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
+import { useParams, useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { BaseVM } from "reactvvm";
 import { toast } from "sonner";
+import z from "zod";
 import { authClient } from "@/bootstrap/boundaries/auth/better-auth-client";
-import LoginFormIVM, { LoginFormValues } from "../view/login-form.i-vm";
+import { defaultLocale, isAppLocale, routes } from "@/lib/routes";
+import type LoginFormIVM from "../view/login-form.i-vm";
+import type { LoginFormValues } from "../view/login-form.i-vm";
 
 const loginSchema = z.object({
   email: z.email({ message: "Invalid email address" }),
@@ -20,6 +22,10 @@ export default class LoginFormVM extends BaseVM<LoginFormIVM> {
   // eslint-disable-next-line react-hooks/rules-of-hooks -- useVM is a hook method
   useVM(): LoginFormIVM {
     const router = useRouter();
+    const params = useParams();
+    const raw = params?.lang as string | undefined;
+    const lang = raw && isAppLocale(raw) ? raw : defaultLocale();
+    const home = routes.home(lang);
 
     const form = useForm<LoginFormValues>({
       resolver: zodResolver(loginSchema),
@@ -34,12 +40,12 @@ export default class LoginFormVM extends BaseVM<LoginFormIVM> {
         {
           email: values.email,
           password: values.password,
-          callbackURL: "/",
+          callbackURL: home,
         },
         {
           onSuccess: () => {
             toast.success("Logged in successfully");
-            router.push("/");
+            router.push(home);
           },
           onError: (ctx) => {
             toast.error(ctx.error.message);

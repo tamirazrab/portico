@@ -1,21 +1,21 @@
 "use client";
 
-import { BaseVM } from "reactvvm";
-import { useState, useCallback, useMemo } from "react";
-import { useSetAtom } from "jotai";
-import { useTheme } from "next-themes";
 import type {
-  Node,
-  Edge,
-  NodeChange,
-  EdgeChange,
   Connection,
+  Edge,
+  EdgeChange,
+  Node,
+  NodeChange,
   ReactFlowInstance,
 } from "@xyflow/react";
-import { applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/react";
+import { addEdge, applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
+import { useSetAtom } from "jotai";
+import { useTheme } from "next-themes";
+import { useCallback, useMemo, useState } from "react";
+import { BaseVM } from "reactvvm";
 import { NodeType } from "@/generated/prisma/enums";
 import { editorAtom } from "../store/atoms";
-import EditorIVM from "../view/editor.i-vm";
+import type EditorIVM from "../view/editor.i-vm";
 
 interface EditorVMProps {
   workflowId: string;

@@ -1,4 +1,4 @@
-import { IBaseVM } from "reactvvm";
+import type { IBaseVM } from "reactvvm";
 
 /**
  * To use with mvvm library to make a vm based on props so you can pass the result to the view

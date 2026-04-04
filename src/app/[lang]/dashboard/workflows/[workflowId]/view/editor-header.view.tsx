@@ -1,8 +1,8 @@
 "use client";
 
-import { SidebarTrigger } from "@/app/components/ui/sidebar";
-import { Button } from "@/app/components/ui/button";
 import { SaveIcon } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,9 +10,10 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/app/components/ui/breadcrumb";
+import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { SidebarTrigger } from "@/app/components/ui/sidebar";
+import { routes } from "@/lib/routes";
 import EditorHeaderVM from "../vm/editor-header.vm";
 
 interface EditorHeaderViewProps {
@@ -45,7 +46,7 @@ export default function EditorHeaderView({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href={`/${lang}/dashboard/workflows`} prefetch>
+                <Link href={routes.workflows(lang)} prefetch>
                   workflows
                 </Link>
               </BreadcrumbLink>

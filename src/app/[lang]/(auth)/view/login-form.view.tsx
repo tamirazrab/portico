@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Input } from "@/app/components/ui/input";
+import { useParams } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
@@ -13,15 +13,20 @@ import {
 } from "@/app/components/ui/card";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/app/components/ui/form";
+import { Input } from "@/app/components/ui/input";
+import { defaultLocale, isAppLocale, routes } from "@/lib/routes";
 import LoginFormVM from "../vm/login-form.vm";
 
 export default function LoginFormView() {
+  const params = useParams();
+  const raw = params?.lang as string | undefined;
+  const lang = raw && isAppLocale(raw) ? raw : defaultLocale();
   const vm = new LoginFormVM();
   const vmData = vm.useVM();
 
@@ -114,7 +119,10 @@ export default function LoginFormView() {
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <Link href="/signup" className="underline underline-offset-4">
+                  <Link
+                    href={routes.signup(lang)}
+                    className="underline underline-offset-4"
+                  >
                     Sign Up
                   </Link>
                 </div>

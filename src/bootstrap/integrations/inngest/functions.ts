@@ -1,31 +1,30 @@
+import { isLeft } from "fp-ts/lib/Either";
 import { NonRetriableError } from "inngest";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
-import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
-import { getExecutor } from "@/feature/core/execution/domain/executor/executor-registry";
-import getWorkflowByIdForExecutionUseCase from "@/feature/core/workflow/domain/usecase/get-workflow-by-id-for-execution.usecase";
 import createExecutionUseCase from "@/feature/core/execution/domain/usecase/create-execution.usecase";
-import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
 import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
-import { isLeft } from "fp-ts/lib/Either";
-import { inngest } from "./client";
-import { topologicalsort } from "./util";
-import { httpRequestChannel } from "./channels/http-request";
-import { manualTriggerChannel } from "./channels/manual-trigger";
-import { googleFormTriggerChannel } from "./channels/google-form-trigger";
-import { stripeTriggerChannel } from "./channels/stripe-trigger";
-import { geminiChannel } from "./channels/gemini";
-import { openaiChannel } from "./channels/openai";
+import { getExecutor } from "@/feature/core/execution/infrastructure/executor/executor-registry";
+import type NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
+import getWorkflowByIdForExecutionUseCase from "@/feature/core/workflow/domain/usecase/get-workflow-by-id-for-execution.usecase";
 import { anthropicChannel } from "./channels/anthropic";
 import { cronTriggerChannel } from "./channels/cron";
 import { DiscordChannel } from "./channels/discord";
+import { geminiChannel } from "./channels/gemini";
+import { googleFormTriggerChannel } from "./channels/google-form-trigger";
+import { httpRequestChannel } from "./channels/http-request";
+import { manualTriggerChannel } from "./channels/manual-trigger";
+import { openaiChannel } from "./channels/openai";
 import { SlackChannel } from "./channels/slack";
-import type { Node, Connection } from "./util";
+import { stripeTriggerChannel } from "./channels/stripe-trigger";
+import { inngest } from "./client";
+import type { Connection, Node } from "./util";
+import { topologicalsort } from "./util";
 
 export const executeWorkflow = inngest.createFunction(
   {
     id: "execute-workflow",
     retries: 1,
-    onFailure: async ({ event, step }) => {
+    onFailure: async ({ event, step: _step }) => {
       const inngestEventId = event.data.event?.id;
       if (!inngestEventId) {
         console.error("Cannot update execution status: missing inngestEventId");
@@ -84,7 +83,7 @@ export const executeWorkflow = inngest.createFunction(
     });
 
     // Create execution using usecase
-    let executionId: string;
+    let _executionId: string;
     await step.run("create-execution", async () => {
       const result = await createExecutionUseCase({
         workflowId,
@@ -95,7 +94,7 @@ export const executeWorkflow = inngest.createFunction(
         throw new NonRetriableError("Failed to create execution");
       }
 
-      executionId = result.right.id;
+      _executionId = result.right.id;
     });
 
     // Sort nodes topologically
@@ -109,8 +108,8 @@ export const executeWorkflow = inngest.createFunction(
           position: n.position as { x: number; y: number },
           data: n.data as Record<string, unknown>,
           credentialId: n.credentialId || null,
-          createdAt: n.createdAt,
-          updatedAt: n.updatedAt,
+          createdAt: new Date(n.createdAt),
+          updatedAt: new Date(n.updatedAt),
         })) as Node[],
         workflowResult.connections.map((c) => ({
           id: c.id,
@@ -119,8 +118,8 @@ export const executeWorkflow = inngest.createFunction(
           toNodeId: c.toNodeId,
           fromOutput: c.fromOutput,
           toInput: c.toInput,
-          createdAt: c.createdAt,
-          updatedAt: c.updatedAt,
+          createdAt: new Date(c.createdAt),
+          updatedAt: new Date(c.updatedAt),
         })) as Connection[],
       ),
     );

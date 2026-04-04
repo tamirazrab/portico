@@ -1,8 +1,7 @@
-import { PrismaClient } from "@/generated/prisma/client";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Execution from "@/feature/core/execution/domain/entity/execution.entity";
-import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
-import { ExecutionWithWorkflow } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import type ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
+import type { ExecutionWithWorkflow } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
 
 type ExecutionDbResponse = {
   id: string;
@@ -39,13 +38,12 @@ export default class ExecutionMapper {
     dbExecution: ExecutionDbResponse,
   ): ExecutionWithWorkflow {
     const execution = ExecutionMapper.toEntity(dbExecution);
-    return {
-      ...execution,
+    return Object.assign(execution, {
       workflow: dbExecution.workflow || {
         id: dbExecution.workflowId,
         name: "",
       },
-    };
+    });
   }
 
   static toPaginatedEntity(

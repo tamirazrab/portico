@@ -1,10 +1,11 @@
 "use client";
 
-import { BaseVM } from "reactvvm";
-import { useEffect, useRef, useState } from "react";
-import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
+import { useEffect, useRef, useState } from "react";
+import { BaseVM } from "reactvvm";
+import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
+import { useTRPC } from "@/trpc/client";
 import { invalidateWorkflow } from "@/trpc/helpers/query-invalidation";
 import { editorAtom } from "../store/atoms";
 import type EditorHeaderIVM from "../view/editor-header.i-vm";
@@ -93,8 +94,22 @@ export default class EditorHeaderVM extends BaseVM<EditorHeaderIVM> {
 
       updateWorkflow.mutate({
         id: this.workflowId,
-        nodes,
-        edges,
+        nodes: nodes.map((n) => ({
+          id: n.id,
+          position: n.position,
+          type:
+            n.type !== undefined &&
+            Object.values(NodeType).includes(n.type as NodeType)
+              ? (n.type as NodeType)
+              : undefined,
+          data: n.data as Record<string, unknown> | undefined,
+        })),
+        edges: edges.map((e) => ({
+          source: e.source,
+          target: e.target,
+          sourceHandle: e.sourceHandle,
+          targetHandle: e.targetHandle,
+        })),
       });
     };
 

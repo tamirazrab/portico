@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { faker } from "@faker-js/faker";
+import { describe, expect, it } from "vite-plus/test";
+import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import CredentialMapper from "@/feature/core/credential/data/repository/credential.mapper";
 import Credential from "@/feature/core/credential/domain/entity/credential.entity";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
 
 describe("CredentialMapper", () => {
   describe("toEntity", () => {
@@ -68,4 +68,3 @@ describe("CredentialMapper", () => {
     });
   });
 });
-

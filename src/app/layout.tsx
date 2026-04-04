@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { TRPCReactProvider } from "@/trpc/client";
-import { Toaster } from "sonner";
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Provider } from "jotai";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
+import { TRPCReactProvider } from "@/trpc/client";
 import { ThemeProvider } from "./components/theme-provider";
 
 const geistSans = Geist({
@@ -39,9 +39,7 @@ export default function RootLayout({
               defaultTheme="light"
               storageKey="theme"
             >
-              <Provider>
-                {children}
-              </Provider>
+              <Provider>{children}</Provider>
             </ThemeProvider>
             <Toaster />
           </NuqsAdapter>

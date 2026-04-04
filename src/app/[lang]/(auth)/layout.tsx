@@ -1,9 +1,12 @@
 import AuthLayoutView from "./view/auth-layout.view";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ lang: string }>;
 }) {
-  return <AuthLayoutView>{children}</AuthLayoutView>;
+  const { lang } = await params;
+  return <AuthLayoutView lang={lang}>{children}</AuthLayoutView>;
 }

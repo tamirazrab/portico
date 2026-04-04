@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/app/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,17 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/app/components/ui/collapsible";
 import {
+  calculateDuration,
   formatStatus,
   getStatusIcon,
-  calculateDuration,
 } from "@/lib/execution-utils";
+import { routes } from "@/lib/routes";
 import type { Execution } from "../types";
 
 interface ExecutionDetailViewProps {
@@ -62,7 +63,7 @@ export default function ExecutionDetailView({
             <Link
               prefetch
               className="text-sm hover:underline text-primary"
-              href={`/${lang}/dashboard/workflows/${execution.workflowId}`}
+              href={routes.workflow(lang, execution.workflowId)}
             >
               {execution.workflow.name}
             </Link>

@@ -2,9 +2,9 @@
 
 import { EntityContainer } from "@/components/entity-components";
 import CredentialsHeaderView from "./credentials-header.view";
-import CredentialsSearchView from "./credentials-search.view";
 import CredentialsListView from "./credentials-list.view";
 import CredentialsPaginationView from "./credentials-pagination.view";
+import CredentialsSearchView from "./credentials-search.view";
 
 export default function CredentialsContainerView() {
   return (

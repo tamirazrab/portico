@@ -1,10 +1,10 @@
 "use server";
 
-import { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
+import type { ApiEither } from "@/feature/common/data/api-task";
+import type Credential from "@/feature/core/credential/domain/entity/credential.entity";
+import type { UpdateCredentialParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
 import updateCredentialUseCase from "@/feature/core/credential/domain/usecase/update-credential.usecase";
-import { UpdateCredentialParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
-import Credential from "@/feature/core/credential/domain/entity/credential.entity";
 
 export default async function updateCredentialController(
   params: UpdateCredentialParams,
@@ -12,4 +12,3 @@ export default async function updateCredentialController(
   await connection();
   return await updateCredentialUseCase(params);
 }
-

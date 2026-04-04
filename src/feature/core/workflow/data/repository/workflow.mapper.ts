@@ -1,9 +1,8 @@
-import { PrismaClient } from "@/generated/prisma/client";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
-import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
 import WorkflowConnection from "@/feature/core/workflow/domain/entity/workflow-connection.entity";
-import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
+import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
+import type NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 
 type WorkflowDbResponse = {
   id: string;

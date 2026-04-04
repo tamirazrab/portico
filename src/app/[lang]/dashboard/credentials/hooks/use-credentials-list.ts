@@ -1,8 +1,8 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
+import { useTRPC } from "@/trpc/client";
 import { credentialsParams } from "../params/credentials-params";
 import type { CredentialsData } from "../types";
 
@@ -35,4 +35,3 @@ export function useCredentials() {
     setParams,
   };
 }
-

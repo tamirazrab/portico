@@ -1,9 +1,10 @@
-import { ApiEither } from "@/feature/common/data/api-task";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { diResolve } from "@/feature/common/features.di";
 import { credentialModuleKey } from "@/feature/core/credential/data/credential-module-key";
-import CredentialRepository, {
+import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import {
   credentialRepoKey,
-  UpdateCredentialParams,
+  type UpdateCredentialParams,
 } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
 
 export default async function updateCredentialUseCase(

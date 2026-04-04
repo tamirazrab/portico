@@ -1,9 +1,9 @@
 "use client";
 
-import { EntitySearch } from "@/components/entity-components";
 import { useQueryStates } from "nuqs";
-import { credentialsParams } from "../params/credentials-params";
+import { EntitySearch } from "@/components/entity-components";
 import { useSearchDebounce } from "../../hooks/use-search-debounce";
+import { credentialsParams } from "../params/credentials-params";
 
 export default function CredentialsSearchView() {
   const [params, setParams] = useQueryStates(credentialsParams);

@@ -1,4 +1,4 @@
-import CredentialType from "../enum/credential-type.enum";
+import type CredentialType from "../enum/credential-type.enum";
 
 export type CredentialParams = Omit<Credential, "toPlainObject">;
 
@@ -7,7 +7,7 @@ export default class Credential {
 
   readonly name: string;
 
-  readonly value: string; 
+  readonly value: string;
 
   readonly type: CredentialType;
 

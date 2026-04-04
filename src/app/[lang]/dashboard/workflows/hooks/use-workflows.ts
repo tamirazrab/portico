@@ -1,8 +1,8 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
+import { useTRPC } from "@/trpc/client";
 import { workflowsParams } from "../params/workflows-params";
 import type { WorkflowsData } from "../types";
 
@@ -28,4 +28,3 @@ export function useWorkflows() {
     setParams,
   };
 }
-

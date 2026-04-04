@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition, useRef } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 /**
  *
@@ -13,7 +13,9 @@ export const useServerAction = <P extends unknown[], R>(
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<R>();
   const [finished, setFinished] = useState(false);
-  const resolver = useRef<(value?: R | PromiseLike<R>) => void>();
+  const resolver = useRef<((value?: R | PromiseLike<R>) => void) | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     if (!finished) return;

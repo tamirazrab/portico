@@ -1,46 +1,61 @@
 import "server-only";
-import { sendWorkflowExecution } from "@/bootstrap/integrations/inngest/util";
-import { validateGoogleWebhook } from "@/bootstrap/helpers/security/webhook-validator";
-import { logger } from "@/bootstrap/helpers/logging/logger";
-import { type NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
+import { type NextRequest, NextResponse } from "next/server";
+import { logger } from "@/bootstrap/helpers/logging/logger";
+import { googleFormWebhookBodySchema } from "@/bootstrap/helpers/security/google-form-webhook-schema";
+import { workflowIdQuerySchema } from "@/bootstrap/helpers/security/webhook-schemas";
+import { validateGoogleFormWebhookAuth } from "@/bootstrap/helpers/security/webhook-validator";
+import enqueueWorkflowExecutionUseCase from "@/feature/core/execution/application/usecase/enqueue-workflow-execution.usecase";
 
-/**
- * Google Forms webhook endpoint.
- * Security: Basic validation only. For production, add:
- * - Google signature validation (implement validateGoogleWebhook)
- * - IP whitelisting
- * - Rate limiting
- */
 export async function POST(request: NextRequest) {
   try {
-    // Validate webhook request
-    const validation = await validateGoogleWebhook(request);
-    if (!validation.isValid) {
-      logger.warn("Google Form webhook validation failed", {
+    const auth = validateGoogleFormWebhookAuth(request);
+    if (!auth.isValid) {
+      logger.warn("Google Form webhook auth failed", {
         namespace: "google-form-webhook",
-        metadata: {
-          error: validation.error,
-          url: request.url,
-        },
+        metadata: { error: auth.error, url: request.url },
       });
       return NextResponse.json(
-        { success: false, error: validation.error },
-        { status: 400 },
+        { success: false, error: auth.error },
+        { status: 401, headers: { "Cache-Control": "no-store" } },
       );
     }
 
     const url = new URL(request.url);
-    const workflowId = url.searchParams.get("workflowId");
-
-    if (!workflowId) {
+    const parsedQuery = workflowIdQuerySchema.safeParse(
+      Object.fromEntries(url.searchParams.entries()),
+    );
+    if (!parsedQuery.success) {
       return NextResponse.json(
-        { success: false, error: "Missing workflowId" },
-        { status: 400 },
+        { success: false, error: "Invalid workflowId" },
+        { status: 400, headers: { "Cache-Control": "no-store" } },
+      );
+    }
+    const { workflowId } = parsedQuery.data;
+
+    let json: unknown;
+    try {
+      json = await request.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "Invalid JSON body" },
+        { status: 400, headers: { "Cache-Control": "no-store" } },
       );
     }
 
-    const body = await request.json();
+    const parsed = googleFormWebhookBodySchema.safeParse(json);
+    if (!parsed.success) {
+      logger.warn("Google Form webhook body validation failed", {
+        namespace: "google-form-webhook",
+        metadata: { issues: parsed.error.flatten() },
+      });
+      return NextResponse.json(
+        { success: false, error: "Invalid request body" },
+        { status: 400, headers: { "Cache-Control": "no-store" } },
+      );
+    }
+
+    const body = parsed.data;
 
     const formData = {
       formId: body.formId,
@@ -52,23 +67,53 @@ export async function POST(request: NextRequest) {
       raw: body,
     };
 
-    await sendWorkflowExecution({
+    const enqueue = await enqueueWorkflowExecutionUseCase({
       workflowId,
+      trigger: {
+        kind: "google_form",
+        formId: body.formId,
+        responseId: body.responseId,
+        timestamp: body.timestamp,
+      },
       initialData: {
         googleForm: formData,
       },
     });
+    if (!enqueue.ok) {
+      logger.warn("Google Form webhook execution enqueue failed", {
+        namespace: "google-form-webhook",
+        metadata: {
+          workflowId,
+          status: enqueue.status,
+          message: enqueue.message,
+        },
+      });
+      return NextResponse.json(
+        { success: false, error: enqueue.message },
+        { status: enqueue.status, headers: { "Cache-Control": "no-store" } },
+      );
+    }
 
     logger.info("Google Form webhook processed successfully", {
       namespace: "google-form-webhook",
       metadata: { workflowId, formId: formData.formId },
     });
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json(
+      { success: true },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
   } catch (error) {
     logger.error("Error processing Google Form trigger", {
       namespace: "google-form-webhook",
-      metadata: { error: error instanceof Error ? error.message : String(error) },
+      metadata: {
+        error: error instanceof Error ? error.message : String(error),
+      },
     });
 
     Sentry.captureException(error, {
@@ -79,7 +124,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { status: 500 },
+      { status: 500, headers: { "Cache-Control": "no-store" } },
     );
   }
 }

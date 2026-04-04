@@ -1,15 +1,26 @@
-import { ApiEither } from "@/feature/common/data/api-task";
+import { isLeft, left, right } from "fp-ts/lib/Either";
+import { userHasActivePolarSubscription } from "@/bootstrap/helpers/billing/polar-customer-state";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { diResolve } from "@/feature/common/features.di";
 import { workflowModuleKey } from "@/feature/core/workflow/data/workflow-module-key";
-import WorkflowRepository, {
-  workflowRepoKey,
-} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
+import PremiumRequiredFailure from "@/feature/core/workflow/domain/failure/premium-required-failure";
+import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import { workflowRepoKey } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import type Workflow from "../entity/workflow.entity";
+
+const PREMIUM_NODE_TYPES: ReadonlySet<NodeType> = new Set([
+  NodeType.OPENAI,
+  NodeType.ANTHROPIC,
+  NodeType.GEMINI,
+  NodeType.DISCORD,
+  NodeType.SLACK,
+]);
 
 export default async function executeWorkflowUseCase(params: {
   id: string;
   userId: string;
-}): Promise<ApiEither<import("../entity/workflow.entity").default>> {
-  // First verify the workflow exists and belongs to the user
+}): Promise<ApiEither<Workflow>> {
   const repo = diResolve<WorkflowRepository>(
     workflowModuleKey,
     workflowRepoKey,
@@ -18,9 +29,21 @@ export default async function executeWorkflowUseCase(params: {
   const workflowResult = await repo.getOne({
     id: params.id,
     userId: params.userId,
-  })();
+  });
 
-  // The actual execution is handled by Inngest, this usecase just validates
-  // and triggers the execution. The Inngest integration will handle the rest.
-  return workflowResult;
+  if (isLeft(workflowResult)) {
+    return workflowResult;
+  }
+
+  const { workflow, nodes } = workflowResult.right;
+  const needsPremium = nodes.some((n) => PREMIUM_NODE_TYPES.has(n.type));
+  if (needsPremium) {
+    const entitled = await userHasActivePolarSubscription(params.userId);
+    if (!entitled) {
+      return left(new PremiumRequiredFailure());
+    }
+  }
+
+  // The actual execution is handled by Inngest; this use case only validates access.
+  return right(workflow);
 }

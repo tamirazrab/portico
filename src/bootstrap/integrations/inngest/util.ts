@@ -1,7 +1,6 @@
-// @ts-ignore - toposort doesn't have types
-import toposort from "toposort";
-import { NonRetriableError } from "inngest";
 import { createId } from "@paralleldrive/cuid2";
+import { NonRetriableError } from "inngest";
+import toposort from "toposort";
 import { inngest } from "./client";
 
 // Type definitions for topological sort
@@ -68,13 +67,26 @@ export const topologicalsort = (
   return sortedNodeIds.map((id) => nodeMap.get(id)!).filter(Boolean);
 };
 
-export const sendWorkflowExecution = async (data: {
+export type SendWorkflowExecutionParams = {
   workflowId: string;
   initialData?: Record<string, unknown>;
-  [key: string]: unknown;
-}) =>
+  /**
+   * Pass a stable key per logical trigger (e.g. Stripe event id) so Inngest dedupes retries.
+   * Omit for interactive runs where each click should enqueue a new execution.
+   */
+  idempotencyKey?: string;
+};
+
+export const sendWorkflowExecution = async ({
+  workflowId,
+  initialData,
+  idempotencyKey,
+}: SendWorkflowExecutionParams) =>
   inngest.send({
     name: "workflows/execute.workflow",
-    data,
-    id: createId(),
+    data: {
+      workflowId,
+      ...(initialData !== undefined ? { initialData } : {}),
+    },
+    id: idempotencyKey ?? createId(),
   });

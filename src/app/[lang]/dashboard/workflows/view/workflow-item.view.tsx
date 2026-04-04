@@ -1,14 +1,18 @@
 "use client";
 
-import { EntityItem } from "@/components/entity-components";
-import { WorkflowIcon } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
+import { WorkflowIcon } from "lucide-react";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { EntityItem } from "@/components/entity-components";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
-import { invalidateWorkflows, invalidateWorkflow } from "@/trpc/helpers/query-invalidation";
+import { routes } from "@/lib/routes";
+import { useTRPC } from "@/trpc/client";
+import {
+  invalidateWorkflow,
+  invalidateWorkflows,
+} from "@/trpc/helpers/query-invalidation";
 import type { Workflow } from "../types";
 
 interface WorkflowItemViewProps {
@@ -24,10 +28,10 @@ export default function WorkflowItemView({ workflow }: WorkflowItemViewProps) {
 
   const removeWorkflow = useMutation(
     trpc.workflows.remove.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(`Workflow "${data.name}" removed successfully`);
+      onSuccess: (_data) => {
+        toast.success(`Workflow "${workflow.name}" removed successfully`);
         invalidateWorkflows(queryClient);
-        invalidateWorkflow(queryClient, data.id);
+        invalidateWorkflow(queryClient, workflow.id);
       },
       onError: (error) => {
         const handled = handleError(error);
@@ -40,12 +44,11 @@ export default function WorkflowItemView({ workflow }: WorkflowItemViewProps) {
 
   return (
     <EntityItem
-      href={`/${lang}/dashboard/workflows/${workflow.id}`}
+      href={routes.workflow(lang, workflow.id)}
       title={workflow.name}
       subtitle={
         <>
-          Updated{" "}
-          {formatDistanceToNow(workflow.updatedAt, { addSuffix: true })}{" "}
+          Updated {formatDistanceToNow(workflow.updatedAt, { addSuffix: true })}{" "}
           &bull; Created{" "}
           {formatDistanceToNow(workflow.createdAt, { addSuffix: true })}
         </>

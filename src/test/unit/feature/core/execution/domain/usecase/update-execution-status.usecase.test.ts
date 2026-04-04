@@ -1,14 +1,14 @@
-import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
-import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
+import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import updateExecutionStatusUseCase from "@/feature/core/execution/domain/usecase/update-execution-status.usecase";
+import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -25,7 +25,9 @@ const executionDi = mockDi();
 
 const mockedUpdateStatus = vi.fn<ExecutionRepository["updateStatus"]>();
 const MockedRepo = getMock<ExecutionRepository>();
-MockedRepo.setup((instance) => instance.updateStatus).returns(mockedUpdateStatus);
+MockedRepo.setup((instance) => instance.updateStatus).returns(
+  mockedUpdateStatus,
+);
 
 /* -------------------------------------------------------------------------- */
 /*                                     DI                                     */
@@ -107,4 +109,3 @@ describe("Update execution status usecase", () => {
     });
   });
 });
-

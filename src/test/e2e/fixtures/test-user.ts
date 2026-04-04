@@ -1,4 +1,4 @@
-import { TestUser } from "../setup/auth";
+import type { TestUser } from "../setup/auth";
 
 /**
  * Test user fixtures for E2E tests.
@@ -43,4 +43,3 @@ export function generateTestUserEmail(prefix: string = "test"): string {
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}-${timestamp}-${random}@example.com`;
 }
-

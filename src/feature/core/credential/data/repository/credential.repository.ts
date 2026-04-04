@@ -1,19 +1,25 @@
 import "server-only";
-import type { PrismaClient } from "@/generated/prisma/client";
-import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
+import { left, right } from "fp-ts/lib/Either";
+import { encrypt } from "@/bootstrap/helpers/encryption/encryption";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import type { ApiEither } from "@/feature/common/data/api-task";
+import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
-import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import featuresDi from "@/feature/common/features.di";
-import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
 import type Credential from "@/feature/core/credential/domain/entity/credential.entity";
 import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
-import { encrypt } from "@/bootstrap/helpers/encryption/encryption";
-import { left, right } from "fp-ts/lib/Either";
+import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import type {
+  CreateCredentialParams,
+  GetCredentialParams,
+  GetCredentialsByTypeParams,
+  GetCredentialsParams,
+  UpdateCredentialParams,
+} from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import type { PrismaClient } from "@/generated/prisma/client";
 import { credentialModuleKey } from "../credential-module-key";
 import CredentialMapper from "./credential.mapper";
-import type { CreateCredentialParams, UpdateCredentialParams, GetCredentialParams, GetCredentialsParams, GetCredentialsByTypeParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
 
 export default class CredentialRepositoryImpl implements CredentialRepository {
   private prisma: PrismaClient;
@@ -58,7 +64,10 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
     }
   }
 
-  async delete(params: { id: string; userId: string }): Promise<ApiEither<true>> {
+  async delete(params: {
+    id: string;
+    userId: string;
+  }): Promise<ApiEither<true>> {
     try {
       await this.prisma.credentials.delete({
         where: {
@@ -86,7 +95,9 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
     }
   }
 
-  async getMany(params: GetCredentialsParams): Promise<ApiEither<WithPagination<Credential>>> {
+  async getMany(
+    params: GetCredentialsParams,
+  ): Promise<ApiEither<WithPagination<Credential>>> {
     try {
       const page = params.page || 1;
       const pageSize = params.pageSize || 10;
@@ -120,7 +131,9 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
     }
   }
 
-  async getByType(params: GetCredentialsByTypeParams): Promise<ApiEither<Credential[]>> {
+  async getByType(
+    params: GetCredentialsByTypeParams,
+  ): Promise<ApiEither<Credential[]>> {
     try {
       const dbCredentials = await this.prisma.credentials.findMany({
         where: {
@@ -131,7 +144,9 @@ export default class CredentialRepositoryImpl implements CredentialRepository {
           updatedAt: "desc",
         },
       });
-      return right(dbCredentials.map((cred) => CredentialMapper.toEntity(cred)));
+      return right(
+        dbCredentials.map((cred) => CredentialMapper.toEntity(cred)),
+      );
     } catch (error) {
       return left(failureOr(error, new NetworkFailure(error as Error)));
     }

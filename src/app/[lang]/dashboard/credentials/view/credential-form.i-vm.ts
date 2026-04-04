@@ -1,5 +1,5 @@
-import { UseFormReturn } from "react-hook-form";
-import { CredentialType } from "@/generated/prisma/enums";
+import type { UseFormReturn } from "react-hook-form";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 
 export type CredentialFormValues = {
   name: string;

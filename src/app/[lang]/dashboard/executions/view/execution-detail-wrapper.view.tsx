@@ -1,10 +1,11 @@
 "use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { ErrorView, LoadingView } from "@/components/entity-components";
 import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { LoadingView, ErrorView } from "@/components/entity-components";
+import type { Execution } from "../types";
 import ExecutionDetailView from "./execution-detail.view";
 
 interface ExecutionDetailWrapperViewProps {
@@ -27,7 +28,7 @@ function ExecutionDetailContent({
     trpc.executions.getOne.queryOptions({ id: executionId }),
   );
 
-  return <ExecutionDetailView execution={execution} />;
+  return <ExecutionDetailView execution={execution as unknown as Execution} />;
 }
 
 export default function ExecutionDetailWrapperView({

@@ -2,15 +2,34 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-import { Button } from "@/app/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/app/components/ui/card";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/app/components/ui/form";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/app/components/ui/select";
-import { Input } from "postcss";
-import CredentialFormVM from "../vm/credential-form.vm";
 import { useParams } from "next/navigation";
+import { Button } from "@/app/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/app/components/ui/form";
+import { Input } from "@/app/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
 import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import { routes } from "@/lib/routes";
+import CredentialFormVM from "../vm/credential-form.vm";
 
 interface CredentialFormViewProps {
   initialData?: {
@@ -116,7 +135,7 @@ export default function CredentialFormView({
                   {vmData.isEdit ? "Update" : "Create"}
                 </Button>
                 <Button type="button" variant="outline" asChild>
-                  <Link href={`/${lang}/dashboard/credentials`} prefetch>
+                  <Link href={routes.credentials(lang)} prefetch>
                     Cancel
                   </Link>
                 </Button>

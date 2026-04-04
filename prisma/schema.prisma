@@ -89,6 +89,8 @@ model Credentials{
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   Node Node[]
+
+  @@index([userId])
 }
 
 enum CredentialType {
@@ -144,6 +146,8 @@ model Node {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([workflowId])
 }
 
 model Connection {
@@ -188,5 +192,7 @@ model Execution {
   inngestEventId String @unique
 
   output Json?
+
+  @@index([workflowId, startedAt(sort: Desc)])
 }
 

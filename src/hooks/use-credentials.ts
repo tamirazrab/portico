@@ -1,8 +1,8 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import type { CredentialType } from "@/generated/prisma/enums";
+import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import { useTRPC } from "@/trpc/client";
 
 /**
  * Hook to fetch credentials by type.
@@ -12,4 +12,3 @@ export const useCredentialsByType = (type: CredentialType) => {
   const trpc = useTRPC();
   return useQuery(trpc.credentials.getByType.queryOptions({ type }));
 };
-

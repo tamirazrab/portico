@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
 import { faker } from "@faker-js/faker";
+import { describe, expect, it } from "vite-plus/test";
+import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import WorkflowMapper from "@/feature/core/workflow/data/repository/workflow.mapper";
 import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
-import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
 import WorkflowConnection from "@/feature/core/workflow/domain/entity/workflow-connection.entity";
+import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
 
 describe("WorkflowMapper", () => {
   describe("toEntity", () => {
@@ -116,4 +116,3 @@ describe("WorkflowMapper", () => {
     });
   });
 });
-

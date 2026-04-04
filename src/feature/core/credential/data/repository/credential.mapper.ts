@@ -1,4 +1,3 @@
-
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import Credential from "@/feature/core/credential/domain/entity/credential.entity";
 import type CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";

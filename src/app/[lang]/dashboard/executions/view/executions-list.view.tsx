@@ -1,6 +1,6 @@
 "use client";
 
-import { EntityList, EmptyView } from "@/components/entity-components";
+import { EmptyView, EntityList } from "@/components/entity-components";
 import { useExecutions } from "../hooks/use-executions-list";
 import ExecutionItemView from "./execution-item.view";
 

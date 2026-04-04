@@ -12,7 +12,7 @@ export class TimeoutError extends Error {
 
 /**
  * Wraps a promise with a timeout.
- * 
+ *
  * @param promise - The promise to wrap
  * @param timeoutMs - Timeout in milliseconds
  * @param errorMessage - Custom error message
@@ -23,7 +23,7 @@ export async function withTimeout<T>(
   timeoutMs: number,
   errorMessage?: string,
 ): Promise<T> {
-  let timeoutId: NodeJS.Timeout;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutId = setTimeout(() => {
@@ -34,7 +34,7 @@ export async function withTimeout<T>(
   try {
     return await Promise.race([promise, timeoutPromise]);
   } finally {
-    clearTimeout(timeoutId);
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
   }
 }
 
@@ -47,4 +47,3 @@ export const TIMEOUTS = {
   LONG: 30000, // 30 seconds - for complex operations
   VERY_LONG: 60000, // 60 seconds - for long-running operations
 } as const;
-

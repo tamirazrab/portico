@@ -1,7 +1,7 @@
 import { createTRPCRouter } from "../init";
-import { workflowsRouter } from "./workflows";
 import { credentialsRouter } from "./credentials";
 import { executionsRouter } from "./executions";
+import { workflowsRouter } from "./workflows";
 
 export const appRouter = createTRPCRouter({
   workflows: workflowsRouter,

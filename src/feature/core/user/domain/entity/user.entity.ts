@@ -1,4 +1,4 @@
-import Role from "./enum/role.enum";
+import type Role from "./enum/role.enum";
 
 export type UserParams = Omit<User, "toPlainObject">;
 

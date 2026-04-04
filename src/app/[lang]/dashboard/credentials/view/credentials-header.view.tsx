@@ -1,7 +1,7 @@
 "use client";
 
-import { EntityHeader } from "@/components/entity-components";
 import { useParams } from "next/navigation";
+import { EntityHeader } from "@/components/entity-components";
 
 export default function CredentialsHeaderView() {
   const params = useParams();

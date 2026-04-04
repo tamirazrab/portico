@@ -1,20 +1,16 @@
 {
   "overrides": [
     {
-      "files": [
-        "src/**/*-vm.ts"
-      ],
+      "files": ["src/**/*-vm.ts"],
       "rules": {
         "react-hooks/rules-of-hooks": "off"
       }
     },
     {
-      "files": [
-        "src/app/**/*.stories.tsx"
-      ],
+      "files": ["src/app/**/*.stories.tsx"],
       "rules": {
         "react/jsx-props-no-spreading": "off"
-      }      
+      }
     },
     {
       "files": ["src/feature/**/*"],
@@ -49,39 +45,43 @@
           }
         ]
       }
+    },
+    {
+      "files": [
+        "src/feature/core/execution/infrastructure/executor/ui/**/*.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@/feature/core/execution/infrastructure/executor/runtime/**"
+                ],
+                "message": "Executor UI (React) must not import executor runtime directly. Use a colocated server-action bridge (e.g. croner.ts) or application services.",
+                "allowTypeImports": true
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
-    "settings": {
+  "settings": {
     "react": {
       "version": "detect"
     },
     "import/resolver": {
       "alias": {
-        "map": [
-          [
-            "~",
-            "./src"
-          ]
-        ],
-        "extensions": [
-          ".js",
-          ".ts",
-          ".tsx",
-          ".d.ts",
-          ".test.ts",
-          ".json"
-        ]
+        "map": [["~", "./src"]],
+        "extensions": [".js", ".ts", ".tsx", ".d.ts", ".test.ts", ".json"]
       }
     }
   },
-  "plugins": [
-    "prettier"
-  ],
   "extends": [
-    "airbnb",
     "next/core-web-vitals",
     "next/typescript",
-    "prettier",
     "plugin:storybook/recommended"
   ],
   "rules": {
@@ -119,25 +119,9 @@
             "group": "external"
           }
         ]
-      } 
-    ],
-    "no-shadow": "off",
-    "prettier/prettier": [
-      "warn",
-      {
-        "printWidth": 80,
-        "tabWidth": 2,
-        "endOfLine": "auto",
-        "useTabs": false,
-        "semi": true,
-        "singleQuote": false,
-        "quoteProps": "as-needed",
-        "jsxSingleQuote": false,
-        "trailingComma": "all",
-        "bracketSpacing": true,
-        "arrowParens": "always"
       }
     ],
+    "no-shadow": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -151,10 +135,7 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".ts", ".tsx"]
       }
     ],
     "import/no-extraneous-dependencies": [

@@ -1,10 +1,11 @@
 import "server-only"; // <-- ensure this file cannot be imported from the client
 import {
-  createTRPCOptionsProxy,
-  TRPCQueryOptions,
-} from "@trpc/tanstack-react-query";
+  dehydrate,
+  HydrationBoundary,
+  type QueryClient,
+} from "@tanstack/react-query";
+import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { cache } from "react";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { createTRPCContext } from "./init";
 import { makeQueryClient } from "./query-client";
 import { appRouter } from "./routers/_app";
@@ -21,14 +22,27 @@ export const trpc = createTRPCOptionsProxy({
 
 export const caller = appRouter.createCaller(createTRPCContext);
 
-export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(
-  queryOptions: T,
+type PrefetchQueryOptions = Parameters<QueryClient["prefetchQuery"]>[0];
+type PrefetchInfiniteQueryOptions = Parameters<
+  QueryClient["prefetchInfiniteQuery"]
+>[0];
+
+export function prefetch(
+  queryOptions: PrefetchQueryOptions | PrefetchInfiniteQueryOptions,
 ) {
   const queryClient = getQueryClient();
-  if (queryOptions.queryKey[1]?.type === "infinite") {
-    void queryClient.prefetchInfiniteQuery(queryOptions as any);
+  const meta = queryOptions.queryKey[1];
+  const isInfinite =
+    meta !== null &&
+    typeof meta === "object" &&
+    "type" in meta &&
+    meta.type === "infinite";
+  if (isInfinite) {
+    void queryClient.prefetchInfiniteQuery(
+      queryOptions as PrefetchInfiniteQueryOptions,
+    );
   } else {
-    void queryClient.prefetchQuery(queryOptions);
+    void queryClient.prefetchQuery(queryOptions as PrefetchQueryOptions);
   }
 }
 

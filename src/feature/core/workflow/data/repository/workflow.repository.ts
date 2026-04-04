@@ -1,25 +1,25 @@
 import "server-only";
-import type { PrismaClient } from "@/generated/prisma/client";
-import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
+import { left, right } from "fp-ts/lib/Either";
+import { generateSlug } from "random-word-slugs";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import type { ApiEither } from "@/feature/common/data/api-task";
+import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
-import type WithPagination from "@/feature/common/class-helpers/with-pagination";
 import featuresDi from "@/feature/common/features.di";
+import type Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
+import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
+import CreateWorkflowFailure from "@/feature/core/workflow/domain/failure/create-workflow-failure";
+import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
 import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
 import type {
   CreateWorkflowParams,
-  UpdateWorkflowParams,
-  GetWorkflowsParams,
   GetWorkflowParams,
+  GetWorkflowsParams,
+  UpdateWorkflowParams,
   WorkflowWithNodesAndConnections,
-} from type "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
-import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
-import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
-import CreateWorkflowFailure from "@/feature/core/workflow/domain/failure/create-workflow-failure";
-import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
-import { left, right } from "fp-ts/lib/Either";
-import { generateSlug } from "random-word-slugs";
+} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import type { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { workflowModuleKey } from "../workflow-module-key";
 import WorkflowMapper from "./workflow.mapper";
 
@@ -48,7 +48,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
       });
       return right(WorkflowMapper.toEntity(dbWorkflow));
     } catch (error) {
-      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+      return left(
+        failureOr(error, new CreateWorkflowFailure({ reason: error })),
+      );
     }
   }
 
@@ -61,7 +63,10 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
 
       // Update in transaction
       const result = await this.prisma.$transaction(async (tx) => {
-        // Delete existing nodes and connections
+        // Delete existing connections and nodes (explicit to avoid relying on cascades)
+        await tx.connection.deleteMany({
+          where: { workflowId: params.id },
+        });
         await tx.node.deleteMany({
           where: { workflowId: params.id },
         });
@@ -75,8 +80,7 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
               name: node.type || "unknown",
               type: (node.type as NodeType) || NodeType.INITIAL,
               position: node.position,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data: (node.data || {}) as any,
+              data: (node.data || {}) as Prisma.InputJsonValue,
             })),
           });
         }
@@ -91,6 +95,7 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
               fromOutput: edge.sourceHandle || "main",
               toInput: edge.targetHandle || "main",
             })),
+            skipDuplicates: true,
           });
         }
 
@@ -108,7 +113,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
 
       return right(WorkflowMapper.toEntity(result));
     } catch (error) {
-      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+      return left(
+        failureOr(error, new CreateWorkflowFailure({ reason: error })),
+      );
     }
   }
 
@@ -129,11 +136,16 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
       });
       return right(WorkflowMapper.toEntity(dbWorkflow));
     } catch (error) {
-      return left(failureOr(error, new CreateWorkflowFailure({ reason: error })));
+      return left(
+        failureOr(error, new CreateWorkflowFailure({ reason: error })),
+      );
     }
   }
 
-  async delete(params: { id: string; userId: string }): Promise<ApiEither<true>> {
+  async delete(params: {
+    id: string;
+    userId: string;
+  }): Promise<ApiEither<true>> {
     try {
       await this.prisma.workflow.delete({
         where: {
@@ -147,7 +159,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
     }
   }
 
-  async getOne(params: GetWorkflowParams): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
+  async getOne(
+    params: GetWorkflowParams,
+  ): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
     try {
       const dbWorkflow = await this.prisma.workflow.findUnique({
         where: {
@@ -182,7 +196,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
     }
   }
 
-  async getMany(params: GetWorkflowsParams): Promise<ApiEither<WithPagination<Workflow>>> {
+  async getMany(
+    params: GetWorkflowsParams,
+  ): Promise<ApiEither<WithPagination<Workflow>>> {
     try {
       const page = params.page || 1;
       const pageSize = params.pageSize || 10;
@@ -220,7 +236,9 @@ export default class WorkflowRepositoryImpl implements WorkflowRepository {
    * Get workflow by ID only (for internal execution use in infrastructure layer).
    * This bypasses userId check and should only be used in trusted infrastructure contexts.
    */
-  async getByIdForExecution(id: string): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
+  async getByIdForExecution(
+    id: string,
+  ): Promise<ApiEither<WorkflowWithNodesAndConnections>> {
     try {
       const dbWorkflow = await this.prisma.workflow.findUnique({
         where: {

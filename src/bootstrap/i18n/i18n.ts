@@ -1,9 +1,9 @@
-import { commonLangNs } from "@/feature/common/lang-keys/common.lang-key";
-import { userLangNs } from "@/feature/common/lang-keys/user.lang-key";
-import { getOptions, languages } from "@/bootstrap/i18n/settings";
-import { createInstance, Resource } from "i18next";
+import { createInstance, type Resource } from "i18next";
 import resourcesToBackend from "i18next-resources-to-backend";
 import { initReactI18next } from "react-i18next/initReactI18next";
+import { getOptions, languages } from "@/bootstrap/i18n/settings";
+import { commonLangNs } from "@/feature/common/lang-keys/common.lang-key";
+import { userLangNs } from "@/feature/common/lang-keys/user.lang-key";
 
 export const i18nInstance = createInstance();
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactFlow, Background, Controls, MiniMap, Panel } from "@xyflow/react";
-import type { Node, Edge } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
+import { Background, Controls, MiniMap, Panel, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "../components/add-node-button";

@@ -1,6 +1,6 @@
+import { z } from "zod";
 import langKey from "@/feature/common/lang-keys/common.lang-key";
 import baseUserParamsSchema from "@/feature/core/user/domain/params/base-user-param-schema";
-import { z } from "zod";
 
 const createUserParamsSchema = z.object({
   ...baseUserParamsSchema.shape,
@@ -15,6 +15,7 @@ const createUserParamsSchema = z.object({
             code: z.ZodIssueCode.too_small,
             minimum: 8,
             type: "string",
+            origin: "string",
             inclusive: true,
             message: langKey.global.passwordMinLength,
           });

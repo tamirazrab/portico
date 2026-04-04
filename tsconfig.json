@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,30 +15,19 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vite-plus/test/globals"],
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/server/*": [
-        "./src/server/*"
-      ],
-      "@/features/*": [
-        "./src/feature/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/server/*": ["./src/server/*"],
+      "@/features/*": ["./src/feature/*"],
+      "@/components/ui/*": ["./src/app/components/ui/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"]
     }
   },
   "include": [
@@ -60,6 +45,7 @@
     "NodeBase",
     "playwright.config.ts",
     "vitest.config.ts",
+    "src/test",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",

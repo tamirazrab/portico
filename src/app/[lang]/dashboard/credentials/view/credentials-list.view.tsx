@@ -1,6 +1,6 @@
 "use client";
 
-import { EntityList, EmptyView } from "@/components/entity-components";
+import { EmptyView, EntityList } from "@/components/entity-components";
 import { useCredentials } from "../hooks/use-credentials-list";
 import CredentialItemView from "./credential-item.view";
 

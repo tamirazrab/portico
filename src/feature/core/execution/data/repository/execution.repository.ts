@@ -1,21 +1,23 @@
 import "server-only";
-import { PrismaClient } from "@/generated/prisma/client";
+import { left, right } from "fp-ts/lib/Either";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { PRISMA_CLIENT_KEY } from "@/feature/common/data/global.module";
-import { ApiEither } from "@/feature/common/data/api-task";
 import { failureOr } from "@/feature/common/failures/failure-helpers";
 import NetworkFailure from "@/feature/common/failures/network.failure";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import featuresDi from "@/feature/common/features.di";
-import ExecutionRepository, {
-  CreateExecutionParams,
-  UpdateExecutionStatusParams,
-  GetExecutionsParams,
-  GetExecutionParams,
-  GetExecutionByInngestEventIdParams,
-  ExecutionWithWorkflow,
-} from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import type Execution from "@/feature/core/execution/domain/entity/execution.entity";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
-import { left, right } from "fp-ts/lib/Either";
+import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import type {
+  CreateExecutionParams,
+  ExecutionWithWorkflow,
+  GetExecutionByInngestEventIdParams,
+  GetExecutionParams,
+  GetExecutionsParams,
+  UpdateExecutionStatusParams,
+} from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import type { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { executionModuleKey } from "../execution-module-key";
 import ExecutionMapper from "./execution.mapper";
 
@@ -27,9 +29,7 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     this.prisma = di.resolve<PrismaClient>(PRISMA_CLIENT_KEY);
   }
 
-  async create(
-    params: CreateExecutionParams,
-  ): Promise<ApiEither<import("../domain/entity/execution.entity").default>> {
+  async create(params: CreateExecutionParams): Promise<ApiEither<Execution>> {
     try {
       const dbExecution = await this.prisma.execution.create({
         data: {
@@ -45,7 +45,7 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
 
   async updateStatus(
     params: UpdateExecutionStatusParams,
-  ): Promise<ApiEither<import("../domain/entity/execution.entity").default>> {
+  ): Promise<ApiEither<Execution>> {
     try {
       const dbExecution = await this.prisma.execution.update({
         where: { id: params.id },
@@ -53,7 +53,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
           status: params.status as ExecutionStatus,
           ...(params.error && { error: params.error }),
           ...(params.errorStack && { errorStack: params.errorStack }),
-          ...(params.output && { output: params.output }),
+          ...(params.output && {
+            output: params.output as Prisma.InputJsonValue,
+          }),
           ...(params.status !== ExecutionStatus.RUNNING && {
             completedAt: new Date(),
           }),
@@ -65,7 +67,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     }
   }
 
-  async getOne(params: GetExecutionParams): Promise<ApiEither<ExecutionWithWorkflow>> {
+  async getOne(
+    params: GetExecutionParams,
+  ): Promise<ApiEither<ExecutionWithWorkflow>> {
     try {
       const dbExecution = await this.prisma.execution.findFirstOrThrow({
         where: {
@@ -93,7 +97,7 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
     params: {
       inngestEventId: string;
     } & Omit<UpdateExecutionStatusParams, "id">,
-  ): Promise<ApiEither<import("../domain/entity/execution.entity").default>> {
+  ): Promise<ApiEither<Execution>> {
     try {
       const dbExecution = await this.prisma.execution.update({
         where: { inngestEventId: params.inngestEventId },
@@ -101,7 +105,9 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
           status: params.status as ExecutionStatus,
           ...(params.error && { error: params.error }),
           ...(params.errorStack && { errorStack: params.errorStack }),
-          ...(params.output && { output: params.output }),
+          ...(params.output && {
+            output: params.output as Prisma.InputJsonValue,
+          }),
           ...(params.status !== ExecutionStatus.RUNNING && {
             completedAt: new Date(),
           }),
@@ -115,7 +121,7 @@ export default class ExecutionRepositoryImpl implements ExecutionRepository {
 
   async getOneByInngestEventId(
     params: GetExecutionByInngestEventIdParams,
-  ): Promise<ApiEither<import("../domain/entity/execution.entity").default>> {
+  ): Promise<ApiEither<Execution>> {
     try {
       const dbExecution = await this.prisma.execution.findUniqueOrThrow({
         where: { inngestEventId: params.inngestEventId },

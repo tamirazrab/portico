@@ -1,8 +1,8 @@
-import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
-import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
-import WorkflowConnection from "@/feature/core/workflow/domain/entity/workflow-connection.entity";
-import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import { faker } from "@faker-js/faker";
+import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
+import WorkflowConnection from "@/feature/core/workflow/domain/entity/workflow-connection.entity";
+import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
+import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export default class WorkflowFakeFactory {
@@ -69,4 +69,3 @@ export default class WorkflowFakeFactory {
     );
   }
 }
-

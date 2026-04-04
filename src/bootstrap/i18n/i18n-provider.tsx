@@ -1,9 +1,9 @@
 "use client";
 
+import type { i18n } from "i18next";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
-import { getI18n, LANGS } from "@/bootstrap/i18n/i18n";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { i18n } from "i18next";
+import { getI18n, type LANGS } from "@/bootstrap/i18n/i18n";
 import storeLang from "@/bootstrap/i18n/store-lang-action";
 
 export default function TranslationsProvider({

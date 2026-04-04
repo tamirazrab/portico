@@ -1,10 +1,10 @@
 "use server";
 
-import { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
+import type { ApiEither } from "@/feature/common/data/api-task";
+import type Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
+import type { CreateWorkflowParams } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
 import createWorkflowUseCase from "@/feature/core/workflow/domain/usecase/create-workflow.usecase";
-import { CreateWorkflowParams } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
-import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";
 
 /**
  * Controllers are bridge between feature layer and application layer.
@@ -18,4 +18,3 @@ export default async function createWorkflowController(
   await connection();
   return await createWorkflowUseCase(params);
 }
-

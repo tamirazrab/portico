@@ -1,14 +1,14 @@
-import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
-import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import ExecutionStatus from "@/feature/core/execution/domain/enum/execution-status.enum";
+import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import updateExecutionStatusByInngestEventIdUseCase from "@/feature/core/execution/domain/usecase/update-execution-status-by-inngest-event-id.usecase";
+import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -23,9 +23,8 @@ const fakedOutput = { result: faker.word.words(3) };
 /* -------------------------------------------------------------------------- */
 const executionDi = mockDi();
 
-const mockedUpdateStatusByInngestEventId = vi.fn<
-  ExecutionRepository["updateStatusByInngestEventId"]
->();
+const mockedUpdateStatusByInngestEventId =
+  vi.fn<ExecutionRepository["updateStatusByInngestEventId"]>();
 const MockedRepo = getMock<ExecutionRepository>();
 MockedRepo.setup((instance) => instance.updateStatusByInngestEventId).returns(
   mockedUpdateStatusByInngestEventId,
@@ -58,7 +57,9 @@ describe("Update execution status by inngest event id usecase", () => {
 
     describe("And repository returns updated execution", () => {
       beforeEach(() => {
-        mockedUpdateStatusByInngestEventId.mockReturnValue(right(fakedExecution));
+        mockedUpdateStatusByInngestEventId.mockReturnValue(
+          right(fakedExecution),
+        );
       });
 
       it("Then should return updated execution", async () => {
@@ -72,10 +73,7 @@ describe("Update execution status by inngest event id usecase", () => {
     });
 
     describe("And repository returns failure", () => {
-      const failure = new BaseFailure(
-        "execution-update-failed",
-        "execution",
-      );
+      const failure = new BaseFailure("execution-update-failed", "execution");
 
       beforeEach(() => {
         mockedUpdateStatusByInngestEventId.mockReturnValue(left(failure));
@@ -100,7 +98,9 @@ describe("Update execution status by inngest event id usecase", () => {
       };
 
       beforeEach(() => {
-        mockedUpdateStatusByInngestEventId.mockReturnValue(right(fakedExecution));
+        mockedUpdateStatusByInngestEventId.mockReturnValue(
+          right(fakedExecution),
+        );
       });
 
       it("Then should return execution with error", async () => {
@@ -109,9 +109,10 @@ describe("Update execution status by inngest event id usecase", () => {
 
         // ? Assert
         expect(response).toEqual(right(fakedExecution));
-        expect(mockedUpdateStatusByInngestEventId).toHaveBeenCalledWith(errorParams);
+        expect(mockedUpdateStatusByInngestEventId).toHaveBeenCalledWith(
+          errorParams,
+        );
       });
     });
   });
 });
-

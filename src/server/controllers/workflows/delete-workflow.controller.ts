@@ -1,7 +1,7 @@
 "use server";
 
-import type { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import deleteWorkflowUseCase from "@/feature/core/workflow/domain/usecase/delete-workflow.usecase";
 
 export default async function deleteWorkflowController(params: {
@@ -11,4 +11,3 @@ export default async function deleteWorkflowController(params: {
   await connection();
   return await deleteWorkflowUseCase(params);
 }
-

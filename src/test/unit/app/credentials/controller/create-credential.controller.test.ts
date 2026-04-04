@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import createCredentialController from "@/server/controllers/credentials/create-credential.controller";
-import createCredentialUseCase from "@/feature/core/credential/domain/usecase/create-credential.usecase";
-import CredentialFakeFactory from "@/test/common/fake-factory/credential/credential.fake-factory";
-import { right, left } from "fp-ts/lib/Either";
+import { left, right } from "fp-ts/lib/Either";
+import * as connectionModule from "next/server";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
-import * as connectionModule from "next/server";
+import createCredentialUseCase from "@/feature/core/credential/domain/usecase/create-credential.usecase";
+import createCredentialController from "@/server/controllers/credentials/create-credential.controller";
+import CredentialFakeFactory from "@/test/common/fake-factory/credential/credential.fake-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -58,7 +58,10 @@ describe("Create credential controller", () => {
     });
 
     describe("And usecase returns failure", () => {
-      const failure = new BaseFailure("credential-creation-failed", "credential");
+      const failure = new BaseFailure(
+        "credential-creation-failed",
+        "credential",
+      );
 
       beforeEach(() => {
         mockedUseCase.mockResolvedValue(left(failure));
@@ -75,4 +78,3 @@ describe("Create credential controller", () => {
     });
   });
 });
-

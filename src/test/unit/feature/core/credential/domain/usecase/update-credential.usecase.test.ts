@@ -1,14 +1,14 @@
-import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
-import { credentialRepoKey } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import CredentialFakeFactory from "@/test/common/fake-factory/credential/credential.fake-factory";
-import updateCredentialUseCase from "@/feature/core/credential/domain/usecase/update-credential.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
+import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import { credentialRepoKey } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import updateCredentialUseCase from "@/feature/core/credential/domain/usecase/update-credential.usecase";
+import CredentialFakeFactory from "@/test/common/fake-factory/credential/credential.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -89,4 +89,3 @@ describe("Update credential usecase", () => {
     });
   });
 });
-

@@ -1,17 +1,17 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { memo, type ReactNode, useCallback } from "react";
-import * as Sentry from "@sentry/nextjs";
-import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
 import { BaseHandle } from "@/components/react-flow/base-handle";
-import { WorkflowNode } from "@/components/workflow-node";
+import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
 import {
-  NodeStatusIndicator,
   type NodeStatus,
+  NodeStatusIndicator,
 } from "@/components/react-flow/node-status-indicator";
+import { WorkflowNode } from "@/components/workflow-node";
 
 interface BaseTriggerNodeProps extends NodeProps {
   icon: LucideIcon | string;

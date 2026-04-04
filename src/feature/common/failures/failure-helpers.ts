@@ -31,4 +31,3 @@ export function failureOrCurry<T extends BaseFailure<unknown>>(
     return failure;
   };
 }
-

@@ -1,6 +1,6 @@
 // "use client"
 import "reflect-metadata";
-import { container, DependencyContainer } from "tsyringe";
+import { container, type DependencyContainer } from "tsyringe";
 
 /**
  * Serves as a central point for initializing and configuring

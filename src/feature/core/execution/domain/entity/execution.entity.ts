@@ -1,4 +1,4 @@
-import ExecutionStatus from "../enum/execution-status.enum";
+import type ExecutionStatus from "../enum/execution-status.enum";
 
 export type ExecutionParams = Omit<Execution, "toPlainObject">;
 

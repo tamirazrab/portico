@@ -1,19 +1,20 @@
-import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
-import getExecutionsUseCase from "@/feature/core/execution/domain/usecase/get-executions.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import BaseFailure from "@/feature/common/failures/base.failure";
+import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import getExecutionsUseCase from "@/feature/core/execution/domain/usecase/get-executions.usecase";
+import ExecutionFakeFactory from "@/test/common/fake-factory/execution/execution.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
 /* -------------------------------------------------------------------------- */
-const fakedExecutions = ExecutionFakeFactory.getFakeExecutionWithWorkflowList(5);
+const fakedExecutions =
+  ExecutionFakeFactory.getFakeExecutionWithWorkflowList(5);
 const fakedTotal = 10;
 const fakedPagination = new WithPagination(fakedExecutions, fakedTotal);
 const fakedUserId = faker.string.uuid();
@@ -87,7 +88,10 @@ describe("Get executions usecase", () => {
     });
 
     describe("And repository returns failure", () => {
-      const failure = new BaseFailure("failed-to-fetch-executions", "execution");
+      const failure = new BaseFailure(
+        "failed-to-fetch-executions",
+        "execution",
+      );
 
       beforeEach(() => {
         mockedGetMany.mockReturnValue(left(failure));
@@ -104,4 +108,3 @@ describe("Get executions usecase", () => {
     });
   });
 });
-

@@ -1,9 +1,9 @@
 import type {
-  Node,
-  Edge,
-  NodeChange,
-  EdgeChange,
   Connection,
+  Edge,
+  EdgeChange,
+  Node,
+  NodeChange,
   ReactFlowInstance,
 } from "@xyflow/react";
 

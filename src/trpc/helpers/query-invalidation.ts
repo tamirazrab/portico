@@ -74,4 +74,3 @@ export function invalidateExecution(
 export function invalidateAll(queryClient: QueryClient) {
   return queryClient.invalidateQueries();
 }
-

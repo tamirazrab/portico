@@ -1,16 +1,13 @@
-import WorkflowRepository, {
-  workflowRepoKey,
-} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
-import createWorkflowUseCase from "@/feature/core/workflow/domain/usecase/create-workflow.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/Either";
-import { isRight, isLeft } from "fp-ts/lib/Either";
-import { workflowModuleKey } from "@/feature/core/workflow/data/workflow-module-key";
+import { isLeft, isRight, left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
+import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import { workflowRepoKey } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import createWorkflowUseCase from "@/feature/core/workflow/domain/usecase/create-workflow.usecase";
+import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -91,4 +88,3 @@ describe("Create workflow usecase", () => {
     });
   });
 });
-

@@ -1,9 +1,9 @@
-import { DependencyContainer } from "tsyringe";
-import { authRepoKey } from "@/feature/generic/auth/domain/i-repo/auth.repository";
-import AuthIDPRepo from "@/feature/generic/auth/data/repo/auth.repository";
-import FetchHandler from "@/feature/common/data/fetch-handler";
+import type { DependencyContainer } from "tsyringe";
 import prisma from "@/bootstrap/boundaries/db/prisma";
-import { PrismaClient } from "@/generated/prisma/client";
+import FetchHandler from "@/feature/common/data/fetch-handler";
+import AuthIDPRepo from "@/feature/generic/auth/data/repo/auth.repository";
+import { authRepoKey } from "@/feature/generic/auth/domain/i-repo/auth.repository";
+import type { PrismaClient } from "@/generated/prisma/client";
 
 export const PRISMA_CLIENT_KEY = "PrismaClient";
 

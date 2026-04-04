@@ -2,9 +2,9 @@
 
 import { EntityContainer } from "@/components/entity-components";
 import WorkflowsHeaderView from "./workflows-header.view";
-import WorkflowsSearchView from "./workflows-search.view";
 import WorkflowsListView from "./workflows-list.view";
 import WorkflowsPaginationView from "./workflows-pagination.view";
+import WorkflowsSearchView from "./workflows-search.view";
 
 export default function WorkflowsContainerView() {
   return (

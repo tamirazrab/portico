@@ -3,7 +3,7 @@
 
 // @ts-expect-error - Mocking server-only
 if (typeof require !== "undefined") {
-  const Module = require("module");
+  const Module = require("node:module");
   const originalRequire = Module.prototype.require;
   Module.prototype.require = function (id: string) {
     if (id === "server-only") {
@@ -14,4 +14,3 @@ if (typeof require !== "undefined") {
 }
 
 export {};
-

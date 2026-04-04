@@ -1,31 +1,45 @@
-import { MiddlewareFactory } from "@/middlewares/middleware-factory";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import acceptLanguage from "accept-language";
+import {
+  type NextFetchEvent,
+  type NextRequest,
+  NextResponse,
+} from "next/server";
 import { cookieName, fallbackLng, languages } from "@/bootstrap/i18n/settings";
+import { localizePathname, pathHasLocalePrefix } from "@/lib/locale-path";
+import type { MiddlewareFactory } from "@/middlewares/middleware-factory";
 
 acceptLanguage.languages(languages);
 
 export const withLocale: MiddlewareFactory =
-  (next) => async (req: NextRequest, _next: NextFetchEvent) => {
-    let lng;
-    if (req.cookies.has(cookieName))
-      lng = acceptLanguage.get(req?.cookies?.get(cookieName)?.value);
-    if (!lng) lng = acceptLanguage.get(req.headers.get("Accept-Language"));
-    if (!lng) lng = fallbackLng;
-
-    // Redirect if lng in path is not supported
-    if (
-      !languages.some((loc) => req.nextUrl.pathname.startsWith(`/${loc}`)) &&
-      !req.nextUrl.pathname.startsWith("/_next")
-    ) {
-      return NextResponse.redirect(
-        new URL(`/${lng}${req.nextUrl.pathname}`, req.url),
+  (next) => async (req: NextRequest, evt: NextFetchEvent) => {
+    let lng = fallbackLng;
+    if (req.cookies.has(cookieName)) {
+      const fromCookie = acceptLanguage.get(
+        req.cookies.get(cookieName)?.value ?? undefined,
       );
+      if (typeof fromCookie === "string" && fromCookie.length > 0) {
+        lng = fromCookie;
+      }
+    }
+    if (lng === fallbackLng) {
+      const fromHeader = acceptLanguage.get(
+        req.headers.get("Accept-Language") ?? undefined,
+      );
+      if (typeof fromHeader === "string" && fromHeader.length > 0) {
+        lng = fromHeader;
+      }
     }
 
-    // Check and set the referrer language
+    const pathname = req.nextUrl.pathname;
+
+    if (!pathHasLocalePrefix(pathname) && !pathname.startsWith("/_next")) {
+      const localized = localizePathname(pathname, lng);
+      const url = new URL(localized + req.nextUrl.search, req.url);
+      return NextResponse.redirect(url);
+    }
+
     if (req.headers.has("referer")) {
-      const refererUrl = new URL(req?.headers?.get("referer") ?? "");
+      const refererUrl = new URL(req.headers.get("referer") ?? "", req.url);
       const lngInReferer = languages.find((l) =>
         refererUrl.pathname.startsWith(`/${l}`),
       );
@@ -36,5 +50,5 @@ export const withLocale: MiddlewareFactory =
       return response;
     }
 
-    return next(req, _next);
+    return next(req, evt);
   };

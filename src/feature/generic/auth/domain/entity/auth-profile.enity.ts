@@ -1,4 +1,4 @@
-import Role from "@/feature/core/user/domain/entity/enum/role.enum";
+import type Role from "@/feature/core/user/domain/entity/enum/role.enum";
 
 export type AuthProfileParams = Omit<AuthProfile, "toPlainObject">;
 

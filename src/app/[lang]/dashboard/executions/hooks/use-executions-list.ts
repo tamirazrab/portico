@@ -1,8 +1,9 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
+import { useMemo } from "react";
+import { useTRPC } from "@/trpc/client";
 import { executionsParams } from "../params/executions-params";
 import type { ExecutionsData } from "../types";
 
@@ -21,7 +22,15 @@ export function useExecutions() {
   const trpc = useTRPC();
   const [params, setParams] = useQueryStates(executionsParams);
 
-  const query = useSuspenseQuery(trpc.executions.getMany.queryOptions(params));
+  const input = useMemo(
+    () => ({
+      page: params.page,
+      pageSize: params.pageSize,
+    }),
+    [params.page, params.pageSize],
+  );
+
+  const query = useSuspenseQuery(trpc.executions.getMany.queryOptions(input));
 
   const data = query.data as ExecutionsData;
 
@@ -35,4 +44,3 @@ export function useExecutions() {
     setParams,
   };
 }
-

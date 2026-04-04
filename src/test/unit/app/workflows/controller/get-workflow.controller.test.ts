@@ -1,18 +1,24 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import getWorkflowController from "@/server/controllers/workflows/get-workflow.controller";
-import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
-import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
-import { right, left } from "fp-ts/lib/Either";
-import BaseFailure from "@/feature/common/failures/base.failure";
+import { left, right } from "fp-ts/lib/Either";
 import * as connectionModule from "next/server";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import BaseFailure from "@/feature/common/failures/base.failure";
+import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
+import getWorkflowController from "@/server/controllers/workflows/get-workflow.controller";
+import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
 /* -------------------------------------------------------------------------- */
 const fakedWorkflow = WorkflowFakeFactory.getFakeWorkflow();
-const fakedNodes = WorkflowFakeFactory.getFakeWorkflowNodeList(3, fakedWorkflow.id);
-const fakedConnections = WorkflowFakeFactory.getFakeWorkflowConnectionList(2, fakedWorkflow.id);
+const fakedNodes = WorkflowFakeFactory.getFakeWorkflowNodeList(
+  3,
+  fakedWorkflow.id,
+);
+const fakedConnections = WorkflowFakeFactory.getFakeWorkflowConnectionList(
+  2,
+  fakedWorkflow.id,
+);
 const fakedWorkflowWithNodes = {
   workflow: fakedWorkflow,
   nodes: fakedNodes,
@@ -77,4 +83,3 @@ describe("Get workflow controller", () => {
     });
   });
 });
-

@@ -20,7 +20,7 @@ const DEFAULT_OPTIONS: Required<Omit<RetryOptions, "retryable">> = {
 
 /**
  * Retries an async function with exponential backoff.
- * 
+ *
  * @param fn - The async function to retry
  * @param options - Retry configuration options
  * @returns The result of the function
@@ -51,7 +51,7 @@ export async function withRetry<T>(
 
       // Calculate delay with exponential backoff
       const delay = Math.min(
-        config.initialDelayMs * Math.pow(config.backoffMultiplier, attempt),
+        config.initialDelayMs * config.backoffMultiplier ** attempt,
         config.maxDelayMs,
       );
 
@@ -105,4 +105,3 @@ export async function fetchWithRetry(
     },
   );
 }
-

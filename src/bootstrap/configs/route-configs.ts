@@ -1,11 +1,16 @@
+import { DocumentIcon } from "@heroicons/react/24/outline";
+import type { ReactElement } from "react";
 import HomeIcon from "@/app/components/icons/home";
 import langKey from "@/feature/common/lang-keys/common.lang-key";
-import { DocumentIcon } from "@heroicons/react/24/outline";
 
 type RouteItem = {
   langKey: string;
   icon?:
-    | ((props: { className?: string } & Record<string, unknown>) => JSX.Element)
+    | ((
+        props: {
+          className?: string;
+        } & Record<string, unknown>,
+      ) => ReactElement)
     | typeof DocumentIcon;
   path: string;
 };

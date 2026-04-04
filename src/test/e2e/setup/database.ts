@@ -13,7 +13,8 @@ let testDb: PrismaClient | null = null;
  */
 export function getTestDatabase(): PrismaClient {
   if (!testDb) {
-    const databaseUrl = process.env.TEST_DATABASE_URL ||
+    const databaseUrl =
+      process.env.TEST_DATABASE_URL ||
       "postgresql://test_user:test_password@localhost:5433/portico_test";
 
     testDb = new PrismaClient({
@@ -42,7 +43,7 @@ export async function resetTestDatabase(): Promise<void> {
 
   // Truncate all tables (CASCADE to handle foreign keys)
   await db.$executeRawUnsafe(
-    `TRUNCATE TABLE ${tables.map(t => `"${t.tablename}"`).join(", ")} CASCADE`
+    `TRUNCATE TABLE ${tables.map((t) => `"${t.tablename}"`).join(", ")} CASCADE`,
   );
 }
 
@@ -67,4 +68,3 @@ export async function closeTestDatabase(): Promise<void> {
     testDb = null;
   }
 }
-

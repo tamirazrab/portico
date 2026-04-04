@@ -1,9 +1,9 @@
 "use client";
 
-import { EntitySearch } from "@/components/entity-components";
 import { useQueryStates } from "nuqs";
-import { workflowsParams } from "../params/workflows-params";
+import { EntitySearch } from "@/components/entity-components";
 import { useSearchDebounce } from "../../hooks/use-search-debounce";
+import { workflowsParams } from "../params/workflows-params";
 
 export default function WorkflowsSearchView() {
   const [params, setParams] = useQueryStates(workflowsParams);

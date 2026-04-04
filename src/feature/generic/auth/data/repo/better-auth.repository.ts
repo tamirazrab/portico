@@ -1,23 +1,22 @@
 import "server-only";
-import { headers } from "next/headers";
-import ApiTask from "@/feature/common/data/api-task";
-import { failureOr } from "@/feature/common/failures/failure-helpers";
-import AuthProfile, {
-  AuthProfileParams,
-} from "@/feature/generic/auth/domain/entity/auth-profile.enity";
-import AuthToken from "@/feature/generic/auth/domain/entity/auth-token.entity";
-import AuthRepo from "@/feature/generic/auth/domain/i-repo/auth.repository";
-import AuthTokenFailure from "@/feature/generic/auth/domain/failure/auth-token-failure";
-import AuthProfileFailure from "@/feature/generic/auth/domain/failure/auth-profile-failure";
-import AuthCachedTokenFailure from "@/feature/generic/auth/domain/failure/auth-cached-token-failure";
-import AuthCachedProfileFailure from "@/feature/generic/auth/domain/failure/auth-cached-profile-failure";
-import { auth } from "@/bootstrap/boundaries/auth/better-auth";
-import Role from "@/feature/core/user/domain/entity/enum/role.enum";
 import { pipe } from "fp-ts/lib/function";
-import { tryCatch, left } from "fp-ts/lib/TaskEither";
+import { tryCatch } from "fp-ts/lib/TaskEither";
+import { headers } from "next/headers";
+import { auth } from "@/bootstrap/boundaries/auth/better-auth";
+import type ApiTask from "@/feature/common/data/api-task";
+import { failureOr } from "@/feature/common/failures/failure-helpers";
+import Role from "@/feature/core/user/domain/entity/enum/role.enum";
+import type AuthProfile from "@/feature/generic/auth/domain/entity/auth-profile.enity";
+import type { AuthProfileParams } from "@/feature/generic/auth/domain/entity/auth-profile.enity";
+import AuthToken from "@/feature/generic/auth/domain/entity/auth-token.entity";
+import AuthCachedProfileFailure from "@/feature/generic/auth/domain/failure/auth-cached-profile-failure";
+import AuthCachedTokenFailure from "@/feature/generic/auth/domain/failure/auth-cached-token-failure";
+import AuthProfileFailure from "@/feature/generic/auth/domain/failure/auth-profile-failure";
+import AuthTokenFailure from "@/feature/generic/auth/domain/failure/auth-token-failure";
+import type AuthRepo from "@/feature/generic/auth/domain/i-repo/auth.repository";
 
 export default class BetterAuthRepository implements AuthRepo {
-  exchangeCodeWithToken(code: string): ApiTask<AuthToken> {
+  exchangeCodeWithToken(_code: string): ApiTask<AuthToken> {
     // Better Auth doesn't use code exchange, this is for OAuth flows
     // Return left with failure
     return pipe(
@@ -33,7 +32,7 @@ export default class BetterAuthRepository implements AuthRepo {
     );
   }
 
-  fetchProfileByToken(token: AuthToken): ApiTask<AuthProfile> {
+  fetchProfileByToken(_token: AuthToken): ApiTask<AuthProfile> {
     // Better Auth manages sessions through cookies, not tokens
     // Use getCachedProfile instead
     return pipe(

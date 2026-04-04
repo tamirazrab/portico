@@ -1,17 +1,20 @@
 import { TRPCError } from "@trpc/server";
+import { isLeft } from "fp-ts/lib/Either";
 import z from "zod";
+import { userHasActivePolarSubscription } from "@/bootstrap/helpers/billing/polar-customer-state";
+import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import createWorkflowController from "@/server/controllers/workflows/create-workflow.controller";
-import getWorkflowsController from "@/server/controllers/workflows/get-workflows.controller";
-import getWorkflowController from "@/server/controllers/workflows/get-workflow.controller";
-import updateWorkflowController from "@/server/controllers/workflows/update-workflow.controller";
-import updateWorkflowNameController from "@/server/controllers/workflows/update-workflow-name.controller";
 import deleteWorkflowController from "@/server/controllers/workflows/delete-workflow.controller";
 import executeWorkflowController from "@/server/controllers/workflows/execute-workflow.controller";
-import { isLeft } from "fp-ts/lib/Either";
+import getWorkflowController from "@/server/controllers/workflows/get-workflow.controller";
+import getWorkflowsController from "@/server/controllers/workflows/get-workflows.controller";
+import updateWorkflowController from "@/server/controllers/workflows/update-workflow.controller";
+import updateWorkflowNameController from "@/server/controllers/workflows/update-workflow-name.controller";
+import { mapFailureToTRPCError } from "../failure-to-trpc-error";
 import {
   createTRPCRouter,
-  protectedProcedure,
   premiumProcedure,
+  protectedProcedure,
 } from "../init";
 
 export const workflowsRouter = createTRPCRouter({
@@ -31,10 +34,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to execute workflow",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -54,10 +54,7 @@ export const workflowsRouter = createTRPCRouter({
     });
 
     if (isLeft(result)) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to create workflow",
-      });
+      throw mapFailureToTRPCError(result.left);
     }
 
     return result.right;
@@ -79,10 +76,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to delete workflow",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return { success: true };
@@ -105,10 +99,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to update workflow name",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -116,25 +107,41 @@ export const workflowsRouter = createTRPCRouter({
 
   update: protectedProcedure
     .input(
-      z.object({
-        id: z.string(),
-        nodes: z.array(
-          z.object({
-            id: z.string(),
-            type: z.string().nullish(),
-            position: z.object({ x: z.number(), y: z.number() }),
-            data: z.record(z.string(), z.any()).optional(),
-          }),
-        ),
-        edges: z.array(
-          z.object({
-            source: z.string(),
-            target: z.string(),
-            sourceHandle: z.string().nullish(),
-            targetHandle: z.string().nullish(),
-          }),
-        ),
-      }),
+      z
+        .object({
+          id: z.string().uuid(),
+          nodes: z
+            .array(
+              z.object({
+                id: z.string(),
+                type: z.nativeEnum(NodeType).nullish(),
+                position: z.object({ x: z.number(), y: z.number() }),
+                data: z.record(z.string(), z.unknown()).optional(),
+              }),
+            )
+            .max(300),
+          edges: z
+            .array(
+              z.object({
+                source: z.string(),
+                target: z.string(),
+                sourceHandle: z.string().nullish(),
+                targetHandle: z.string().nullish(),
+              }),
+            )
+            .max(600),
+        })
+        .superRefine((val, ctx) => {
+          const nodesJson = JSON.stringify(val.nodes).length;
+          const edgesJson = JSON.stringify(val.edges).length;
+          const max = 1_500_000;
+          if (nodesJson + edgesJson > max) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Workflow graph payload is too large",
+            });
+          }
+        }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.auth?.user?.id) {
@@ -142,6 +149,27 @@ export const workflowsRouter = createTRPCRouter({
           code: "UNAUTHORIZED",
           message: "You must be logged in",
         });
+      }
+
+      // Minimal server-side premium gating: prevent non-premium users from saving premium nodes.
+      // PremiumProcedure is only used for create; update must also be guarded.
+      const hasPremiumNodes = input.nodes.some((n) =>
+        [
+          NodeType.OPENAI,
+          NodeType.ANTHROPIC,
+          NodeType.GEMINI,
+          NodeType.DISCORD,
+          NodeType.SLACK,
+        ].includes((n.type ?? NodeType.INITIAL) as NodeType),
+      );
+      if (hasPremiumNodes) {
+        const entitled = await userHasActivePolarSubscription(ctx.auth.user.id);
+        if (!entitled) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You must be a premium user to use these nodes",
+          });
+        }
       }
 
       const result = await updateWorkflowController({
@@ -152,10 +180,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to update workflow",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -177,10 +202,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Workflow not found",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       // Transform to React Flow format
@@ -228,10 +250,7 @@ export const workflowsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch workflows",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       const { items, total } = result.right;

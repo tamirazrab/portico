@@ -1,18 +1,18 @@
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import WithPaginationResponse from "@/feature/common/data/with-pagination-response";
+import type WithPaginationResponse from "@/feature/common/data/with-pagination-response";
 import ResponseFailure from "@/feature/common/failures/dev/response.failure";
 import {
   ApiRole,
-  CreateUserApiParams,
-  UpdateUserApiParams,
-  UserResponse,
+  type CreateUserApiParams,
+  type UpdateUserApiParams,
+  type UserResponse,
 } from "@/feature/core/user/data/repository/user.repository";
 import Role from "@/feature/core/user/domain/entity/enum/role.enum";
 import User, {
-  UserParams,
+  type UserParams,
 } from "@/feature/core/user/domain/entity/user.entity";
-import { CreateUserParams } from "@/feature/core/user/domain/params/create-user.param-schema";
-import { UpdateUserParams } from "@/feature/core/user/domain/params/update-user.param-schema";
+import type { CreateUserParams } from "@/feature/core/user/domain/params/create-user.param-schema";
+import type { UpdateUserParams } from "@/feature/core/user/domain/params/update-user.param-schema";
 
 export default class UserMapper {
   static get toApiRole(): Record<Role, ApiRole> {

@@ -7,8 +7,8 @@ export type Execution = {
   id: string;
   workflowId: string;
   status: string;
-  error: string | null;
-  errorStack: string | null;
+  error?: string | null;
+  errorStack?: string | null;
   startedAt: Date;
   completedAt: Date | null;
   inngestEventId: string;
@@ -24,4 +24,3 @@ export type ExecutionsData = {
   page: number;
   totalPages: number;
 };
-

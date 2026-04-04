@@ -1,20 +1,20 @@
+import { pipe } from "fp-ts/lib/function";
+import { chain, left, map, right } from "fp-ts/lib/TaskEither";
 import BackendEndpoint from "@/bootstrap/endpoint/endpoints/backend-endpoints";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
-import ApiTask from "@/feature/common/data/api-task";
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type ApiTask from "@/feature/common/data/api-task";
 import FetchHandler, {
-  FetchOptions,
+  type FetchOptions,
 } from "@/feature/common/data/fetch-handler";
-import WithPaginationResponse from "@/feature/common/data/with-pagination-response";
+import type WithPaginationResponse from "@/feature/common/data/with-pagination-response";
 import serverDi from "@/feature/common/features.di";
 import UserMapper from "@/feature/core/user/data/repository/user.mapper";
 import { userModuleKey } from "@/feature/core/user/data/user-module-key";
-import User from "@/feature/core/user/domain/entity/user.entity";
+import type User from "@/feature/core/user/domain/entity/user.entity";
 import UserUsernameExistsFailure from "@/feature/core/user/domain/failure/user-username-exists.failure";
-import UserRepository from "@/feature/core/user/domain/i-repo/user.repository.interface";
-import { CreateUserParams } from "@/feature/core/user/domain/params/create-user.param-schema";
-import { UpdateUserParams } from "@/feature/core/user/domain/params/update-user.param-schema";
-import { pipe } from "fp-ts/lib/function";
-import { chain, left, map, right } from "fp-ts/lib/TaskEither";
+import type UserRepository from "@/feature/core/user/domain/i-repo/user.repository.interface";
+import type { CreateUserParams } from "@/feature/core/user/domain/params/create-user.param-schema";
+import type { UpdateUserParams } from "@/feature/core/user/domain/params/update-user.param-schema";
 
 export enum ApiRole {
   ADMIN = "admin",

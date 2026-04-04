@@ -1,13 +1,14 @@
 "use client";
 
-import { EntityItem } from "@/components/entity-components";
 import { formatDistanceToNow } from "date-fns";
 import { useParams } from "next/navigation";
+import { EntityItem } from "@/components/entity-components";
 import {
+  calculateDuration,
   formatStatus,
   getStatusIcon,
-  calculateDuration,
 } from "@/lib/execution-utils";
+import { routes } from "@/lib/routes";
 import type { Execution } from "../types";
 
 interface ExecutionItemViewProps {
@@ -35,7 +36,7 @@ export default function ExecutionItemView({
 
   return (
     <EntityItem
-      href={`/${lang}/dashboard/executions/${execution.id}`}
+      href={routes.execution(lang, execution.id)}
       title={formatStatus(execution.status)}
       subtitle={subtitle}
       image={

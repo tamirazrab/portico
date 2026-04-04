@@ -1,13 +1,13 @@
 import React from "react";
-import { themes } from '@storybook/theming';
+import { themes } from "@storybook/theming";
 import { ThemeProvider } from "../src/app/[lang]/dashboard/components/client/theme-provider/theme-provider";
-import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
-import { getI18n, LANGS } from "../src/bootstrap/i18n/i18n"
-import { addons } from '@storybook/preview-api';
+import { DARK_MODE_EVENT_NAME } from "storybook-dark-mode";
+import { getI18n, LANGS } from "../src/bootstrap/i18n/i18n";
+import { addons } from "@storybook/preview-api";
 import { i18n } from "i18next";
 import { I18nextProvider } from "react-i18next";
 const channel = addons.getChannel();
-import "../src/app/globals.css"
+import "../src/app/globals.css";
 
 /**
  *
@@ -44,12 +44,12 @@ export const recursiveNestedProps = (
 };
 
 const preview = {
-    decorators: [
+  decorators: [
     (Story, data) => {
       const [isDark, setDark] = React.useState(true);
-      const [i18n, setI18n] = React.useState<i18n>()
+      const [i18n, setI18n] = React.useState<i18n>();
       const parsedProps = {} as Record<string, unknown>;
-      const { locale } = data.globals
+      const { locale } = data.globals;
       const props = data.allArgs;
       Object.entries(props).forEach((prop) => {
         const [key, value] = prop;
@@ -62,21 +62,22 @@ const preview = {
         recursiveNestedProps(parsedProps, splitedKey, value);
       });
 
-
       React.useEffect(() => {
         channel.on(DARK_MODE_EVENT_NAME, setDark);
         return () => channel.removeListener(DARK_MODE_EVENT_NAME, setDark);
-      }, [channel, setDark]);
+      }, [setDark]);
 
       React.useEffect(() => {
-        (async () => {
+        void (async () => {
           setI18n((await getI18n({ lng: locale })).i18n);
-        })()
-      }, [])
+        })();
+      }, [locale]);
 
       React.useEffect(() => {
-          i18n?.changeLanguage(locale);
-      }, [locale]);
+        if (i18n) {
+          void i18n.changeLanguage(locale);
+        }
+      }, [locale, i18n]);
 
       return (
         <ThemeProvider
@@ -84,26 +85,22 @@ const preview = {
           forcedTheme={isDark ? "dark" : "light"}
           enableSystem
           disableTransitionOnChange
-       >
-        {
-          i18n && (
-            <I18nextProvider 
-              i18n={i18n}
-              >
+        >
+          {i18n && (
+            <I18nextProvider i18n={i18n}>
               <Story parsedProps={parsedProps} />
             </I18nextProvider>
-          )
-        }
-       </ThemeProvider> 
+          )}
+        </ThemeProvider>
       );
     },
   ],
   darkMode: {
     // Override the default dark theme
-    dark: { ...themes.dark, appBg: 'black' },
+    dark: { ...themes.dark, appBg: "black" },
     // Override the default light theme
-    classTarget: 'html',
-    light: { ...themes.normal, appBg: 'red' },
+    classTarget: "html",
+    light: { ...themes.normal, appBg: "red" },
   },
   parameters: {
     nextjs: {
@@ -118,18 +115,18 @@ const preview = {
   },
   globalTypes: {
     locale: {
-      name: 'Locale',
-      description: 'Internationalization locale',
+      name: "Locale",
+      description: "Internationalization locale",
       toolbar: {
-        icon: 'globe',
+        icon: "globe",
         items: [
-          { value: LANGS.EN, title: 'English' },
-          { value: LANGS.RU, title: 'Russian' },
+          { value: LANGS.EN, title: "English" },
+          { value: LANGS.RU, title: "Russian" },
         ],
         showName: true,
       },
     },
-  }
+  },
 };
 
 export default preview;

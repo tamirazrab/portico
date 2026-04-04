@@ -1,10 +1,9 @@
-import { ApiEither } from "@/feature/common/data/api-task";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import { diResolve } from "@/feature/common/features.di";
 import { executionModuleKey } from "@/feature/core/execution/data/execution-module-key";
-import ExecutionRepository, {
-  executionRepoKey,
-} from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import ExecutionStatus from "../enum/execution-status.enum";
+import type ExecutionRepository from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import { executionRepoKey } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
+import type ExecutionStatus from "../enum/execution-status.enum";
 
 export default async function updateExecutionStatusByInngestEventIdUseCase(params: {
   inngestEventId: string;

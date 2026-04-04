@@ -2,13 +2,13 @@ import { defineConfig, devices } from "@playwright/test";
 
 /**
  * E2E Test Configuration
- * 
+ *
  * Tests run against:
  * - Real test database (isolated, resettable)
  * - Real API routes (no mocking)
  * - Real authentication flows (Better Auth)
  * - Real network requests
- * 
+ *
  * Test database is configured via TEST_DATABASE_URL environment variable.
  * Default: postgresql://test_user:test_password@localhost:5433/portico_test
  */
@@ -52,7 +52,8 @@ export default defineConfig({
     timeout: 120 * 1000,
     env: {
       // Use test database for E2E tests
-      DATABASE_URL: process.env.TEST_DATABASE_URL ||
+      DATABASE_URL:
+        process.env.TEST_DATABASE_URL ||
         "postgresql://test_user:test_password@localhost:5433/portico_test",
     },
   },
@@ -61,4 +62,3 @@ export default defineConfig({
   globalSetup: require.resolve("./src/test/e2e/setup/global-setup.ts"),
   globalTeardown: require.resolve("./src/test/e2e/setup/global-teardown.ts"),
 });
-

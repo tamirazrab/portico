@@ -1,8 +1,12 @@
-import { test, expect } from "@playwright/test";
-import { createTestUser, loginAsUser, cleanupTestUser } from "./setup/auth";
+import { expect, test } from "@playwright/test";
 import { generateTestUserEmail } from "./fixtures/test-user";
+import {
+  expectToast,
+  fillField,
+  waitForPageReady,
+} from "./helpers/test-helpers";
+import { cleanupTestUser, createTestUser, loginAsUser } from "./setup/auth";
 import { resetTestDatabase } from "./setup/database";
-import { waitForPageReady, fillField, expectToast } from "./helpers/test-helpers";
 
 test.describe("Credentials E2E", () => {
   let testUserEmail: string;
@@ -37,10 +41,14 @@ test.describe("Credentials E2E", () => {
 
   test("should display credentials list", async ({ page }) => {
     // Assert
-    await expect(page.getByRole("heading", { name: /credentials/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /credentials/i }),
+    ).toBeVisible();
   });
 
-  test("should navigate to credentials page from dashboard", async ({ page }) => {
+  test("should navigate to credentials page from dashboard", async ({
+    page,
+  }) => {
     // Arrange
     await page.goto("/en/dashboard");
     await waitForPageReady(page);
@@ -50,7 +58,9 @@ test.describe("Credentials E2E", () => {
 
     // Assert
     await expect(page).toHaveURL(/.*credentials/);
-    await expect(page.getByRole("heading", { name: /credentials/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /credentials/i }),
+    ).toBeVisible();
   });
 
   test("should create new credential", async ({ page }) => {
@@ -59,15 +69,25 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Act - click create credential button
-    const createButton = page.getByRole("button", { name: /create|new.*credential/i }).first();
+    const createButton = page
+      .getByRole("button", { name: /create|new.*credential/i })
+      .first();
     if (await createButton.isVisible()) {
       await createButton.click();
 
       // Fill credential form
       await waitForPageReady(page);
-      const nameInput = page.locator('input[name*="name" i], input[placeholder*="name" i]').first();
-      const valueInput = page.locator('input[name*="value" i], input[type="password"], input[type="text"]').nth(1);
-      const typeSelect = page.locator('select[name*="type" i], [role="combobox"]').first();
+      const nameInput = page
+        .locator('input[name*="name" i], input[placeholder*="name" i]')
+        .first();
+      const valueInput = page
+        .locator(
+          'input[name*="value" i], input[type="password"], input[type="text"]',
+        )
+        .nth(1);
+      const typeSelect = page
+        .locator('select[name*="type" i], [role="combobox"]')
+        .first();
 
       if (await nameInput.isVisible()) {
         await fillField(page, nameInput, "Test API Key");
@@ -76,11 +96,15 @@ test.describe("Credentials E2E", () => {
         // Select credential type if visible
         if (await typeSelect.isVisible()) {
           await typeSelect.click();
-          await page.locator('text=/openai|gemini|anthropic/i').first().click();
+          await page.locator("text=/openai|gemini|anthropic/i").first().click();
         }
 
         // Submit form
-        const submitButton = page.locator('button[type="submit"], button:has-text("Create"), button:has-text("Save")').first();
+        const submitButton = page
+          .locator(
+            'button[type="submit"], button:has-text("Create"), button:has-text("Save")',
+          )
+          .first();
         await submitButton.click();
 
         // Assert - should show success message or navigate back to list
@@ -95,14 +119,20 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Assert - check if pagination exists or empty state
-    const pagination = page.locator('[data-testid="pagination"], .pagination, nav[aria-label*="pagination" i]');
-    const credentialsList = page.locator('[data-testid="credentials-list"], .credentials-list');
-    const isEmpty = await credentialsList.count() === 0;
+    const pagination = page.locator(
+      '[data-testid="pagination"], .pagination, nav[aria-label*="pagination" i]',
+    );
+    const credentialsList = page.locator(
+      '[data-testid="credentials-list"], .credentials-list',
+    );
+    const isEmpty = (await credentialsList.count()) === 0;
 
     if (!isEmpty) {
       await expect(pagination.first()).toBeVisible({ timeout: 5000 });
     } else {
-      await expect(page.locator('text=/no.*credential|empty/i').first()).toBeVisible({ timeout: 5000 });
+      await expect(
+        page.locator("text=/no.*credential|empty/i").first(),
+      ).toBeVisible({ timeout: 5000 });
     }
   });
 
@@ -112,7 +142,9 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Act - enter search query
-    const searchInput = page.locator('input[type="search"], input[placeholder*="search" i]').first();
+    const searchInput = page
+      .locator('input[type="search"], input[placeholder*="search" i]')
+      .first();
     if (await searchInput.isVisible()) {
       await searchInput.fill("test");
       await page.waitForTimeout(500); // Wait for debounce
@@ -128,7 +160,9 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Act - click on first credential to edit
-    const credentialItem = page.locator('[data-testid="credential-item"], .credential-item, tr').first();
+    const credentialItem = page
+      .locator('[data-testid="credential-item"], .credential-item, tr')
+      .first();
     if (await credentialItem.isVisible()) {
       await credentialItem.click();
       await waitForPageReady(page);
@@ -140,7 +174,9 @@ test.describe("Credentials E2E", () => {
         await fillField(page, nameInput, "Updated Credential Name");
 
         // Save
-        const saveButton = page.locator('button:has-text("Save"), button[type="submit"]').first();
+        const saveButton = page
+          .locator('button:has-text("Save"), button[type="submit"]')
+          .first();
         await saveButton.click();
 
         // Assert
@@ -155,12 +191,16 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Act - find and click delete button
-    const deleteButton = page.locator('button[aria-label*="delete" i], button:has-text("Delete")').first();
+    const deleteButton = page
+      .locator('button[aria-label*="delete" i], button:has-text("Delete")')
+      .first();
     if (await deleteButton.isVisible()) {
       await deleteButton.click();
 
       // Confirm deletion if confirmation dialog appears
-      const confirmButton = page.locator('button:has-text("Confirm"), button:has-text("Delete")').last();
+      const confirmButton = page
+        .locator('button:has-text("Confirm"), button:has-text("Delete")')
+        .last();
       if (await confirmButton.isVisible()) {
         await confirmButton.click();
       }
@@ -170,10 +210,14 @@ test.describe("Credentials E2E", () => {
     }
   });
 
-  test("should fail to create credential when unauthenticated", async ({ page }) => {
+  test("should fail to create credential when unauthenticated", async ({
+    page,
+  }) => {
     // Arrange - logout first
     await page.goto("/en/dashboard/credentials");
-    const logoutButton = page.locator('button:has-text("Logout"), [data-testid="logout"]').first();
+    const logoutButton = page
+      .locator('button:has-text("Logout"), [data-testid="logout"]')
+      .first();
     if (await logoutButton.isVisible()) {
       await logoutButton.click();
       await page.waitForURL(/\/login/, { timeout: 5000 });
@@ -192,7 +236,9 @@ test.describe("Credentials E2E", () => {
     await waitForPageReady(page);
 
     // Act - try to submit empty form
-    const createButton = page.getByRole("button", { name: /create|new.*credential/i }).first();
+    const createButton = page
+      .getByRole("button", { name: /create|new.*credential/i })
+      .first();
     if (await createButton.isVisible()) {
       await createButton.click();
       await waitForPageReady(page);
@@ -203,10 +249,10 @@ test.describe("Credentials E2E", () => {
         await submitButton.click();
 
         // Assert - should show validation errors
-        await expect(page.locator('text=/required|invalid|error/i').first()).toBeVisible({ timeout: 5000 });
+        await expect(
+          page.locator("text=/required|invalid|error/i").first(),
+        ).toBeVisible({ timeout: 5000 });
       }
     }
   });
 });
-
-

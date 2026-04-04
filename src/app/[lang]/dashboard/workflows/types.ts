@@ -16,4 +16,3 @@ export type WorkflowsData = {
   page: number;
   totalPages: number;
 };
-

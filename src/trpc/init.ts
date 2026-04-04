@@ -1,14 +1,9 @@
-import { auth } from "@/bootstrap/boundaries/auth/better-auth";
-import { Polar } from "@polar-sh/sdk";
-import superjson from "superjson";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { headers } from "next/headers";
 import { cache } from "react";
-
-const polarClient = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN!,
-  server: process.env.NODE_ENV !== "production" ? "sandbox" : "production",
-});
+import superjson from "superjson";
+import { auth } from "@/bootstrap/boundaries/auth/better-auth";
+import { getPolarCustomerStateCached } from "@/bootstrap/helpers/billing/polar-customer-state";
 
 export const createTRPCContext = cache(async () => {
   /**
@@ -55,6 +50,10 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
   });
 });
 
+type PremiumTRPCContext = Awaited<ReturnType<typeof createTRPCContext>> & {
+  customer: Awaited<ReturnType<typeof getPolarCustomerStateCached>>;
+};
+
 export const premiumProcedure = protectedProcedure.use(
   async ({ ctx, next }) => {
     if (!ctx.auth?.user?.id) {
@@ -64,9 +63,7 @@ export const premiumProcedure = protectedProcedure.use(
       });
     }
 
-    const customer = await polarClient.customers.getStateExternal({
-      externalId: ctx.auth.user.id,
-    });
+    const customer = await getPolarCustomerStateCached(ctx.auth.user.id);
 
     if (
       !customer.activeSubscriptions ||
@@ -80,7 +77,7 @@ export const premiumProcedure = protectedProcedure.use(
 
     return next({
       ctx: {
-        ...ctx,
+        ...(ctx as PremiumTRPCContext),
         customer,
       },
     });

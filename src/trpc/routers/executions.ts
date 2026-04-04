@@ -1,9 +1,10 @@
 import { TRPCError } from "@trpc/server";
+import { isLeft } from "fp-ts/lib/Either";
 import z from "zod";
 import { PAGINATION } from "@/config/constraints";
-import getExecutionsController from "@/server/controllers/executions/get-executions.controller";
 import getExecutionController from "@/server/controllers/executions/get-execution.controller";
-import { isLeft } from "fp-ts/lib/Either";
+import getExecutionsController from "@/server/controllers/executions/get-executions.controller";
+import { mapFailureToTRPCError } from "../failure-to-trpc-error";
 import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const executionsRouter = createTRPCRouter({
@@ -23,10 +24,7 @@ export const executionsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Execution not found",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       return result.right;
@@ -58,10 +56,7 @@ export const executionsRouter = createTRPCRouter({
       });
 
       if (isLeft(result)) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch executions",
-        });
+        throw mapFailureToTRPCError(result.left);
       }
 
       const { items, total } = result.right;

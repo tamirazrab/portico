@@ -1,10 +1,10 @@
 "use server";
 
-import type { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
-import getCredentialsByTypeUseCase from "@/feature/core/credential/domain/usecase/get-credentials-by-type.usecase";
-import type { GetCredentialsByTypeParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import type { ApiEither } from "@/feature/common/data/api-task";
 import type Credential from "@/feature/core/credential/domain/entity/credential.entity";
+import type { GetCredentialsByTypeParams } from "@/feature/core/credential/domain/i-repo/credential.repository.interface";
+import getCredentialsByTypeUseCase from "@/feature/core/credential/domain/usecase/get-credentials-by-type.usecase";
 
 export default async function getCredentialsByTypeController(
   params: GetCredentialsByTypeParams,
@@ -12,4 +12,3 @@ export default async function getCredentialsByTypeController(
   await connection();
   return await getCredentialsByTypeUseCase(params);
 }
-

@@ -1,27 +1,32 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/app/components/ui/card";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/app/components/ui/form";
-import Image from "next/image";
-import Link from "next/link";
 import { Input } from "@/app/components/ui/input";
+import { defaultLocale, isAppLocale, routes } from "@/lib/routes";
 import RegisterFormVM from "../vm/register-form.vm";
 
 export default function RegisterFormView() {
+  const params = useParams();
+  const raw = params?.lang as string | undefined;
+  const lang = raw && isAppLocale(raw) ? raw : defaultLocale();
   const vm = new RegisterFormVM();
   const vmData = vm.useVM();
 
@@ -128,7 +133,10 @@ export default function RegisterFormView() {
                 </div>
                 <div className="text-center text-sm">
                   Already have an Account?{" "}
-                  <Link href="/login" className="underline underline-offset-4">
+                  <Link
+                    href={routes.login(lang)}
+                    className="underline underline-offset-4"
+                  >
                     Log in
                   </Link>
                 </div>

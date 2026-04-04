@@ -1,20 +1,22 @@
 "use client";
 
-import { BaseVM } from "reactvvm";
-import { useRouter, useParams } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { BaseVM } from "reactvvm";
 import { toast } from "sonner";
+import z from "zod";
+import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
-import { CredentialType } from "@/generated/prisma/enums";
-import { invalidateCredentials, invalidateCredential } from "@/trpc/helpers/query-invalidation";
+import { routes } from "@/lib/routes";
+import { useTRPC } from "@/trpc/client";
+import {
+  invalidateCredential,
+  invalidateCredentials,
+} from "@/trpc/helpers/query-invalidation";
 import type CredentialFormIVM from "../view/credential-form.i-vm";
-import type {
-  CredentialFormValues,
-} from "../view/credential-form.i-vm";
+import type { CredentialFormValues } from "../view/credential-form.i-vm";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -87,7 +89,7 @@ export default class CredentialFormVM extends BaseVM<CredentialFormIVM> {
         onSuccess: (data) => {
           toast.success(`Credential ${data.name} created successfully`);
           invalidateCredentials(queryClient);
-          router.push(`/${lang}/dashboard/credentials/${data.id}`);
+          router.push(routes.credential(lang, data.id));
         },
         onError: (error) => {
           handleError(error);

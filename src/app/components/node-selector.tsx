@@ -1,20 +1,22 @@
-"use client";
+import Image from "next/image";
+
+("use client");
 
 import { createId } from "@paralleldrive/cuid2";
 import { useReactFlow } from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 import { NodeType } from "@/generated/prisma/enums";
+import { Separator } from "./ui/separator";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
   SheetTrigger,
 } from "./ui/sheet";
-import { Separator } from "./ui/separator";
 
 export type NodeTypeOption = {
   type: NodeType;
@@ -162,16 +164,19 @@ export function NodeSelector({
             const Icon = nodeType.icon;
 
             return (
-              <div
+              <button
+                type="button"
                 key={nodeType.type}
                 className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent hover:border-l-primary"
                 onClick={() => handleNodeSelect(nodeType)}
               >
                 <div className="flex items-center gap-6 w-full overflow-hidden">
                   {typeof Icon === "string" ? (
-                    <img
+                    <Image
                       src={Icon}
                       alt={nodeType.label}
+                      width={20}
+                      height={20}
                       className="size-5 object-contain rounded-sm"
                     />
                   ) : (
@@ -186,7 +191,7 @@ export function NodeSelector({
                     </span>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -196,16 +201,19 @@ export function NodeSelector({
             const Icon = nodeType.icon;
 
             return (
-              <div
+              <button
+                type="button"
                 key={nodeType.type}
                 className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent hover:border-l-primary"
                 onClick={() => handleNodeSelect(nodeType)}
               >
                 <div className="flex items-center gap-6 w-full overflow-hidden">
                   {typeof Icon === "string" ? (
-                    <img
+                    <Image
                       src={Icon}
                       alt={nodeType.label}
+                      width={20}
+                      height={20}
                       className="size-5 object-contain rounded-sm"
                     />
                   ) : (
@@ -220,7 +228,7 @@ export function NodeSelector({
                     </span>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

@@ -1,12 +1,12 @@
 "use client";
 
-import ButtonVm from "@/app/components/button/button.i-vm";
-import { ReactNode } from "react";
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import type { ReactNode } from "react";
+import * as React from "react";
+import { BaseView, type BuildProps } from "reactvvm";
+import type ButtonVm from "@/app/components/button/button.i-vm";
 import { cn } from "@/bootstrap/helpers/lib/ui-utils";
-import { BaseView, BuildProps } from "reactvvm";
 
 export default class Button extends BaseView<ButtonVm> {
   protected Build(props: BuildProps<ButtonVm>): ReactNode {
@@ -50,7 +50,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }

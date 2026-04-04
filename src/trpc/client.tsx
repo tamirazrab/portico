@@ -30,8 +30,11 @@ function getQueryClient() {
 function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
+    const publicUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (publicUrl) return publicUrl.replace(/\/$/, "");
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-    return "http://localhost:3000";
+    const port = process.env.PORT || "3000";
+    return `http://localhost:${port}`;
   })();
   return `${base}/api/trpc`;
 }

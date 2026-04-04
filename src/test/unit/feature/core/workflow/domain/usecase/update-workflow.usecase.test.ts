@@ -1,14 +1,13 @@
-import WorkflowRepository, {
-  workflowRepoKey,
-} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
-import updateWorkflowUseCase from "@/feature/core/workflow/domain/usecase/update-workflow.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/TaskEither";
+import { left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
+import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import { workflowRepoKey } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import updateWorkflowUseCase from "@/feature/core/workflow/domain/usecase/update-workflow.usecase";
+import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
@@ -101,4 +100,3 @@ describe("Update workflow usecase", () => {
     });
   });
 });
-

@@ -1,8 +1,8 @@
-import { test, expect } from "@playwright/test";
-import { createTestUser, loginAsUser, cleanupTestUser } from "./setup/auth";
+import { expect, test } from "@playwright/test";
 import { generateTestUserEmail } from "./fixtures/test-user";
+import { waitForPageReady } from "./helpers/test-helpers";
+import { cleanupTestUser, createTestUser, loginAsUser } from "./setup/auth";
 import { resetTestDatabase } from "./setup/database";
-import { waitForPageReady, expectAuthenticated } from "./helpers/test-helpers";
 
 test.describe("Executions E2E", () => {
   let testUserEmail: string;
@@ -10,7 +10,7 @@ test.describe("Executions E2E", () => {
   test.beforeEach(async ({ page }) => {
     // Reset database for test isolation
     await resetTestDatabase();
-    
+
     // Create and login test user
     testUserEmail = generateTestUserEmail("execution-test");
     await createTestUser({
@@ -18,12 +18,12 @@ test.describe("Executions E2E", () => {
       password: "TestPassword123!",
       name: "Execution Test User",
     });
-    
+
     await loginAsUser(page, {
       email: testUserEmail,
       password: "TestPassword123!",
     });
-    
+
     await page.goto("/en/dashboard/executions");
     await waitForPageReady(page);
   });
@@ -37,10 +37,14 @@ test.describe("Executions E2E", () => {
 
   test("should display executions list", async ({ page }) => {
     // Assert
-    await expect(page.getByRole("heading", { name: /executions/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /executions/i }),
+    ).toBeVisible();
   });
 
-  test("should navigate to executions page from dashboard", async ({ page }) => {
+  test("should navigate to executions page from dashboard", async ({
+    page,
+  }) => {
     // Arrange
     await page.goto("/en/dashboard");
     await waitForPageReady(page);
@@ -50,7 +54,9 @@ test.describe("Executions E2E", () => {
 
     // Assert
     await expect(page).toHaveURL(/.*executions/);
-    await expect(page.getByRole("heading", { name: /executions/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /executions/i }),
+    ).toBeVisible();
   });
 
   test("should display execution details", async ({ page }) => {
@@ -59,16 +65,22 @@ test.describe("Executions E2E", () => {
     await waitForPageReady(page);
 
     // Act - click on first execution if available
-    const executionItem = page.locator('[data-testid="execution-item"], .execution-item, tr').first();
+    const executionItem = page
+      .locator('[data-testid="execution-item"], .execution-item, tr')
+      .first();
     if (await executionItem.isVisible()) {
       await executionItem.click();
       await waitForPageReady(page);
 
       // Assert - should show execution details
-      await expect(page.locator('text=/status|started|completed|workflow/i').first()).toBeVisible({ timeout: 5000 });
+      await expect(
+        page.locator("text=/status|started|completed|workflow/i").first(),
+      ).toBeVisible({ timeout: 5000 });
     } else {
       // If no executions, should show empty state
-      await expect(page.locator('text=/no.*execution|empty/i').first()).toBeVisible({ timeout: 5000 });
+      await expect(
+        page.locator("text=/no.*execution|empty/i").first(),
+      ).toBeVisible({ timeout: 5000 });
     }
   });
 
@@ -78,10 +90,12 @@ test.describe("Executions E2E", () => {
     await waitForPageReady(page);
 
     // Act - look for status filter
-    const statusFilter = page.locator('select[name*="status" i], [role="combobox"]').first();
+    const statusFilter = page
+      .locator('select[name*="status" i], [role="combobox"]')
+      .first();
     if (await statusFilter.isVisible()) {
       await statusFilter.click();
-      await page.locator('text=/success|completed/i').first().click();
+      await page.locator("text=/success|completed/i").first().click();
       await page.waitForTimeout(500);
 
       // Assert - filter should be applied
@@ -95,25 +109,35 @@ test.describe("Executions E2E", () => {
     await waitForPageReady(page);
 
     // Assert - check if pagination exists
-    const pagination = page.locator('[data-testid="pagination"], .pagination, nav[aria-label*="pagination" i]');
-    const executionsList = page.locator('[data-testid="executions-list"], .executions-list');
-    const isEmpty = await executionsList.count() === 0;
-    
+    const pagination = page.locator(
+      '[data-testid="pagination"], .pagination, nav[aria-label*="pagination" i]',
+    );
+    const executionsList = page.locator(
+      '[data-testid="executions-list"], .executions-list',
+    );
+    const isEmpty = (await executionsList.count()) === 0;
+
     if (!isEmpty) {
       // If executions exist, pagination should be visible
       await expect(pagination.first()).toBeVisible({ timeout: 5000 });
-      
+
       // Try to navigate to next page
-      const nextButton = page.locator('button:has-text("Next"), [aria-label*="next" i]').first();
-      if (await nextButton.isVisible() && !(await nextButton.isDisabled())) {
+      const nextButton = page
+        .locator('button:has-text("Next"), [aria-label*="next" i]')
+        .first();
+      if ((await nextButton.isVisible()) && !(await nextButton.isDisabled())) {
         await nextButton.click();
         await waitForPageReady(page);
         // Should be on page 2
-        await expect(page.locator('text=/page.*2|2.*of/i').first()).toBeVisible({ timeout: 5000 });
+        await expect(page.locator("text=/page.*2|2.*of/i").first()).toBeVisible(
+          { timeout: 5000 },
+        );
       }
     } else {
       // If no executions, should show empty state
-      await expect(page.locator('text=/no.*execution|empty/i').first()).toBeVisible({ timeout: 5000 });
+      await expect(
+        page.locator("text=/no.*execution|empty/i").first(),
+      ).toBeVisible({ timeout: 5000 });
     }
   });
 
@@ -123,9 +147,11 @@ test.describe("Executions E2E", () => {
     await waitForPageReady(page);
 
     // Assert - check for status indicators (success, failed, running)
-    const statusIndicators = page.locator('[data-status], .status-indicator, [class*="status"]');
+    const statusIndicators = page.locator(
+      '[data-status], .status-indicator, [class*="status"]',
+    );
     const count = await statusIndicators.count();
-    
+
     if (count > 0) {
       // Should have status indicators
       await expect(statusIndicators.first()).toBeVisible();
@@ -138,7 +164,9 @@ test.describe("Executions E2E", () => {
     await waitForPageReady(page);
 
     // Act - click on workflow link in execution item
-    const workflowLink = page.locator('a:has-text("workflow"), [href*="/workflows/"]').first();
+    const workflowLink = page
+      .locator('a:has-text("workflow"), [href*="/workflows/"]')
+      .first();
     if (await workflowLink.isVisible()) {
       await workflowLink.click();
       await waitForPageReady(page);
@@ -148,10 +176,14 @@ test.describe("Executions E2E", () => {
     }
   });
 
-  test("should fail to access executions when unauthenticated", async ({ page }) => {
+  test("should fail to access executions when unauthenticated", async ({
+    page,
+  }) => {
     // Arrange - logout first
     await page.goto("/en/dashboard/executions");
-    const logoutButton = page.locator('button:has-text("Logout"), [data-testid="logout"]').first();
+    const logoutButton = page
+      .locator('button:has-text("Logout"), [data-testid="logout"]')
+      .first();
     if (await logoutButton.isVisible()) {
       await logoutButton.click();
       await page.waitForURL(/\/login/, { timeout: 5000 });
@@ -164,5 +196,3 @@ test.describe("Executions E2E", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 });
-
-

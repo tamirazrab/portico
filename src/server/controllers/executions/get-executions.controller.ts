@@ -1,13 +1,13 @@
 "use server";
 
-import { ApiEither } from "@/feature/common/data/api-task";
 import { connection } from "next/server";
-import getExecutionsUseCase from "@/feature/core/execution/domain/usecase/get-executions.usecase";
-import {
-  GetExecutionsParams,
+import type WithPagination from "@/feature/common/class-helpers/with-pagination";
+import type { ApiEither } from "@/feature/common/data/api-task";
+import type {
   ExecutionWithWorkflow,
+  GetExecutionsParams,
 } from "@/feature/core/execution/domain/i-repo/execution.repository.interface";
-import WithPagination from "@/feature/common/class-helpers/with-pagination";
+import getExecutionsUseCase from "@/feature/core/execution/domain/usecase/get-executions.usecase";
 
 export default async function getExecutionsController(
   params: GetExecutionsParams,
@@ -15,4 +15,3 @@ export default async function getExecutionsController(
   await connection();
   return await getExecutionsUseCase(params);
 }
-

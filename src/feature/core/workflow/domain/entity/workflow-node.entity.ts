@@ -1,4 +1,4 @@
-import NodeType from "../enum/node-type.enum";
+import type NodeType from "../enum/node-type.enum";
 
 export type WorkflowNodeParams = Omit<WorkflowNode, "toPlainObject">;
 

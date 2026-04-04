@@ -1,22 +1,26 @@
-import WorkflowRepository, {
-  workflowRepoKey,
-} from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
-import { getMock } from "@/test/common/mock/mock-factory";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { faker } from "@faker-js/faker";
-import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
-import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
-import mockDi from "@/test/common/mock/mock-di";
-import { right, left } from "fp-ts/lib/Either";
-import { isRight, isLeft } from "fp-ts/lib/Either";
+import { isLeft, isRight, left, right } from "fp-ts/lib/Either";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
+import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import { workflowRepoKey } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
+import getWorkflowUseCase from "@/feature/core/workflow/domain/usecase/get-workflow.usecase";
+import WorkflowFakeFactory from "@/test/common/fake-factory/workflow/workflow.fake-factory";
+import mockDi from "@/test/common/mock/mock-di";
+import { getMock } from "@/test/common/mock/mock-factory";
 
 /* -------------------------------------------------------------------------- */
 /*                                   Faking                                   */
 /* -------------------------------------------------------------------------- */
 const fakedWorkflow = WorkflowFakeFactory.getFakeWorkflow();
-const fakedNodes = WorkflowFakeFactory.getFakeWorkflowNodeList(3, fakedWorkflow.id);
-const fakedConnections = WorkflowFakeFactory.getFakeWorkflowConnectionList(2, fakedWorkflow.id);
+const fakedNodes = WorkflowFakeFactory.getFakeWorkflowNodeList(
+  3,
+  fakedWorkflow.id,
+);
+const fakedConnections = WorkflowFakeFactory.getFakeWorkflowConnectionList(
+  2,
+  fakedWorkflow.id,
+);
 const fakedWorkflowWithNodes = {
   workflow: fakedWorkflow,
   nodes: fakedNodes,
@@ -97,4 +101,3 @@ describe("Get workflow usecase", () => {
     });
   });
 });
-
