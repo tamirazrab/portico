@@ -1,5 +1,5 @@
 import { left, right } from "fp-ts/lib/Either";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { assertWorkflowAllowsWebhookTrigger } from "@/bootstrap/helpers/security/workflow-webhook-trigger";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";

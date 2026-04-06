@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { sendWorkflowExecution } from "@/bootstrap/integrations/inngest/util";
 
 const mockSend = vi.fn().mockResolvedValue({ ids: ["e1"] });

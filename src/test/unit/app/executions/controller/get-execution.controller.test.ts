@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { left, right } from "fp-ts/lib/Either";
 import * as connectionModule from "next/server";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import getExecutionUseCase from "@/feature/core/execution/domain/usecase/get-execution.usecase";
 import getExecutionController from "@/server/controllers/executions/get-execution.controller";

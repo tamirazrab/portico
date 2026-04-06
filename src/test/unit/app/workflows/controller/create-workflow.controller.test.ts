@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { left, right } from "fp-ts/lib/Either";
 import * as connectionModule from "next/server";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import createWorkflowUseCase from "@/feature/core/workflow/domain/usecase/create-workflow.usecase";
 import createWorkflowController from "@/server/controllers/workflows/create-workflow.controller";

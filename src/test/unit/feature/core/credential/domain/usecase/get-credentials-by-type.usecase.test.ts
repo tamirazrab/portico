@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { left, right } from "fp-ts/lib/Either";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import BaseFailure from "@/feature/common/failures/base.failure";
 import CredentialType from "@/feature/core/credential/domain/enum/credential-type.enum";
 import type CredentialRepository from "@/feature/core/credential/domain/i-repo/credential.repository.interface";

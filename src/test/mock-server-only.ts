@@ -1,5 +1,6 @@
 // This file mocks server-only module for test environment
 // It must be imported before any code that uses server-only
+/* eslint-disable @typescript-eslint/no-require-imports, prefer-rest-params -- Node require patch */
 
 // @ts-expect-error - Mocking server-only
 if (typeof require !== "undefined") {

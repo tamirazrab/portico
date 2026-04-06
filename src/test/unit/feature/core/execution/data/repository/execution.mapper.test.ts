@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import ExecutionMapper from "@/feature/core/execution/data/repository/execution.mapper";
 import Execution from "@/feature/core/execution/domain/entity/execution.entity";

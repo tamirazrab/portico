@@ -9,19 +9,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
-} from "@/app/components/ui/card";
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/app/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import {
   Empty,
   EmptyContent,
@@ -29,8 +29,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/app/components/ui/empty";
-import { Input } from "@/app/components/ui/input";
+} from "@/components/ui/empty";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 type EntityHeaderProps = {

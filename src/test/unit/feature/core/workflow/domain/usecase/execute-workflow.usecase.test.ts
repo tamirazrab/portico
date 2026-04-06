@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { isLeft, left, right } from "fp-ts/lib/Either";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import WorkflowNode from "@/feature/core/workflow/domain/entity/workflow-node.entity";
 import NodeType from "@/feature/core/workflow/domain/enum/node-type.enum";
 import PremiumRequiredFailure from "@/feature/core/workflow/domain/failure/premium-required-failure";

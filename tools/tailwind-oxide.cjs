@@ -2,10 +2,20 @@
 
 /**
  * Turbopack statically traces `require()` in `@tailwindcss/oxide/index.js` and chokes on
- * optional `.node` binaries. This shim loads the platform package at runtime with a
- * dynamic require so PostCSS/Tailwind still work under `next dev/build --turbopack`.
+ * optional `.node` binaries. This shim loads the platform package at runtime.
+ *
+ * Uses `process.getBuiltinModule` so this file still works when Turbopack evaluates it
+ * in an ESM-ish context where top-level `require` is undefined.
  */
-const req = Function("m", "return require(m)");
+const pathMod =
+  typeof process.getBuiltinModule === "function"
+    ? process.getBuiltinModule("node:path")
+    : require("node:path");
+const anchor = pathMod.join(process.cwd(), "tools", "tailwind-oxide.cjs");
+const req =
+  typeof process.getBuiltinModule === "function"
+    ? process.getBuiltinModule("node:module").createRequire(anchor)
+    : require("node:module").createRequire(anchor);
 
 function tryPkgs(names) {
   let last;

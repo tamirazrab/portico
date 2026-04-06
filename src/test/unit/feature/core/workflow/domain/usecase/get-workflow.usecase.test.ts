@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { isLeft, isRight, left, right } from "fp-ts/lib/Either";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import WorkflowNotFoundFailure from "@/feature/core/workflow/domain/failure/workflow-not-found-failure";
 import type WorkflowRepository from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";
 import { workflowRepoKey } from "@/feature/core/workflow/domain/i-repo/workflow.repository.interface";

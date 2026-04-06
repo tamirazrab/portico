@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import WorkflowMapper from "@/feature/core/workflow/data/repository/workflow.mapper";
 import Workflow from "@/feature/core/workflow/domain/entity/workflow.entity";

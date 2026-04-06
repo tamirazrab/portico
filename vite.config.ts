@@ -1,12 +1,15 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite-plus";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  plugins: [react()],
   test: {
     globals: true,
+    environment: "node",
     setupFiles: "src/test/setup.ts",
     include: ["src/test/unit/**/*.test.ts"],
     exclude: ["node_modules", "src/test/e2e"],
@@ -40,61 +43,5 @@ export default defineConfig({
         "./src/test/shims/server-only-stub.ts",
       ),
     },
-  },
-  lint: {
-    ignorePatterns: [
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/storybook-static/**",
-      "**/coverage/**",
-      "**/playwright-report/**",
-      "**/test-results/**",
-      "src/generated/**",
-      "src/test/**",
-    ],
-    options: {
-      // Project uses path aliases in tests; full type-check belongs to `tsc`/IDE.
-      typeAware: false,
-      typeCheck: false,
-    },
-    plugins: ["typescript", "react", "nextjs", "import"],
-    settings: {
-      react: {
-        version: "19.2.0",
-      },
-    },
-    rules: {
-      // Next.js / React directive pattern is intentional.
-      "no-unused-expressions": "off",
-    },
-    overrides: [
-      {
-        files: ["src/**/*-vm.ts"],
-        rules: {
-          "react-hooks/rules-of-hooks": "off",
-        },
-      },
-    ],
-  },
-  fmt: {
-    printWidth: 80,
-    tabWidth: 2,
-    useTabs: false,
-    semi: true,
-    singleQuote: false,
-    jsxSingleQuote: false,
-    trailingComma: "all",
-    bracketSpacing: true,
-    arrowParens: "always",
-    quoteProps: "as-needed",
-    ignorePatterns: [
-      "**/.next/**",
-      "**/node_modules/**",
-      "**/coverage/**",
-      "**/playwright-report/**",
-      "**/test-results/**",
-      "src/generated/**",
-    ],
   },
 });

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import WithPagination from "@/feature/common/class-helpers/with-pagination";
 import CredentialMapper from "@/feature/core/credential/data/repository/credential.mapper";
 import Credential from "@/feature/core/credential/domain/entity/credential.entity";

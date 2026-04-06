@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "types": ["vite-plus/test/globals"],
     "plugins": [
       {
         "name": "next"

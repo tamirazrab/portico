@@ -1,14 +1,13 @@
+"use client";
+
 import Image from "next/image";
-
-("use client");
-
 import { createId } from "@paralleldrive/cuid2";
 import { useReactFlow } from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
 import type React from "react";
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { Separator } from "@/app/components/ui/separator";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -16,7 +15,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/app/components/ui/sheet";
+} from "@/components/ui/sheet";
 import { NodeType } from "@/generated/prisma/enums";
 
 export type NodeTypeOption = {
